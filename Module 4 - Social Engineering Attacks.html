@@ -1,0 +1,1785 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Module 4 - Social Engineering Attacks
+    </title>
+    <style>
+      /* ── Fonts ── */
+      @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+
+      /* ── Reset & Base ── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #f5f4f0;
+        --surface: #ffffff;
+        --border: #d8d5cc;
+        --text: #0f0e0d;
+        --muted: #3a3835;
+        --accent: #c0392b;
+        --accent-lt: #fdf0ee;
+        --tip-bg: #fffbea;
+        --tip-border: #e6c84a;
+        --note-bg: #eef4ff;
+        --note-border: #4a7ce6;
+        --term-bg: #1a1917;
+        --term-text: #e8e6e0;
+        --term-green: #4ec94e;
+        --radius: 6px;
+        --max-w: 860px;
+        --font-body: "IBM Plex Sans", sans-serif;
+        --font-mono: "IBM Plex Mono", monospace;
+      }
+
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+      }
+
+      /* ── Layout ── */
+      .page-wrap {
+        max-width: var(--max-w);
+        margin: 0 auto;
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      /* ── Course Header ── */
+      .course-header {
+        border-bottom: 2px solid var(--text);
+        padding-bottom: 1.25rem;
+        margin-bottom: 2.5rem;
+      }
+      .course-header .label {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .course-header h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1.25;
+        margin-top: 0.35rem;
+      }
+
+            /* ── Table ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.9rem;
+  font-size: 0.93rem;
+}
+
+table thead tr {
+  background: var(--text);
+  color: #fff;
+}
+
+table th {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+
+table td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+}
+
+table tbody tr:nth-child(even) {
+  background: var(--bg);
+}
+
+      /* ── Section Headings ── */
+      h2 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        border-left: 4px solid var(--accent);
+        padding-left: 0.75rem;
+        margin: 2.5rem 0 1rem;
+        line-height: 1.3;
+      }
+      h3 {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--muted);
+        font-family: var(--font-mono);
+        margin: 2rem 0 0.6rem;
+        letter-spacing: 0.02em;
+      }
+
+      /* ── Body Text ── */
+      p {
+        margin-bottom: 0.9rem;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      em {
+        font-style: italic;
+      }
+      strong,
+      b {
+        font-weight: 700;
+      }
+      em strong,
+      strong em {
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      /* ── Lists ── */
+      ul,
+      ol {
+        padding-left: 1.5rem;
+        margin-bottom: 0.9rem;
+      }
+      li {
+        margin-bottom: 0.3rem;
+      }
+
+      /* ── Avatar + Figures ── */
+      .avatar-wrap {
+        display: flex;
+        justify-content: flex-start;
+        margin: 1.25rem 0;
+      }
+      .avatar-wrap img {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        background: var(--surface);
+      }
+
+      figure {
+        margin: 1.5rem 0;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      figure img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      figcaption {
+        font-size: 0.82rem;
+        font-family: var(--font-mono);
+        color: var(--muted);
+        padding: 0.5rem 0.75rem;
+        border-top: 1px solid var(--border);
+        background: var(--bg);
+      }
+
+      /* ── Callouts: TIP / NOTE ── */
+      .callout {
+        border-radius: var(--radius);
+        padding: 0.85rem 1rem;
+        margin: 1.25rem 0;
+        border-left: 4px solid;
+      }
+      .callout .callout-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 0.3rem;
+      }
+      .callout p {
+        margin-bottom: 0;
+        font-size: 0.93rem;
+      }
+      .callout p + p {
+        margin-top: 0.5rem;
+      }
+
+      .callout-tip {
+        background: var(--tip-bg);
+        border-color: var(--tip-border);
+      }
+      .callout-tip .callout-label {
+        color: #6b4f00;
+      }
+
+      .callout-note {
+        background: var(--note-bg);
+        border-color: var(--note-border);
+      }
+      .callout-note .callout-label {
+        color: #1a3a7a;
+      }
+
+      /* ── Terminal / CLI Block ── */
+      .terminal {
+        background: var(--term-bg);
+        color: var(--term-text);
+        font-family: var(--font-mono);
+        font-size: 0.87rem;
+        border-radius: var(--radius);
+        padding: 1rem 1.2rem;
+        margin: 1.25rem 0;
+        overflow-x: auto;
+        line-height: 1.6;
+      }
+      .terminal .prompt {
+        color: var(--term-green);
+        user-select: none;
+      }
+
+      /* ── Lab Card ── */
+      .lab-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin: 1.5rem 0;
+        overflow: hidden;
+      }
+      .lab-card-header {
+        background: var(--text);
+        color: #fff;
+        padding: 0.65rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .lab-card-header .lab-icon {
+        font-size: 1rem;
+      }
+      .lab-card-header .lab-title {
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .lab-card-body {
+        padding: 1rem;
+      }
+      .lab-card-body p {
+        font-size: 0.93rem;
+        margin-bottom: 0.5rem;
+      }
+      .lab-card-body ul {
+        font-size: 0.93rem;
+      }
+      .lab-btn {
+        display: inline-block;
+        margin-top: 0.75rem;
+        padding: 0.45rem 1.1rem;
+        background: var(--accent);
+        color: #fff;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        transition: opacity 0.15s;
+      }
+      .lab-btn:hover {
+        opacity: 0.85;
+        text-decoration: none;
+      }
+
+      /* ── Video Block ── */
+      .video-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+      .video-block p {
+        font-size: 0.88rem;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+        font-family: var(--font-mono);
+      }
+      .video-placeholder {
+        background: #111;
+        border-radius: 4px;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #888;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        gap: 0.4rem;
+      }
+      .video-placeholder .play-icon {
+        font-size: 2rem;
+        color: #555;
+      }
+      .transcript-link {
+        display: inline-block;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        font-family: var(--font-mono);
+        color: var(--muted);
+      }
+      .transcript-link:hover {
+        color: var(--accent);
+      }
+
+      /* ── Quiz / Skills Check ── */
+      .quiz-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.4rem;
+        margin: 1.5rem 0;
+      }
+      .quiz-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+      .quiz-question {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+      }
+      .quiz-options {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 1rem;
+      }
+      .quiz-options li {
+        margin-bottom: 0.4rem;
+      }
+      .quiz-options label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.93rem;
+        color: var(--text);
+        transition:
+          background 0.12s,
+          border-color 0.12s;
+      }
+      .quiz-options label:hover {
+        background: var(--bg);
+        border-color: var(--muted);
+      }
+      .quiz-options input[type="radio"],
+      .quiz-options input[type="checkbox"] {
+        margin-top: 0.25rem;
+        accent-color: var(--accent);
+        flex-shrink: 0;
+      }
+      .quiz-options label.correct {
+        background: #eafaf1;
+        border-color: #27ae60;
+        color: #1a5c35;
+      }
+      .quiz-options label.incorrect {
+        background: #fdf0ee;
+        border-color: var(--accent);
+        color: #7a1a10;
+      }
+      .quiz-submit {
+        display: inline-block;
+        padding: 0.42rem 1.1rem;
+        background: var(--text);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .quiz-submit:hover {
+        opacity: 0.8;
+      }
+      .quiz-feedback {
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        font-family: var(--font-mono);
+        display: none;
+      }
+      .quiz-feedback.correct {
+        color: #1a5c35;
+      }
+      .quiz-feedback.incorrect {
+        color: #7a1a10;
+      }
+
+      /* ── Practice Block ── */
+      .practice-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--text);
+        border-radius: var(--radius);
+        padding: 1rem 1.2rem;
+        margin: 1.5rem 0;
+      }
+      .practice-block .practice-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+      }
+      .practice-block .question {
+        font-weight: 600;
+        margin-bottom: 0.6rem;
+        color: var(--text);
+      }
+      .practice-block ul {
+        list-style: none;
+        padding-left: 0;
+      }
+      .practice-block ul li {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.93rem;
+        color: var(--text);
+      }
+      .practice-block ul li::before {
+        content: "▸  ";
+        font-family: var(--font-mono);
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      /* ── Divider ── */
+      hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 2rem 0;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 600px) {
+        h2 {
+          font-size: 1.1rem;
+        }
+        .avatar-wrap img {
+          width: 120px;
+          height: 120px;
+        }
+      }
+
+      /* -- Quiz -- */
+      /* ── Quiz Block ── */
+      .quiz-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.4rem;
+        margin: 1.5rem 0;
+      }
+
+      .quiz-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .quiz-label::before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      .quiz-question {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.9rem;
+        font-size: 0.97rem;
+        line-height: 1.5;
+      }
+      .quiz-question code {
+        font-family: var(--font-mono);
+        background: #ebe9e4;
+        padding: 0.1em 0.35em;
+        border-radius: 3px;
+        font-size: 0.88em;
+        color: var(--text);
+      }
+
+      .quiz-options {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      .quiz-options li label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        padding: 0.55rem 0.8rem;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.93rem;
+        color: var(--text);
+        transition:
+          background 0.12s,
+          border-color 0.12s;
+        user-select: none;
+      }
+      .quiz-options li label:hover {
+        background: var(--bg);
+        border-color: var(--muted);
+      }
+      .quiz-options input[type="radio"],
+      .quiz-options input[type="checkbox"] {
+        margin-top: 0.28rem;
+        accent-color: var(--accent);
+        flex-shrink: 0;
+        width: 15px;
+        height: 15px;
+      }
+
+      /* answer states */
+      .quiz-options li.correct label {
+        background: #eafaf1;
+        border-color: #27ae60;
+        color: #1a5c35;
+        font-weight: 600;
+      }
+      .quiz-options li.incorrect label {
+        background: #fdf0ee;
+        border-color: var(--accent);
+        color: #7a1a10;
+      }
+      .quiz-options li.correct label::after,
+      .quiz-options li.incorrect label::after {
+        content: attr(data-mark);
+        margin-left: auto;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+      }
+
+      /* disable interaction after submit */
+      .quiz-block.submitted .quiz-options li label {
+        cursor: default;
+        pointer-events: none;
+      }
+
+      .quiz-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .quiz-submit {
+        padding: 0.42rem 1.1rem;
+        background: var(--text);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .quiz-submit:hover {
+        opacity: 0.8;
+      }
+      .quiz-submit:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .quiz-reset {
+        padding: 0.42rem 1.1rem;
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+        display: none;
+      }
+      .quiz-reset:hover {
+        border-color: var(--muted);
+        color: var(--text);
+      }
+
+      .quiz-feedback {
+        font-size: 0.88rem;
+        font-family: var(--font-mono);
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        display: none;
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+      .quiz-feedback.show {
+        display: block;
+      }
+      .quiz-feedback.correct {
+        background: #eafaf1;
+        color: #1a5c35;
+        border: 1px solid #27ae60;
+      }
+      .quiz-feedback.incorrect {
+        background: #fdf0ee;
+        color: #7a1a10;
+        border: 1px solid var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrap">
+
+  <!-- ── Module 4 Header ── -->
+  <div class="course-header">
+    <span class="label">Cisco Ethical Hacking Course · Module 4</span>
+    <h1>Social Engineering Attacks</h1>
+  </div>
+
+  <!-- ── 4.0 Introduction ── -->
+  <h2>4.0 Introduction</h2>
+
+  <h3>4.0.1 Why Should I Take This Module?</h3>
+
+  <p>Our job as ethical hackers is to assess the vulnerability to cyberattack that exists in our clients'
+    organization, networks, digital assets, and applications. In order to do this, we often use tools and methods
+    that are available to criminal hackers.</p>
+
+  <p>To effectively pose as hackers, we must be familiar with hacker tactics, techniques, and procedures, including
+    the tools that they use. You will learn about different types of cyberattacks and use hacker tools to carry out
+    simulated attacks. Kali has some amazing tools. This will be fun!</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-orange.png" alt="Instructor avatar">
+  </div>
+
+  <p>Cyber attacks and exploits are occurring more and more frequently all the time. You have to understand threat
+    actors' tactics in order to mimic them and become a better penetration tester. This module covers the most common
+    types of attacks and exploits. It starts by describing attacks against the weakest link, which is the human
+    element. These attacks are called <em>social engineering attacks</em>. Social engineering has been the initial
+    attack vector of many breaches and compromises in the past several years. In this module, you will learn about
+    various social engineering attacks, such as phishing, vishing, pharming, spear phishing, whaling, and others.
+    You will also learn about social engineering techniques such as elicitation, interrogation, and impersonation, as
+    well as different motivation techniques (or <em>methods of influence</em>). You will also learn what shoulder
+    surfing is and how attackers have used the "USB key drop" trick to fool users into installing malware and
+    compromising their systems.</p>
+
+  <h3>4.0.2 What Will I Learn in This Module?</h3>
+
+  <p><strong>Module Title:</strong> Social Engineering Attacks</p>
+  <p><strong>Module Objective:</strong> Explain how social engineering attacks succeed.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Topic Title</th>
+        <th>Topic Objective</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Pretexting for an Approach and Impersonation</td>
+        <td>Explain how pretexting is used in social engineering attacks.</td>
+      </tr>
+      <tr>
+        <td>Social Engineering Attacks</td>
+        <td>Explain different types of social engineering attacks.</td>
+      </tr>
+      <tr>
+        <td>Physical Attacks</td>
+        <td>Explain different types of physical attacks.</td>
+      </tr>
+      <tr>
+        <td>Social Engineering Tools</td>
+        <td>Explain how social engineering attack tools facilitate attacks.</td>
+      </tr>
+      <tr>
+        <td>Methods of Influence</td>
+        <td>Explain how social engineering attacks enlist user participation.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── 4.1 Pretexting ── -->
+  <h2>4.1 Pretexting for an Approach and Impersonation</h2>
+
+  <h3>4.1.1 Overview</h3>
+
+  <p>I am sure you are familiar with the idea that people are the weakest link in cybersecurity. Unfortunately, it is
+    relatively easy to fool employees by pretending to be a known and trusted individual or by using a false story.
+    People will give up a surprising amount of privileged information or will download malware that can cause great
+    damage. Sometimes, it only takes one click to download malware that can affect an entire organization, causing
+    great losses.</p>
+
+  <p>At Protego, if the scope of our engagement permits, we conduct social engineering attacks to assess the level of
+    cybersecurity awareness of our customers' employees. Sometimes we will use the results of those attacks to
+    further penetrate the network in order to illustrate to our customer the seriousness of vulnerabilities. For
+    mitigation, we recommend comprehensive cybersecurity awareness training and periodic testing of employees'
+    awareness through simulated social engineering attacks.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png" alt="Instructor avatar">
+  </div>
+
+  <p>Influence, interrogation, and impersonation are key components of social engineering. <em>Elicitation</em> is
+    the act of gaining knowledge or information from people. In most cases, an attacker gets information from a
+    victim without directly asking for that particular information.</p>
+
+  <p>How an attacker <em>interrogates</em> and interacts with a victim is crucial for the success of a social
+    engineering campaign. An interrogator can ask good open-ended questions to learn about an individual's
+    viewpoints, values, and goals. The interrogator can then use any information the target revealed to continue to
+    gather additional information or to obtain information from another victim.</p>
+
+  <p>It is also possible for an interrogator to use closed-ended questions to get more control of the conversation
+    and to lead the conversation or to actually stop the conversation. Asking too many questions can cause the victim
+    to shut down the interaction, and asking too few questions may seem awkward. Successful social engineering
+    interrogators use a narrowing approach in their questioning to gain as much information as possible from the
+    victim.</p>
+
+  <p>Interrogators pay close attention to the following:</p>
+  <ul>
+    <li>The victim's posture or body language</li>
+    <li>The color of the victim's skin, such as the face color becoming pale or red</li>
+    <li>The direction of the victim's head and eyes</li>
+    <li>Movement of the victim's hands and feet</li>
+    <li>The victim's mouth and lip expressions</li>
+    <li>The pitch and rate of the victim's voice, as well as changes in the voice</li>
+    <li>The victim's words, including their length, the number of syllables, dysfunctions, and pauses</li>
+  </ul>
+
+  <p>With <strong><em>pretexting</em></strong>, or <strong><em>impersonation</em></strong>, an attacker presents as
+    someone else in order to gain access to information. In some cases, it can be very simple, such as quickly
+    pretending to be someone else within an organization; in other cases, it can involve creating a whole new
+    identity and then using that identity to manipulate the receipt of information. Social engineers may use
+    pretexting to impersonate individuals in certain jobs and roles even if they do not have experience in those jobs
+    or roles.</p>
+
+  <p>For example, a social engineer may impersonate a delivery person from Amazon, UPS, or FedEx or even a bicycle
+    messenger or courier with an important message for someone in the organization. As another example, someone might
+    impersonate an IT support worker and provide unsolicited help to a user. Impersonating IT staff can be very
+    effective because if you ask someone if he or she has a technical problem, it is quite likely that the victim
+    will think about it and say something like, "Yes, as a matter of fact, yesterday this weird thing happened to my
+    computer." Impersonating IT staff can give an attacker physical access to systems in an organization. An attacker
+    who has physical access can use a USB stick containing custom scripts to compromise a computer in seconds.
+    <em>Pharming</em> is a type of impersonation attack in which a threat actor redirects a victim from a valid
+    website or resource to a malicious one that could be made to appear as the valid site to the user. From there,
+    an attempt is made to extract confidential information from the user or to install malware in the victim's
+    system. Pharming can be done by altering the host file on a victim's system, through DNS poisoning, or by
+    exploiting a vulnerability in a DNS server. Figure 4-1 illustrates how pharming works.</p>
+
+  <p>The following steps are illustrated in Figure 4-1:</p>
+
+  <p><strong>Step 1.</strong> The user (Omar) visits a legitimate website and clicks on a legitimate link.</p>
+
+  <p><strong>Step 2.</strong> Omar's system is compromised, the host file is modified, and Omar is redirected to a
+    malicious site that appears to be legitimate. (This could also be accomplished by compromising a DNS server or
+    spoofing a DNS reply.)</p>
+
+  <p><strong>Step 3.</strong> Malware is downloaded and installed on Omar's system.</p>
+
+  <p>An attack that is similar to pharming is called <em>malvertising</em>. Malvertising involves incorporating
+    malicious ads on trusted websites. Users who click these ads are inadvertently redirected to sites hosting
+    malware.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-1-Pharming-Example.png"
+      alt="Figure 4-1 Pharming Example">
+    <figcaption>Figure 4-1 — Pharming Example</figcaption>
+  </figure>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>To help prevent pharming attacks, it is important to keep software up to date and run regular anti-malware
+      checks. You should also change the default passwords in network infrastructure devices (including your home
+      router). Of course, you also need to be aware of what websites you visit and be careful about opening
+      emails.</p>
+  </div>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png" alt="Instructor avatar">
+  </div>
+
+  <!-- ── 4.2 Social Engineering Attacks ── -->
+  <h2>4.2 Social Engineering Attacks</h2>
+
+  <h3>4.2.1 Overview</h3>
+
+  <p>It is important that we are familiar with a wide range of social engineering attacks. It is also important that
+    we follow cybersecurity information sources to learn about the attacks that are currently being used. For
+    example, Protego monitors honeypot email accounts to track how phishing tactics change. For a while we were
+    seeing emails that advertised false offers and discounts at popular retailers. Later, emails appeared that
+    contained false notification that the recipient had won prizes or other rewards. Now we are getting emails that
+    say that the recipient is subject to a product recall of some kind. Clicking links or attachments in these emails
+    often leads to malware downloads, including ransomware. Phishing attempts are extremely common. Sometimes we see
+    several phishing emails arrive at the server per day. One day we saw five. In addition, they are constantly
+    changing.</p>
+
+  <p>Our profession requires that we are always up-to-date on emerging threats.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png" alt="Instructor avatar">
+  </div>
+
+  <p>A social engineering attack leverages the weakest link in an organization, which is the human user. If an
+    attacker can get a user to reveal information, it is much easier for the attacker to cause harm than it is by
+    using some other method of reconnaissance. Social engineering can be accomplished through email or misdirection
+    of web pages and prompting a user to click something that leads to the attacker gaining information. Social
+    engineering can also be done in person by an insider or an outside entity or over the phone.</p>
+
+  <p>A primary example is attackers leveraging normal user behavior. Suppose that you are a security professional
+    who is in charge of the network firewalls and other security infrastructure equipment in your company. An
+    attacker could post a job offer for a very lucrative position and make it very attractive to you, the victim.
+    Suppose the job description lists benefits and compensation far beyond what you are making at your company. You
+    decide to apply for the position. The criminal (attacker) then schedules an interview with you. Because you are
+    likely to "show off" your skills and work, the attacker may be able to get you to explain how you have
+    configured the firewalls and other network infrastructure devices for your company. You might disclose
+    information about the firewalls used in your network, how you have configured them, how they were designed, and
+    so on. This would give the attacker a lot of knowledge about the organization without requiring the attacker to
+    perform any type of scanning or reconnaissance on the network.</p>
+
+  <h3>4.2.2 Email Phishing</h3>
+
+  <p>With <strong><em>phishing</em></strong>, an attacker presents to a user a link or an attachment that looks like
+    a valid, trusted resource. When the user clicks it, he or she is prompted to disclose confidential information
+    such as his or her username and password. Example 4-1 shows an example of a phishing email.</p>
+
+  <p><strong><em>Example 4-1 — Phishing Email Example</em></strong></p>
+  <div class="terminal">
+Subject: PAYMENT CONFIRMATION
+
+Message Body:
+
+Dear sir,
+
+We have discovered that there are occasional delays from our accounts department in making complete payments to our suppliers.
+
+This has caused undue reduction in our stocks and in our production department of which suppliers do not deliver materials on time.
+
+The purpose of this letter is to confirm whether or not payment has been made for the attached supplies received.
+
+Kindly confirm receipt and advise.
+
+Attachment: SD_085_085_pdf.xz / SD_085_085_pdf.exe
+MD5 Checksum of the attachment: 0x8CB6D923E48B51A1CB3B080A0D43589D</div>
+
+  <h3>Spear Phishing</h3>
+
+  <p><strong><em>Spear phishing</em></strong> is a phishing attempt that is constructed in a very specific way and
+    directly targeted to specific groups of individuals or companies. The attacker studies a victim and the victim's
+    organization in order to be able to make emails look legitimate and perhaps make them appear to come from trusted
+    users within the company. Example 4-2 shows an example of a spear phishing email.</p>
+
+  <p>In the email shown in Example 4-2, the threat actor has become aware that Chris and Omar are collaborating on a
+    book. The threat actor impersonates Chris and sends an email asking Omar to review a document (a chapter of the
+    book). The attachment actually contains malware that is installed on Omar's system.</p>
+
+  <p><strong><em>Example 4-2 — Spear Phishing Email Example</em></strong></p>
+  <div class="terminal">
+From: Chris Cleveland
+To: Omar Santos
+Subject: Please review chapter 3 for me and provide feedback by 2pm
+
+Message Body:
+
+Dear Omar,
+
+Please review the attached document.
+
+Regards,
+Chris
+
+Attachment: chapter.zip
+MD5 Checksum of the attachment: 0x61D60EA55AC14444291AA1F911F3B1BE</div>
+
+  <h3>Whaling</h3>
+
+  <p><strong><em>Whaling</em></strong>, which is similar to phishing and spear phishing, is an attack targeted at
+    high-profile business executives and key individuals in a company. Like threat actors conducting spear phishing
+    attacks, threat actors conducting whaling attacks also create emails and web pages to serve malware or collect
+    sensitive information; however, the whaling attackers' emails and pages have a more official or serious look and
+    feel. Whaling emails are designed to look like critical business emails or emails from someone who has legitimate
+    authority, either within or outside the company. In whaling attacks, web pages are designed to specifically
+    address high-profile victims. In a regular phishing attack, the email might be a faked warning from a bank or
+    service provider. In a whaling attack, the email or web page would be created with a more serious
+    executive-level form. The content is created to target an upper manager such as the CEO or an individual who
+    might have credentials for valuable accounts within the organization.</p>
+
+  <p>The main goal in whaling attacks is to steal sensitive information or compromise the victim's system and then
+    target other key high-profile victims.</p>
+
+  <h3>4.2.3 Vishing</h3>
+
+  <p><strong><em>Vishing</em></strong> (which is short for <em>voice phishing</em>) is a social engineering attack
+    carried out in a phone conversation. The attacker persuades the user to reveal private personal and financial
+    information or information about another person or a company.</p>
+
+  <p>The goal of vishing is typically to steal credit card numbers, Social Security numbers, and other information
+    that can be used in identity theft schemes. Attackers may impersonate and spoof caller ID to hide themselves
+    when performing vishing attacks.</p>
+
+  <h3>4.2.4 Short Message Service (SMS) Phishing</h3>
+
+  <p>Because phishing has been an effective tactic for threat actors, they have found ways other than using email to
+    fool their victims into following malicious links or activating malware from emails. Phishing campaigns often
+    use text messages to send malware or malicious links to mobile devices.</p>
+
+  <p>One example of <strong><em>Short Message Service (SMS) phishing</em></strong> is the bitcoin-related SMS scams
+    that have surfaced in recent years. Numerous victims have received messages instructing them to click on links to
+    confirm their accounts and claim bitcoin. When a user clicks such a link, he or she may be fooled into entering
+    sensitive information on that attacker's site.</p>
+
+  <p>You can help mitigate SMS phishing attacks by not clicking on links from any unknown message senders. Sometimes
+    attackers spoof the identity of legitimate entities (such as your bank, your Internet provider, social media
+    platforms, Amazon, or eBay). You should not click on any links sent via text messages if you did not expect such
+    a message to be sent to you. For example, if you receive a random message about a problem with an Amazon order,
+    do not click on that link. Instead, go directly to Amazon's website, log in, and verify on the Amazon website
+    whether there is a problem. Similarly, if you receive a message saying that there is a problem with a credit card
+    transaction or a bill, call the bank directly instead of clicking on a link. If you receive a message telling
+    you that you have won something, it's probably an SMS phishing attempt, and you should not click the link.</p>
+
+  <h3>4.2.5 Universal Serial Bus (USB) Drop Key</h3>
+
+  <p>Many pen testers and attackers have used <strong><em>Universal Serial Bus (USB) drop key</em></strong> attacks
+    to successfully compromise victim systems. This type of attack involves just leaving USB sticks (sometimes
+    referred to as USB keys or USB pen drives) unattended or placing them in strategic locations. Oftentimes, users
+    think that the devices are lost and insert them into their systems to figure out whom to return the devices to;
+    before they know it, they are downloading and installing malware. Plugging in that USB stick you found lying
+    around on the street outside your office could lead to a security breach.</p>
+
+  <p>Research by Elie Bursztein, of Google's anti-abuse research team, shows that the majority of users will plug
+    USB drives into their system without hesitation. As part of his research, he dropped close to 300 USB sticks on
+    the University of Illinois Urbana-Champaign campus and measured who plugged in the drives. The results showed
+    that 98% of the USB drives were picked up, and for 45% of the drives, someone not only plugged in the drive but
+    clicked on files.</p>
+
+  <p>Another social engineering technique involves dropping a key ring containing a USB stick that may also include
+    pictures of kids or pets and an actual key or two. These types of personal touches may prompt a victim to try to
+    identify the owner in order to return the key chain. This type of social engineering attack is very effective
+    and also can be catastrophic.</p>
+
+  <h3>4.2.6 Watering Hole Attacks</h3>
+
+  <p>A <strong><em>watering hole attack</em></strong> is a targeted attack that occurs when an attacker profiles
+    websites that the intended victim accesses. The attacker then scans those websites for possible vulnerabilities.
+    If the attacker locates a website that can be compromised, the website is then injected with a JavaScript or
+    other similar code injection that is designed to redirect the user when the user returns to that site. (This
+    redirection is also known as a <em>pivot attack</em>.) The user is then redirected to a site with some sort of
+    exploit code. The purpose is to infect computers in the organization's network, thereby allowing the attacker to
+    gain a foothold in the network for espionage or other reasons.</p>
+
+  <p>Watering hole attacks are often designed to profile users of specific organizations. Organizations should
+    therefore develop policies to prevent these attacks. Such a policy might, for example, require updating
+    anti-malware applications regularly and using secure virtual browsers that have little connectivity to the rest
+    of the system and the rest of the network. To avoid having a website compromised as part of such an attack, an
+    administrator should use proper programming methods and scan the organization's website for malware regularly.
+    User education is paramount to help prevent these types of attacks.</p>
+
+  <h3>4.2.7 Practice — Pivot Attack</h3>
+
+  <div class="quiz-block" id="quiz-4-1">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">During initial interviews and surveys of Pixel Paradise's employees, we discovered that
+      they had already experienced all of the following social engineering attacks. Which one is a pivot attack?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-4-1" value="0"> Employees reported receiving emails,
+          supposedly from the Chief Technology Officer, William A. Hurst, that look legitimate.</label></li>
+      <li data-index="1"><label><input type="radio" name="q-4-1" value="1"> One of Pixel Paradise's fan community
+          websites was compromised by an attacker who injected JavaScript code to redirect community members to a
+          site containing malicious exploit code.</label></li>
+      <li data-index="2"><label><input type="radio" name="q-4-1" value="2"> A receptionist received a call from an
+          attacker attempting to persuade them to reveal information about Elizabeth deGray, the
+          CEO.</label></li>
+      <li data-index="3"><label><input type="radio" name="q-4-1" value="3"> Pixel Paradise's employees have been
+          receiving emails from a supposedly trusted source with links and attachments.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit"
+        onclick="submitQuiz('quiz-4-1', 1, 'A pivot attack (also known as a watering hole attack) involves compromising a website the target visits and injecting code to redirect them to a malicious site. The fan community website compromise with JavaScript injection to redirect users is the pivot attack.')">Check
+        Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-4-1')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <h3>4.2.8 Practice — Social Engineering Attacks</h3>
+
+  <div class="callout callout-note">
+    <div class="callout-label">Practice</div>
+    <p>Following our initial interviews with employees and other stakeholders at Pixel Paradise, it is important
+      that we properly classify the types of social engineering attacks that they have experienced. This helps us to
+      create targeted mitigation recommendations that suit the specific client. To practice this skill, match the
+      description of the social engineering attack to the type of attack.</p>
+  </div>
+
+  <div class="quiz-block" id="quiz-4-2">
+    <div class="quiz-label">Matching Exercise</div>
+    <p class="quiz-question"><strong>Match each description to the correct attack type.</strong></p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Attack Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>An administrative assistant at Protego reported receiving an email that contained a link to a site
+            that resembled a valid, trusted resource. When they clicked the link, they were prompted to supply a
+            username and password to login.</td>
+          <td><strong>E — Email Phishing</strong></td>
+        </tr>
+        <tr>
+          <td>Protego received an alert from a legitimate game developers' news website that the site had been
+            experiencing unusual traffic including what appeared to be automated vulnerability scans.</td>
+          <td><strong>C — Watering Hole</strong></td>
+        </tr>
+        <tr>
+          <td>An employee reported receiving a phone call from someone who claimed to represent a vendor. The
+            caller claimed that Protego was due a refund and a business account number was required to transfer
+            the money.</td>
+          <td><strong>B — Vishing</strong></td>
+        </tr>
+        <tr>
+          <td>The Protego Chief Technology Officer reported that the company spam filter blocked several emails
+            that used Protego logos and came from a spoofed Protego email account.</td>
+          <td><strong>A — Spear Phishing</strong></td>
+        </tr>
+        <tr>
+          <td>An employee who was visiting an electronic gaming tradeshow found a USB drive that they inserted
+            into their laptop. Malware infected the computer requiring it to be replaced.</td>
+          <td><strong>F — USB Drop Key</strong></td>
+        </tr>
+        <tr>
+          <td>Several Protego employees received text messages that instructed them to click on a link to confirm
+            an account and claim a bitcoin reward. The site required registration with personal and work-related
+            information.</td>
+          <td><strong>D — SMS Phishing</strong></td>
+        </tr>
+        <tr>
+          <td>The Vice President of Finance and Director of Accounting at Protego both received emails that
+            contained links to an online survey regarding financial management. One of them clicked into the link
+            and their anti-malware app blocked a malicious file download.</td>
+          <td><strong>G — Whaling</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 4.3 Physical Attacks ── -->
+  <h2>4.3 Physical Attacks</h2>
+
+  <h3>4.3.1 Overview</h3>
+
+  <p>Physical security is often overlooked. A client can have the most elaborate cybersecurity infrastructure, but if
+    a threat actor can physically enter a facility and gain access to the network or systems, the security
+    infrastructure is rendered ineffective.</p>
+
+  <p>At Protego, we are sometimes asked to evaluate physical security. This involves evaluating physical entry points
+    to facilities, perimeter security including video surveillance and fencing, and policies and knowledge that guide
+    employees in detecting and preventing unauthorized access and theft of assets. Sometimes we even send a tester to
+    the facility with the goal of gaining unauthorized entry through various means.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png" alt="Instructor avatar">
+  </div>
+
+  <p>As a penetration tester or red teamer, you might be asked to simulate what a real-world threat actor or
+    criminal can do to compromise an organization's physical security in order to gain access to infrastructure,
+    buildings, systems, and employees. In this section, you will learn about various types of physical attacks.</p>
+
+  <h3>4.3.2 Tailgating</h3>
+
+  <p>With <em>piggybacking</em>, an unauthorized person tags along with an authorized person to gain entry to a
+    restricted area – usually with the person's consent. <strong><em>Tailgating</em></strong> is essentially the
+    same but with one difference: It usually occurs without the authorized person's consent. Both piggybacking and
+    tailgating can be defeated through the use of access control vestibules (formerly known as mantraps). An access
+    control vestibule is a small space that can usually fit only one person. It has two sets of closely spaced
+    doors; the first set must be closed before the other will open, creating a sort of waiting room where people are
+    identified (and cannot escape). Access control vestibules are often used in server rooms and data centers.
+    Multifactor authentication is often used in conjunction with an access control vestibule; for example, a
+    proximity card and PIN may be required at the first door and a biometric scan at the second.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>An access control vestibule is an example of a preventive security control. Turnstiles, double entry doors,
+      and security guards can also eliminate piggybacking and tailgating and help address confidentiality in
+      general. These options tend to be less expensive and less effective than access control vestibules.</p>
+  </div>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png" alt="Instructor avatar">
+  </div>
+
+  <h3>4.3.3 Dumpster Diving</h3>
+
+  <p>With <strong><em>Dumpster diving</em></strong>, a person scavenges for private information in garbage and
+    recycling containers. To protect sensitive documents, an organization should store them in a safe place as long
+    as possible. When it no longer needs the documents, the organization should shred them. (Some organizations
+    incinerate their documents or have them shredded by a certified professional third party.) Dumpster divers might
+    find information on paper and on hard drives or removable media.</p>
+
+  <h3>4.3.4 Shoulder Surfing</h3>
+
+  <p>With <strong><em>shoulder surfing</em></strong>, someone obtains information such as personally identifiable
+    information (PII), passwords, and other confidential data by looking over a victim's shoulder. One way to do
+    this is to get close to a person and look over his or her shoulder to see what the person is typing on a laptop,
+    phone, or tablet. It is also possible to carry out this type of attack from far away by using binoculars or even
+    a telescope. These attacks tend to be especially successful in crowded places. In addition, shoulder surfing can
+    be accomplished with small hidden cameras and microphones. User awareness and training are key to prevention.
+    There are also special screen filters for computer displays to prevent someone from seeing the screen at an
+    angle.</p>
+
+  <h3>4.3.5 Badge Cloning</h3>
+
+  <p>Attackers can perform different <strong><em>badge cloning attacks</em></strong>. For example, an attacker can
+    clone a badge/card used to access a building. Specialized software and hardware can be used to perform these
+    cloning attacks. Attackers can also use social engineering techniques to impersonate employees or any other
+    authorized users to enter a building by just creating their own badge and attempting to trick other users into
+    letting them into a building. This could even be done without a full clone of the radio frequency (RF)
+    capabilities of a badge.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>Attackers can often obtain detailed information about the design (look and feel) of corporate badges from
+      social media websites such as Twitter, Instagram, and LinkedIn, when people post photos showing their badges
+      when they get new jobs or leave old ones.</p>
+  </div>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png" alt="Instructor avatar">
+  </div>
+
+  <h3>4.3.6 Practice — Physical Attacks</h3>
+
+  <div class="quiz-block" id="quiz-4-3">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">Match the type of physical attack to the description.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Attack Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>A person obtains information such as personally identifiable information (PII), passwords, and other
+            confidential data by looking over the victim's shoulder.</td>
+          <td><strong>A — Shoulder Surfing</strong></td>
+        </tr>
+        <tr>
+          <td>An unauthorized person tags along with an authorized person to gain entry to a restricted area
+            <strong>with</strong> the consent of the authorized person.</td>
+          <td><strong>B — Piggybacking</strong></td>
+        </tr>
+        <tr>
+          <td>A person scavenges for private information in garbage and recycling containers.</td>
+          <td><strong>C — Dumpster Diving</strong></td>
+        </tr>
+        <tr>
+          <td>An unauthorized person tags along with an authorized person to gain entry to a restricted area
+            <strong>without</strong> the consent of the authorized person.</td>
+          <td><strong>D — Tailgating</strong></td>
+        </tr>
+        <tr>
+          <td>A person clones a card used to access a building.</td>
+          <td><strong>E — Badge Cloning</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 4.4 Social Engineering Tools ── -->
+  <h2>4.4 Social Engineering Tools</h2>
+
+  <h3>4.4.1 Overview</h3>
+
+  <p>There are some excellent exploitation toolkits available in your Kali distribution. For example, we use both
+    the Social-Engineer Toolkit (SET) and the Browser Exploitation Framework (BeEF) in our customer engagements.</p>
+
+  <p>I think you will enjoy learning about these tools, and we have some lab experiences in which you can try them
+    out. The tools are so versatile and comprehensive that we can only scratch the surface. I encourage you to study
+    them on your own to learn more about what they can do.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png" alt="Instructor avatar">
+  </div>
+
+  <p>In Module 10, "Tools and Code Analysis," you will learn more about the tools that can be used in penetration
+    testing. For now, let's quickly take a look at a few examples of tools that can be used in social engineering
+    attacks.</p>
+
+  <h3>4.4.2 Social-Engineer Toolkit (SET)</h3>
+
+  <p>The <strong><em>Social-Engineer Toolkit (SET)</em></strong> is a tool developed by David Kennedy. This tool can
+    be used to launch numerous social engineering attacks and can be integrated with third-party tools and frameworks
+    such as Metasploit. SET is installed by default in Kali Linux and Parrot Security. However, you can install it
+    on other flavors of Linux as well as on macOS. You can download SET from 
+      href="https://github.com/trustedsec/social-engineer-toolkit"
+      target="_blank"><em>https://github.com/trustedsec/social-engineer-toolkit</em></a>.</p>
+
+  <p><strong>Select the following steps to see a demonstration of how to easily create a spear phishing email using
+      SET.</strong></p>
+
+  <p><strong>Step 1.</strong> Launch SET by using the <strong><em>setoolkit</em></strong> command. You see the menu
+    shown in Figure 4-2.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-2-SET-Main-Menu.jpg"
+      alt="Figure 4-2 SET Main Menu">
+    <figcaption>Figure 4-2 — SET Main Menu</figcaption>
+  </figure>
+
+  <p><strong>Step 2.</strong> Select <strong>1) Social-Engineering Attacks</strong> from the menu to start the
+    social engineering attack. You now see the screen shown in Figure 4-3.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-3-Social-Engineering-Attack-Menu-in-SET.jpg"
+      alt="Figure 4-3 Social Engineering Attack Menu in SET">
+    <figcaption>Figure 4-3 — Social Engineering Attack Menu in SET</figcaption>
+  </figure>
+
+  <p><strong>Step 3.</strong> Select <strong>1) Spear-Phishing Attack Vectors</strong> from the menu to start the
+    spear-phishing attack. You see the screen shown in Figure 4-4.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-4-Spear-Phishing-Attack-Menu.jpg"
+      alt="Figure 4-4 Spear-Phishing Attack Menu">
+    <figcaption>Figure 4-4 — Spear-Phishing Attack Menu</figcaption>
+  </figure>
+
+  <p><strong>Step 4.</strong> To create a file format payload automatically, select <strong>2) Create a FileFormat
+      Payload</strong>. You see the screen shown in Figure 4-5.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-5-Creating-a-FileFormat-Payload.jpg"
+      alt="Figure 4-5 Creating a FileFormat Payload">
+    <figcaption>Figure 4-5 — Creating a FileFormat Payload</figcaption>
+  </figure>
+
+  <p><strong>Step 5.</strong> Select <strong>13) Adobe PDF Embedded EXE Social Engineering</strong> as the file
+    format exploit to use. (The default is the PDF embedded EXE.) You see the screen shown in Figure 4-6.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-6-Adobe-PDF-Embedded-EXE-Social-Engineering.jpg"
+      alt="Figure 4-6 Adobe PDF Embedded EXE Social Engineering">
+    <figcaption>Figure 4-6 — Adobe PDF Embedded EXE Social Engineering</figcaption>
+  </figure>
+
+  <p><strong>Step 6.</strong> To have SET generate a normal PDF with embedded EXE and use a built-in blank PDF file
+    for the attack, select <strong>2) Use built-in BLANK PDF for attack</strong>. You see the screen shown in Figure
+    4-7.</p>
+
+  <p>SET gives you the option to spawn a command shell on the victim machine after a successful exploitation. It
+    also allows you to perform other post-exploitation activities, such as spawning a Meterpreter shell, Windows
+    reverse VNC DLL, reverse TCP shell, Windows Shell Bind_TCP, and Windows Meterpreter Reverse HTTPS. Meterpreter
+    is a post-exploitation tool that is part of the Metasploit framework. In Module 5, "Exploiting Wired and
+    Wireless Networks," you will learn more about the various tools that can be used in penetration testing.</p>
+
+  <figure>
+    <img
+      src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-7-Configuring-SET-to-Spawn-a-Windows-Reverse-TCP-Shell-on-the-Victim.jpg"
+      alt="Figure 4-7 Configuring SET to Spawn a Windows Reverse TCP Shell on the Victim">
+    <figcaption>Figure 4-7 — Configuring SET to Spawn a Windows Reverse TCP Shell on the Victim</figcaption>
+  </figure>
+
+  <p><strong>Step 7.</strong> To use the Windows reverse TCP shell, select <strong>1) Windows Reverse TCP
+      Shell</strong>. You see the screen shown in Figure 4-8.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-8-Generating-the-Payload-in-SET.jpg"
+      alt="Figure 4-8 Generating the Payload in SET">
+    <figcaption>Figure 4-8 — Generating the Payload in SET</figcaption>
+  </figure>
+
+  <p><strong>Step 8.</strong> When SET asks you to enter the IP address or the URL for the payload listener, select
+    the IP address of your attacking system (<strong>192.168.88.225</strong> in this example), which is the default
+    option since it automatically detects your IP address. The default port is 443, but you can change it to
+    another port that is not in use in your attacking system. In this example, TCP port <strong>1337</strong> is
+    used. After the payload is generated, the screen shown in Figure 4-9 appears.</p>
+
+  <p><strong>Step 9.</strong> When SET asks if you want to rename the payload, select <strong>2. Rename the file, I
+      want to be cool</strong> and enter <strong>chapter2.pdf</strong> as the new name for the PDF file.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-9-Renaming-the-Payload.jpg"
+      alt="Figure 4-9 Renaming the Payload">
+    <figcaption>Figure 4-9 — Renaming the Payload</figcaption>
+  </figure>
+
+  <p><strong>Step 10.</strong> Select <strong>1. E-Mail Attack Single Email Address</strong>. The screen in Figure
+    4-10 appears.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-10-Using-a-One-Time-Email-Template-in-SET.jpg"
+      alt="Figure 4-10 Using a One-Time Email Template in SET">
+    <figcaption>Figure 4-10 — Using a One-Time Email Template in SET</figcaption>
+  </figure>
+
+  <p><strong>Step 11.</strong> When SET asks if you want to use a predefined email template or create a one-time
+    email template, select <strong>2. One-Time Use Email Template.</strong></p>
+
+  <p><strong>Step 12.</strong> Follow along as SET guides you through the steps to create the one-time email
+    message and enter the subject of the email.</p>
+
+  <p><strong>Step 13.</strong> When SET asks if you want to send the message as an HTML message or in plaintext,
+    select the default, <strong>plaintext</strong>.</p>
+
+  <p><strong>Step 14.</strong> Enter the body of the message by typing or pasting in the text from Example 4-2,
+    earlier in this module (see Figure 4-11).</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-11-Sending-the-Email-in-SET.jpg"
+      alt="Figure 4-11 Sending the Email in SET">
+    <figcaption>Figure 4-11 — Sending the Email in SET</figcaption>
+  </figure>
+
+  <p><strong>Step 15.</strong> Enter the recipient email address and specify whether you want to use a Gmail account
+    or use your own email server or an open mail relay.</p>
+
+  <p><strong>Step 16.</strong> Enter the "from" email address (the spoofed sender's email address) and the "from
+    name" the user will see.</p>
+
+  <p><strong>Step 17.</strong> If you selected to use your own email server or open relay, enter the open-relay
+    username and password (if applicable) when asked to do so.</p>
+
+  <p><strong>Step 18.</strong> Enter the SMTP email server address and the port number. (The default port is 25.)
+    When asked if you want to flag this email as a high-priority message, make a selection. The email is then sent
+    to the victim.</p>
+
+  <p><strong>Step 19.</strong> When asked if you want to set up a listener for the reverse TCP connection from the
+    compromised system, make a selection.</p>
+
+  <h3>4.4.3 Browser Exploitation Framework (BeEF)</h3>
+
+  <p>In Module 6, "Exploiting Application-Based Vulnerabilities," you will learn about web application
+    vulnerabilities, such as cross-site scripting (XSS) and cross-site request forgery (CSRF). XSS vulnerabilities
+    leverage input validation weaknesses on a web application. These vulnerabilities are often used to redirect
+    users to malicious websites to steal cookies (session tokens) and other sensitive information.
+    <strong><em>Browser Exploitation Framework (BeEF)</em></strong> is a tool that can be used to manipulate users
+    by leveraging XSS vulnerabilities. You can download BeEF from <a href="https://beefproject.com/"
+      target="_blank"><em>https://beefproject.com</em></a> or <a href="https://github.com/beefproject/beef"
+      target="_blank"><em>https://github.com/beefproject/beef</em></a>.</p>
+
+  <p>Select each tab for an example of using the BeEF tool.</p>
+
+  <h3>Launching BeEF</h3>
+
+  <p>Figure 4-12 shows a screenshot of BeEF. The tool starts a web service on port 3000 by default. From there,
+    the attacker can log in to a web console and manipulate users who are victims of XSS attacks.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-12-Launching-BeEF.jpg"
+      alt="Figure 4-12 Launching BeEF">
+    <figcaption>Figure 4-12 — Launching BeEF</figcaption>
+  </figure>
+
+  <h3>Stealing a Browser Cookie</h3>
+
+  <p>Figure 4-13 shows a successful compromise in which the attacker has stolen the user's session token (browser
+    cookie).</p>
+
+  <figure>
+    <img
+      src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-13-Stealing-a-Browser-Cookie-Using-XSS-and-BeEF.jpg"
+      alt="Figure 4-13 Stealing a Browser Cookie Using XSS and BeEF">
+    <figcaption>Figure 4-13 — Stealing a Browser Cookie Using XSS and BeEF</figcaption>
+  </figure>
+
+  <h3>Sending a Fake Notification</h3>
+
+  <p>Once the system is compromised, the attacker can use BeEF to perform numerous attacks (including social
+    engineering attacks). For example, the attacker can send fake notifications to the victim's browser, as
+    demonstrated in Figure 4-14.</p>
+
+  <figure>
+    <img
+      src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-14-Sending-a-Fake-Notification-to-the-Victim's-Browser-Using-BeEF.jpg"
+      alt="Figure 4-14 Sending a Fake Notification to the Victim's Browser Using BeEF">
+    <figcaption>Figure 4-14 — Sending a Fake Notification to the Victim's Browser Using BeEF</figcaption>
+  </figure>
+
+  <h3>Fake Notification in Browser</h3>
+
+  <p>Figure 4-15 shows the fake notification displayed in the victim's browser.</p>
+
+  <figure>
+    <img
+      src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-4-15-The-Fake-BeEF-Notification-in-the-Victim's-Browser.jpg"
+      alt="Figure 4-15 The Fake BeEF Notification in the Victim's Browser">
+    <figcaption>Figure 4-15 — The Fake BeEF Notification in the Victim's Browser</figcaption>
+  </figure>
+
+  <h3>4.4.4 Practice — Browser Exploitation Framework</h3>
+
+  <div class="quiz-block" id="quiz-4-4">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">In the Pixel Paradise penetration test, Protego will use BeEF as part of an
+      exploitation campaign. How could BeEF be used?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-4-4" value="0"> To create and send spear phishing
+          emails</label></li>
+      <li data-index="1"><label><input type="radio" name="q-4-4" value="1"> To send fake notification messages to
+          compromised browsers</label></li>
+      <li data-index="2"><label><input type="radio" name="q-4-4" value="2"> To create USB drives that are infected
+          with malware to be distributed in the parking lot</label></li>
+      <li data-index="3"><label><input type="radio" name="q-4-4" value="3"> To spoof a legitimate caller
+          ID</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit"
+        onclick="submitQuiz('quiz-4-4', 1, 'BeEF leverages XSS vulnerabilities to manipulate browsers. One of its key capabilities is sending fake notification messages to compromised browsers, which can be used to redirect victims or deceive them into taking actions.')">Check
+        Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-4-4')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <h3>4.4.5 Call Spoofing Tools</h3>
+
+  <p>You can very easily change the caller ID information that is displayed on a phone. There are several call
+    spoofing tools that can be used in social engineering attacks.</p>
+
+  <p>The following are a few examples of <strong><em>call spoofing tools</em></strong>:</p>
+  <ul>
+    <li><strong>SpoofApp</strong>: This is an Apple iOS and Android app that can be used to easily spoof a phone
+      number.</li>
+    <li><strong>SpoofCard</strong>: This is an Apple iOS and Android app that can spoof a number and change your
+      voice, record calls, generate different background noises, and send calls straight to voicemail.</li>
+    <li><strong>Asterisk</strong>: Asterisk is a legitimate voice over IP (VoIP) management tool that can also be
+      used to impersonate caller ID.</li>
+  </ul>
+
+  <h3>4.4.6 Practice — Call Spoofing Tools</h3>
+
+  <div class="quiz-block" id="quiz-4-5">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">The scope of the Pixel Paradise pentest includes social engineering tests. Protego will
+      attempt several vishing attacks to test the security awareness of Pixel Paradise employees. You have been
+      asked to evaluate call spoofing tools to be used in the vishing attacks. Match the call spoofing tools to the
+      descriptions.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>A — SpoofApp</strong></td>
+          <td>An Apple iOS and Android app that can be used to spoof a phone number easily</td>
+        </tr>
+        <tr>
+          <td><strong>B — SpoofCard</strong></td>
+          <td>An Apple iOS and Android app that can spoof a number and change your voice, record calls, generate
+            different background noises, and send calls straight to voicemail</td>
+        </tr>
+        <tr>
+          <td><strong>C — Asterisk</strong></td>
+          <td>A legitimate VoIP management tool that can also be used to impersonate caller ID</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>4.4.7 Lab — Explore the Social Engineer Toolkit (SET)</h3>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-green.png" alt="Instructor avatar">
+  </div>
+
+  <p>The SET is very cool. We wrote a lab that will get you familiar with how to use it. You create a simulated
+    credential harvesting attack that actually runs! Please explore more than that though. There are definitely
+    things that you can try out that will not get you in trouble. Just use yourself as the victim! However, be
+    careful with some of the payloads that are available to you.</p>
+
+  <p>Because of its depth and versatility, you really need to study it to learn everything that it can do. Our lab
+    is a good starting point. There are a number of resources online that will walk you through various attacks and
+    explain its features in depth. We are hoping you can find creative uses of the SET that you can use in our
+    pentests.</p>
+
+  <div class="lab-card">
+    <div class="lab-card-header">
+      <span class="lab-icon">🧪</span>
+      <span class="lab-title">LAB — Explore the Social Engineer Toolkit (SET)</span>
+    </div>
+    <div class="lab-card-body">
+      <p>In this lab, you will complete the following objectives:</p>
+      <ul>
+        <li>Part 1: Launching SET and exploring the toolkit</li>
+        <li>Part 2: Cloning a website to obtain user credentials</li>
+        <li>Part 3: Capturing and viewing user credentials</li>
+      </ul>
+      <a class="lab-btn"
+        href="/Cisco_Ethical_Hacking_Course_Labs/4.4.7-lab-explore-the-social-engineer-toolkit.html">Open
+        Lab →</a>
+    </div>
+  </div>
+
+  <div class="quiz-block" id="quiz-4-6">
+    <div class="quiz-label">Skills Check</div>
+    <p class="quiz-question">How can you use the exploit that you created in the lab in an actual penetration
+      test?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-4-6" value="0"> Employee traffic intended for a
+          corporate web site can be intercepted and redirected to a malicious site.</label></li>
+      <li data-index="1"><label><input type="radio" name="q-4-6" value="1"> A link to a malicious clone of an
+          organization's website can be distributed in a phishing email that is sent to employees.</label></li>
+      <li data-index="2"><label><input type="radio" name="q-4-6" value="2"> A malicious webpage can be placed on a
+          web server that employees commonly use.</label></li>
+      <li data-index="3"><label><input type="radio" name="q-4-6" value="3"> Malicious code can be inserted into
+          the corporation's website.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit"
+        onclick="submitQuiz('quiz-4-6', 1, 'The credential harvesting attack created in the lab involves cloning a legitimate website. The most direct application in a pentest is distributing a link to the cloned site via a phishing email sent to employees, tricking them into entering their credentials.')">Check
+        Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-4-6')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <h3>4.4.8 Lab — Using the Browser Exploitation Framework (BeEF)</h3>
+
+  <p>Another great tool in your Kali distribution is the Browser Exploitation Framework (BeEF). We installed it for
+    you so that you are ready to try it out. BeEF is an application that runs in your browser. It allows you to
+    take control of target browsers that visit a malicious web page that you have created. From there, a large
+    number of exploits can be executed that affect the target browser.</p>
+
+  <p>In combination with social engineering attacks such as phishing emails, BeEF is an effective tool for
+    information gathering, distributing malware, and many other browser-based exploits. We use it to gain access to
+    an organization's internal network and it is really useful for illustrating the extent to which social
+    engineering can result in very big problems!</p>
+
+  <p>Do this lab and study BeEF further. I am interested in hearing how you think we can use it in our Pixel
+    Paradise engagement as we move into the exploitation phase of our engagement.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-green.png" alt="Instructor avatar">
+  </div>
+
+  <div class="lab-card">
+    <div class="lab-card-header">
+      <span class="lab-icon">🧪</span>
+      <span class="lab-title">LAB — Using the Browser Exploitation Framework (BeEF)</span>
+    </div>
+    <div class="lab-card-body">
+      <p>In this lab, you will complete the following objectives:</p>
+      <ul>
+        <li>Load the BeEF GUI Environment</li>
+        <li>Hook the Local Browser to Simulate a Client-Side Attack</li>
+        <li>Investigate BeEF Exploit Capabilities</li>
+      </ul>
+      <a class="lab-btn"
+        href="/Cisco_Ethical_Hacking_Course_Labs/4.4.8-lab-using-the-browser-exploitation-framework-beef.html">Open
+        Lab →</a>
+    </div>
+  </div>
+
+  <div class="video-block">
+    <p><strong>Select play to watch a demonstration of the lab.</strong></p>
+  </div>
+
+  <div class="quiz-block" id="quiz-4-7">
+    <div class="quiz-label">Skills Check</div>
+    <p class="quiz-question">In the lab, how did we use BeEF to exploit a user's browser? (Choose two.)</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="checkbox" name="q-4-7" value="0"> We were able to view user actions
+          in the browser, such as entries they made in text fields.</label></li>
+      <li data-index="1"><label><input type="checkbox" name="q-4-7" value="1"> We used BeEF to download malicious
+          files into the browser that caused the browser to crash.</label></li>
+      <li data-index="2"><label><input type="checkbox" name="q-4-7" value="2"> We created a fake browser
+          notification that, when clicked, sent the user to a website of our choosing.</label></li>
+      <li data-index="3"><label><input type="checkbox" name="q-4-7" value="3"> We used the browser to create a
+          denial-of-service attack against a web server.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit"
+        onclick="submitMultiQuiz('quiz-4-7', [0,2], 'In the lab, BeEF was used to view user actions in the browser (such as text field entries) and to create a fake browser notification that redirected the user to a chosen website when clicked.')">Check
+        Answer</button>
+      <button class="quiz-reset" onclick="resetMultiQuiz('quiz-4-7')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <!-- ── 4.5 Methods of Influence ── -->
+  <h2>4.5 Methods of Influence</h2>
+
+  <h3>4.5.1 Overview</h3>
+
+  <p>The key to creating successful social engineering exploits is understanding human behavior and motivation. In
+    social engineering attacks, we need to convince our targets to take actions that they would otherwise not
+    take.</p>
+
+  <p>So what motivates people? What tricks can we use in our attempts to gain information about our clients'
+    networks? How can we make people commit risky behaviors that benefit us as we conduct our tests?</p>
+
+  <p>From what we gathered in our interviews with our Pixel Paradise stakeholders, Pixel Paradise has never conducted
+    security awareness training with its staff. We think it will be pretty easy to deceive them with some of our
+    social engineering attacks. Our goal here is to convince Pixel Paradise that it is essential that they conduct
+    security awareness training. In addition, we will use the information that we gather to perform further exploits
+    as part of the engagement.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png" alt="Instructor avatar">
+  </div>
+
+  <p><strong>Select each of the following social engineering motivation techniques/methods of influence for more
+      information.</strong></p>
+
+  <h3>Authority</h3>
+
+  <p>A social engineer shows confidence and perhaps authority — whether legal, organizational, or social
+    authority.</p>
+
+  <h3>Scarcity and Urgency</h3>
+
+  <p>It is possible to use scarcity to create a feeling of urgency in a decision-making context. Specific language
+    can be used to heighten urgency and manipulate the victim. Salespeople often use scarcity to manipulate clients
+    (for example, telling a customer that an offer is only for today or that there are limited supplies). Social
+    engineers use similar techniques.</p>
+
+  <h3>Social Proof</h3>
+
+  <p>Social proof is a psychological phenomenon in which an individual is not able to determine the appropriate mode
+    of behavior. For example, you might see others acting or doing something in a certain way and might assume that
+    it is appropriate. Social engineers may take advantage of social proof when an individual enters an unfamiliar
+    situation that he or she doesn't know how to deal with. Social engineers may manipulate multiple people at once
+    by using this technique.</p>
+
+  <h3>Likeness</h3>
+
+  <p>Individuals can be influenced by things or people they like. Social engineers strive for others to like the
+    way they behave, look, and talk. Most individuals like what is aesthetically pleasing. People also like to be
+    appreciated and to talk about themselves. Social engineers take advantage of these human vulnerabilities to
+    manipulate their victims.</p>
+
+  <h3>Fear</h3>
+
+  <p>It is possible to manipulate a person with fear to prompt him or her to act promptly. Fear is an unpleasant
+    emotion based on the belief that something bad or dangerous may take place. Using fear, social engineers force
+    their victims to act quickly to avoid or rectify a dangerous or painful situation.</p>
+
+    </div>
+
+    <script>
+        function submitQuiz(quizId, correctIndex, explanation) {
+        const block = document.getElementById(quizId);
+        const selected = block.querySelector('input[type="radio"]:checked');
+
+        if (!selected) return; // nothing chosen yet
+
+        const chosenIndex = parseInt(selected.value);
+        const items = block.querySelectorAll(".quiz-options li");
+        const feedback = block.querySelector(".quiz-feedback");
+        const submitBtn = block.querySelector(".quiz-submit");
+        const resetBtn = block.querySelector(".quiz-reset");
+
+        // mark every option
+        items.forEach((li, i) => {
+          const lbl = li.querySelector("label");
+          if (i === correctIndex) {
+            li.classList.add("correct");
+            lbl.setAttribute("data-mark", "✓");
+          } else if (i === chosenIndex && chosenIndex !== correctIndex) {
+            li.classList.add("incorrect");
+            lbl.setAttribute("data-mark", "✗");
+          }
+        });
+
+        // show feedback
+        const isCorrect = chosenIndex === correctIndex;
+        feedback.className =
+          "quiz-feedback show " + (isCorrect ? "correct" : "incorrect");
+        feedback.innerHTML = isCorrect
+          ? "✓ Correct — " + explanation
+          : "✗ Incorrect — " + explanation;
+
+        // toggle buttons
+        submitBtn.disabled = true;
+        resetBtn.style.display = "inline-block";
+        block.classList.add("submitted");
+      }
+
+      function resetQuiz(quizId) {
+        const block = document.getElementById(quizId);
+        const items = block.querySelectorAll(".quiz-options li");
+        const feedback = block.querySelector(".quiz-feedback");
+        const submitBtn = block.querySelector(".quiz-submit");
+        const resetBtn = block.querySelector(".quiz-reset");
+
+        // clear all states
+        items.forEach((li) => {
+          li.classList.remove("correct", "incorrect");
+          const lbl = li.querySelector("label");
+          lbl.removeAttribute("data-mark");
+          const radio = li.querySelector('input[type="radio"]');
+          radio.checked = false;
+        });
+
+        feedback.className = "quiz-feedback";
+        feedback.innerHTML = "";
+        submitBtn.disabled = false;
+        resetBtn.style.display = "none";
+        block.classList.remove("submitted");
+      }
+    </script>
+  </body>
+</html>

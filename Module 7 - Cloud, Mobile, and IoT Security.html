@@ -1,0 +1,2227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Module 7 - Cloud, Mobile, and IoT Security
+    </title>
+    <style>
+      /* ── Fonts ── */
+      @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+
+      /* ── Reset & Base ── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #f5f4f0;
+        --surface: #ffffff;
+        --border: #d8d5cc;
+        --text: #0f0e0d;
+        --muted: #3a3835;
+        --accent: #c0392b;
+        --accent-lt: #fdf0ee;
+        --tip-bg: #fffbea;
+        --tip-border: #e6c84a;
+        --note-bg: #eef4ff;
+        --note-border: #4a7ce6;
+        --term-bg: #1a1917;
+        --term-text: #e8e6e0;
+        --term-green: #4ec94e;
+        --radius: 6px;
+        --max-w: 860px;
+        --font-body: "IBM Plex Sans", sans-serif;
+        --font-mono: "IBM Plex Mono", monospace;
+      }
+
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+      }
+
+      /* ── Layout ── */
+      .page-wrap {
+        max-width: var(--max-w);
+        margin: 0 auto;
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      /* ── Course Header ── */
+      .course-header {
+        border-bottom: 2px solid var(--text);
+        padding-bottom: 1.25rem;
+        margin-bottom: 2.5rem;
+      }
+      .course-header .label {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .course-header h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1.25;
+        margin-top: 0.35rem;
+      }
+
+      /* ── Section Headings ── */
+      h2 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        border-left: 4px solid var(--accent);
+        padding-left: 0.75rem;
+        margin: 2.5rem 0 1rem;
+        line-height: 1.3;
+      }
+      h3 {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--muted);
+        font-family: var(--font-mono);
+        margin: 2rem 0 0.6rem;
+        letter-spacing: 0.02em;
+      }
+
+      /* ── Body Text ── */
+      p {
+        margin-bottom: 0.9rem;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      em {
+        font-style: italic;
+      }
+      strong,
+      b {
+        font-weight: 700;
+      }
+      em strong,
+      strong em {
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      /* ── Lists ── */
+      ul,
+      ol {
+        padding-left: 1.5rem;
+        margin-bottom: 0.9rem;
+      }
+      li {
+        margin-bottom: 0.3rem;
+      }
+
+      /* ── Avatar + Figures ── */
+      .avatar-wrap {
+        display: flex;
+        justify-content: flex-start;
+        margin: 1.25rem 0;
+      }
+      .avatar-wrap img {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        background: var(--surface);
+      }
+
+      figure {
+        margin: 1.5rem 0;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      figure img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      figcaption {
+        font-size: 0.82rem;
+        font-family: var(--font-mono);
+        color: var(--muted);
+        padding: 0.5rem 0.75rem;
+        border-top: 1px solid var(--border);
+        background: var(--bg);
+      }
+
+      /* ── Callouts: TIP / NOTE ── */
+      .callout {
+        border-radius: var(--radius);
+        padding: 0.85rem 1rem;
+        margin: 1.25rem 0;
+        border-left: 4px solid;
+      }
+      .callout .callout-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 0.3rem;
+      }
+      .callout p {
+        margin-bottom: 0;
+        font-size: 0.93rem;
+      }
+      .callout p + p {
+        margin-top: 0.5rem;
+      }
+
+      .callout-tip {
+        background: var(--tip-bg);
+        border-color: var(--tip-border);
+      }
+      .callout-tip .callout-label {
+        color: #6b4f00;
+      }
+
+      .callout-note {
+        background: var(--note-bg);
+        border-color: var(--note-border);
+      }
+      .callout-note .callout-label {
+        color: #1a3a7a;
+      }
+
+      /* ── Terminal / CLI Block ── */
+      .terminal {
+        background: var(--term-bg);
+        color: var(--term-text);
+        font-family: var(--font-mono);
+        font-size: 0.87rem;
+        border-radius: var(--radius);
+        padding: 1rem 1.2rem;
+        margin: 1.25rem 0;
+        overflow-x: auto;
+        line-height: 1.6;
+      }
+      .terminal .prompt {
+        color: var(--term-green);
+        user-select: none;
+      }
+
+      /* ── Lab Card ── */
+      .lab-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin: 1.5rem 0;
+        overflow: hidden;
+      }
+      .lab-card-header {
+        background: var(--text);
+        color: #fff;
+        padding: 0.65rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .lab-card-header .lab-icon {
+        font-size: 1rem;
+      }
+      .lab-card-header .lab-title {
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .lab-card-body {
+        padding: 1rem;
+      }
+      .lab-card-body p {
+        font-size: 0.93rem;
+        margin-bottom: 0.5rem;
+      }
+      .lab-card-body ul {
+        font-size: 0.93rem;
+      }
+      .lab-btn {
+        display: inline-block;
+        margin-top: 0.75rem;
+        padding: 0.45rem 1.1rem;
+        background: var(--accent);
+        color: #fff;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        transition: opacity 0.15s;
+      }
+      .lab-btn:hover {
+        opacity: 0.85;
+        text-decoration: none;
+      }
+
+      /* ── Video Block ── */
+      .video-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+      .video-block p {
+        font-size: 0.88rem;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+        font-family: var(--font-mono);
+      }
+      .video-placeholder {
+        background: #111;
+        border-radius: 4px;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #888;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        gap: 0.4rem;
+      }
+      .video-placeholder .play-icon {
+        font-size: 2rem;
+        color: #555;
+      }
+      .transcript-link {
+        display: inline-block;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        font-family: var(--font-mono);
+        color: var(--muted);
+      }
+      .transcript-link:hover {
+        color: var(--accent);
+      }
+
+      /* ── Quiz / Skills Check ── */
+      .quiz-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.4rem;
+        margin: 1.5rem 0;
+      }
+      .quiz-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+      .quiz-question {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+      }
+      .quiz-options {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 1rem;
+      }
+      .quiz-options li {
+        margin-bottom: 0.4rem;
+      }
+      .quiz-options label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.93rem;
+        color: var(--text);
+        transition:
+          background 0.12s,
+          border-color 0.12s;
+      }
+      .quiz-options label:hover {
+        background: var(--bg);
+        border-color: var(--muted);
+      }
+      .quiz-options input[type="radio"],
+      .quiz-options input[type="checkbox"] {
+        margin-top: 0.25rem;
+        accent-color: var(--accent);
+        flex-shrink: 0;
+      }
+      .quiz-options label.correct {
+        background: #eafaf1;
+        border-color: #27ae60;
+        color: #1a5c35;
+      }
+      .quiz-options label.incorrect {
+        background: #fdf0ee;
+        border-color: var(--accent);
+        color: #7a1a10;
+      }
+      .quiz-submit {
+        display: inline-block;
+        padding: 0.42rem 1.1rem;
+        background: var(--text);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .quiz-submit:hover {
+        opacity: 0.8;
+      }
+      .quiz-feedback {
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        font-family: var(--font-mono);
+        display: none;
+      }
+      .quiz-feedback.correct {
+        color: #1a5c35;
+      }
+      .quiz-feedback.incorrect {
+        color: #7a1a10;
+      }
+
+      /* ── Practice Block ── */
+      .practice-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--text);
+        border-radius: var(--radius);
+        padding: 1rem 1.2rem;
+        margin: 1.5rem 0;
+      }
+      .practice-block .practice-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+      }
+      .practice-block .question {
+        font-weight: 600;
+        margin-bottom: 0.6rem;
+        color: var(--text);
+      }
+      .practice-block ul {
+        list-style: none;
+        padding-left: 0;
+      }
+      .practice-block ul li {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.93rem;
+        color: var(--text);
+      }
+      .practice-block ul li::before {
+        content: "▸  ";
+        font-family: var(--font-mono);
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      /* ── Divider ── */
+      hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 2rem 0;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 600px) {
+        h2 {
+          font-size: 1.1rem;
+        }
+        .avatar-wrap img {
+          width: 120px;
+          height: 120px;
+        }
+      }
+
+      /* -- Quiz -- */
+      /* ── Quiz Block ── */
+      .quiz-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.4rem;
+        margin: 1.5rem 0;
+      }
+
+      .quiz-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .quiz-label::before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      .quiz-question {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.9rem;
+        font-size: 0.97rem;
+        line-height: 1.5;
+      }
+      .quiz-question code {
+        font-family: var(--font-mono);
+        background: #ebe9e4;
+        padding: 0.1em 0.35em;
+        border-radius: 3px;
+        font-size: 0.88em;
+        color: var(--text);
+      }
+
+      .quiz-options {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      .quiz-options li label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        padding: 0.55rem 0.8rem;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.93rem;
+        color: var(--text);
+        transition:
+          background 0.12s,
+          border-color 0.12s;
+        user-select: none;
+      }
+      .quiz-options li label:hover {
+        background: var(--bg);
+        border-color: var(--muted);
+      }
+      .quiz-options input[type="radio"],
+      .quiz-options input[type="checkbox"] {
+        margin-top: 0.28rem;
+        accent-color: var(--accent);
+        flex-shrink: 0;
+        width: 15px;
+        height: 15px;
+      }
+
+      /* answer states */
+      .quiz-options li.correct label {
+        background: #eafaf1;
+        border-color: #27ae60;
+        color: #1a5c35;
+        font-weight: 600;
+      }
+      .quiz-options li.incorrect label {
+        background: #fdf0ee;
+        border-color: var(--accent);
+        color: #7a1a10;
+      }
+      .quiz-options li.correct label::after,
+      .quiz-options li.incorrect label::after {
+        content: attr(data-mark);
+        margin-left: auto;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+      }
+
+      /* disable interaction after submit */
+      .quiz-block.submitted .quiz-options li label {
+        cursor: default;
+        pointer-events: none;
+      }
+
+      .quiz-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .quiz-submit {
+        padding: 0.42rem 1.1rem;
+        background: var(--text);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .quiz-submit:hover {
+        opacity: 0.8;
+      }
+      .quiz-submit:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .quiz-reset {
+        padding: 0.42rem 1.1rem;
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+        display: none;
+      }
+      .quiz-reset:hover {
+        border-color: var(--muted);
+        color: var(--text);
+      }
+
+      .quiz-feedback {
+        font-size: 0.88rem;
+        font-family: var(--font-mono);
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        display: none;
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+      .quiz-feedback.show {
+        display: block;
+      }
+      .quiz-feedback.correct {
+        background: #eafaf1;
+        color: #1a5c35;
+        border: 1px solid #27ae60;
+      }
+      .quiz-feedback.incorrect {
+        background: #fdf0ee;
+        color: #7a1a10;
+        border: 1px solid var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+<div class="page-wrap">
+
+  <!-- ── Module 6 Header ── -->
+  <div class="course-header">
+    <span class="label">Cisco Ethical Hacking Course · Module 7</span>
+    <h1>Cloud, Mobile, and IoT Security</h1>
+  </div>
+
+  <!-- ── 7.0 Introduction ── -->
+  <h2>7.0 Introduction</h2>
+
+  <h3>7.0.1 Why Should I Take This Module?</h3>
+
+  <p>When we think of network security, we usually think about network infrastructure devices, clients, and
+    servers that are attached to wired or wireless networks. However, any device that is connected to a network
+    could serve as a gateway for attackers to penetrate an organization's data network. For example, it has
+    become common to attach a wide range of home devices to the internet, including surveillance cameras,
+    thermostats, televisions, and even refrigerators. More importantly, industrial, and critical infrastructure
+    sensors and controllers are also attached to networks, and often reachable over the internet. Each one of
+    these is a host on a network, and each one of them increases the network attack surface. All of these devices
+    include some sort of embedded server that enables users to connect to them remotely. If you can connect to
+    them over the internet, so can someone else.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-orange.png" alt="Instructor avatar">
+  </div>
+
+  <p>Another trend that poses new security challenges is the migration of computing resources, data, and software
+    to the cloud. Clouds are fundamentally different from on-premises computing. The cloud presents a network
+    without a perimeter, there is no border between a traditional internal network and external users as there is
+    when resources are housed on-site. All users are external. This lack of perimeter increases reliance on
+    access control, cloud configuration, and network architecture for security. In addition, cloud applications
+    and data are exposed to the internet via application programming interfaces (API). APIs are like portals into
+    cloud applications and increase the network attack surface dramatically.</p>
+
+  <p>Pixel Paradise has adopted an infrastructure-as-a-service (IaaS) cloud delivery model as a way to increase
+    adoption of their games by lowering hardware requirements to play their games and allowing their customers to
+    play anywhere that has sufficient internet access. This exposes Pixel Paradise to risks including potential
+    theft of gaming assets, authorization keys, or denial of access to purchased games. In addition, the Pixel
+    Paradise gaming service includes a digital storefront which includes customer payment information.</p>
+
+  <p>We need to test special purpose devices housed at the Pixel Paradise facility, and we also need to test
+    their cloud presence for vulnerabilities.</p>
+
+  <p>The adoption of cloud technology and cloud services has revolutionized how organizations develop, host, and
+    deploy applications and store data. In addition, mobile devices and Internet of Things (IoT) devices
+    communicate using a diverse set of protocols and technologies. Mobile and IoT devices also often communicate
+    with applications hosted in the cloud. All these technologies and architectures increase the attack surface
+    and introduce a variety of cybersecurity risks. In this module, you will learn about different attacks
+    against cloud, mobile, and IoT implementations.</p>
+
+  <h3>7.0.2 What Will I Learn in This Module?</h3>
+
+  <p><strong>Module Title:</strong> Cloud, Mobile, and IoT Security</p>
+  <p><strong>Module Objective:</strong> Explain how to exploit cloud, mobile, and IoT security
+    vulnerabilities.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Topic Title</th>
+        <th>Topic Objective</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Researching Attack Vectors and Performing Attacks on Cloud Technologies</td>
+        <td>Explain how to attack cloud technologies.</td>
+      </tr>
+      <tr>
+        <td>Explaining Common Attacks and Vulnerabilities Against Specialized Systems</td>
+        <td>Explain common attacks against specialized systems.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── 7.1 Researching Attack Vectors and Performing Attacks on Cloud Technologies ── -->
+  <h2>7.1 Researching Attack Vectors and Performing Attacks on Cloud Technologies</h2>
+
+  <h3>7.1.1 Overview</h3>
+
+  <p>Cloud computing provides a lot of benefits to organizations. However, it is complex, and can be costly if
+    not monitored carefully. Cloud services and accompanying technologies such as Kubernetes and Terraform, are
+    new to many people in IT, and there is a shortage of people who are experts in cloud engineering. In
+    addition, it is relatively easy to create cloud resources and also easy to lose track of them. It is
+    completely possible that out-of-date software that is reachable in the cloud has been forgotten by cloud
+    administrators.</p>
+
+  <p>Some providers of cloud software give their developers rights to configure cloud software resources for the
+    testing of code. With so many people with limited expertise able to configure cloud resources, errors in
+    configuration are bound to happen.</p>
+
+  <p>Because the cloud is relatively new, and some cloud concepts are pretty abstract, it is important for you
+    to be familiar with it in order to conduct vulnerability scans and understand the results and remediation
+    measures.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png" alt="Instructor avatar">
+  </div>
+
+  <p>Many organizations are moving to the cloud or deploying hybrid solutions to host their applications.
+    Organizations moving to the cloud are almost always looking to transition from capital expenditure (CapEx) to
+    operating expenditure (OpEx). Most Fortune 500 companies operate in a multicloud environment. It is obvious
+    that cloud computing security is more important today than ever before. Cloud computing security includes
+    many of the same functionalities as traditional IT security, including protecting critical information from
+    theft, data exfiltration, and deletion, as well as privacy.</p>
+
+  <p>The National Institute of Standards and Technology (NIST) authored Special Publication (SP) 800-145, "The
+    NIST Definition of Cloud Computing", to provide a standard set of definitions for the different aspects of
+    cloud computing. The SP 800-145 document also compares the different cloud services and deployment
+    strategies. The advantages of using a cloud-based service include the following:</p>
+  <ul>
+    <li>Distributed storage</li>
+    <li>Scalability</li>
+    <li>Resource pooling</li>
+    <li>Access from any location</li>
+    <li>Measured service</li>
+    <li>Automated management</li>
+  </ul>
+
+  <p>According to NIST, the essential characteristics of cloud computing include the following:</p>
+  <ul>
+    <li>On-demand self-service</li>
+    <li>Broad network access</li>
+    <li>Resource pooling</li>
+    <li>Rapid elasticity</li>
+    <li>Measured service</li>
+  </ul>
+
+  <p>Cloud deployment models include the following:</p>
+  <ul>
+    <li><strong>Public cloud:</strong> Open for public use</li>
+    <li><strong>Private cloud:</strong> Used just by the client organization on premises or at a dedicated area
+      in a cloud provider</li>
+    <li><strong>Community cloud:</strong> Shared between several organizations</li>
+    <li><strong>Hybrid cloud:</strong> Composed of two or more clouds (including on-prem services)</li>
+  </ul>
+
+  <p>Cloud computing can be broken into the following three basic models:</p>
+
+  <p><strong>Infrastructure as a Service (IaaS)</strong></p>
+  <p>IaaS is a cloud solution in which you rent infrastructure. You purchase virtual power to execute your
+    software as needed. This is much like running a virtual server on your own equipment, except that you run a
+    virtual server on a virtual disk. IaaS is similar to a utility company model in that you pay for what you
+    use.</p>
+
+  <p><strong>Platform as a Service (PaaS)</strong></p>
+  <p>PaaS provides everything except applications. Services provided by this model include all phases of the
+    systems development life cycle (SDLC) and can use application programming interfaces (APIs), website
+    portals, or gateway software. These solutions tend to be proprietary, which can cause problems if the
+    customer moves away from the provider's platform.</p>
+
+  <p><strong>Software as a Service (SaaS)</strong></p>
+  <p>SaaS is designed to provide a complete packaged solution. The software is rented out to the user. The
+    service is usually provided through some type of front end or web portal. While the end user is free to use
+    the service from anywhere, the company pays a per-use fee.</p>
+
+  <div class="callout callout-note">
+    <div class="callout-label">Note</div>
+    <p>NIST Special Publication 500-292, "NIST Cloud Computing Reference Architecture", is another resource for
+      learning more about cloud architecture.</p>
+  </div>
+
+  <p>Many attacks against cloud technologies are possible, and the following are just some of them:</p>
+  <ul>
+    <li>Credential harvesting</li>
+    <li>Privilege escalation</li>
+    <li>Account takeover</li>
+    <li>Metadata service attacks</li>
+    <li>Attacks against misconfigured cloud assets</li>
+    <li>Resource exhaustion and denial-of-service (DoS) attacks</li>
+    <li>Cloud malware injection attacks</li>
+    <li>Side-channel attacks</li>
+    <li>Direct-to-origin attacks</li>
+  </ul>
+
+  <p>The following sections provide details about each of these attacks against cloud-based services and
+    infrastructures.</p>
+
+  <h3>7.1.2 Practice — Types of Cloud Services</h3>
+
+  <div class="quiz-block" id="quiz-7-1">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">Pixel Paradise currently uses a cloud model in which each game instance is running
+      on its own virtual machine in the cloud. They want to change the model to one in which users subscribe to
+      their games for various periods of time. Which model are they looking to adopt?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-7-1" value="0"> SaaS</label></li>
+      <li data-index="1"><label><input type="radio" name="q-7-1" value="1"> IaaS</label></li>
+      <li data-index="2"><label><input type="radio" name="q-7-1" value="2"> PaaS</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit"
+        onclick="submitQuiz('quiz-7-1', 0, 'SaaS (Software as a Service) is the model they are looking to adopt. SaaS provides a complete packaged solution where the software is rented out to users — in this case, game subscriptions for various periods of time. The service is delivered through a front end or web portal, and users pay a per-use or subscription fee rather than owning or running their own VM instances.')">Check
+        Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-7-1')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <h3>7.1.3 Credential Harvesting</h3>
+
+  <p><strong><em>Credential harvesting</em></strong> is not a new attack type, but the methodologies used by
+    attackers have evolved throughout the years. Credential harvesting (or password harvesting) is the act of
+    gathering and stealing valid usernames, passwords, tokens, PINs, and any other types of credentials through
+    infrastructure breaches. In Module 4, "Social Engineering Attacks," you learned all about phishing and spear
+    phishing attacks. One of the most common ways that attackers perform credential harvesting is by using
+    phishing and spear phishing emails with links that could redirect a user to a bogus site. This "fake site"
+    could be made to look like a legitimate cloud service, such as Gmail, Office 365, or even a social media
+    site such as Twitter, LinkedIn, Instagram, or Facebook. This is why it is so important to use multifactor
+    authentication. However, in some cases, attackers could bypass multifactor authentication by redirecting the
+    user to a malicious site and stealing a session cookie from the user's browser.</p>
+
+  <p>Many cloud services and cloud-hosted applications use single sign-on (SSO), and others use federated
+    authentication. Sometimes cloud-based applications allow you to log in with your Google, Apple, or Facebook
+    credentials. Attackers could redirect users to impersonated websites that may look like legitimate Google,
+    Apple, Facebook, or Twitter login pages. From there, the attacker could steal the victim's username and
+    password. Figure 7-1 shows an example of a common credential harvesting attack in which the attacker sends
+    to the victim a spear phishing email that includes a link to a fake site (in this example, a Twitter
+    login).</p>
+
+  <figure>
+    <img
+      src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-7-1-Credential-Harvesting-Attack-Using-Social-Engineering-and-Spear-Phishing-Emails.png"
+      alt="Figure 7-1 Credential Harvesting Attack Using Social Engineering and Spear Phishing Emails">
+    <figcaption>Figure 7-1 — Credential Harvesting Attack Using Social Engineering and Spear Phishing
+      Emails</figcaption>
+  </figure>
+
+  <p>In Module 4, you learned about the Social-Engineer Toolkit (SET). In the following examples, you will see
+    how easy it is to perform a social engineering attack and instantiate a fake website (in this case, a fake
+    Twitter login site) to perform a credential harvesting attack.</p>
+
+  <p><strong>Step 1 - 2</strong></p>
+
+  <p><strong>Step 1.</strong> Launch SET by entering the <strong>setoolkit</strong> command.</p>
+
+  <p><strong>Step 2.</strong> Select <strong>1) Social-Engineering Attacks</strong> from the main menu, as shown
+    in Example 7-1.</p>
+
+  <p><strong><em>Example 7-1</em></strong> — Starting the Social Engineering Attack</p>
+  <div class="terminal">Select from the menu:
+
+   1) Social-Engineering Attacks
+   2) Penetration Testing (Fast-Track)
+   3) Third Party Modules
+   4) Update the Social-Engineer Toolkit
+   5) Update SET configuration
+   6) Help, Credits, and About
+  99) Exit the Social-Engineer Toolkit
+
+set> <strong>1</strong></div>
+
+  <p><strong>Step 3</strong></p>
+
+  <p><strong>Step 3.</strong> In the menu that appears (see Example 7-2), select <strong>2) Website Attack
+      Vectors</strong>.</p>
+
+  <p><strong><em>Example 7-2</em></strong> — Selecting Website Attack Vectors</p>
+  <div class="terminal">Select from the menu:
+
+   1) Spear-Phishing Attack Vectors
+   2) Website Attack Vectors
+   3) Infectious Media Generator
+   4) Create a Payload and Listener
+   5) Mass Mailer Attack
+   6) Arduino-Based Attack Vector
+   7) Wireless Access Point Attack Vector
+   8) QRCode Generator Attack Vector
+   9) Powershell Attack Vectors
+  10) Third Party Modules
+  99) Return back to the main menu.
+
+set><strong>2</strong></div>
+
+  <p><strong>Step 4</strong></p>
+
+  <p><strong>Step 4.</strong> In the menu and explanation that appear next (see Example 7-3), select <strong>3)
+      Credential Harvester Attack Method</strong>.</p>
+
+  <p><strong><em>Example 7-3</em></strong> — Selecting the Credential Harvester Attack Method</p>
+  <div class="terminal"> The Web Attack module is a unique way of utilizing multiple web-based
+attacks in order to compromise the intended victim.
+
+ The Java Applet Attack method will spoof a Java Certificate and
+ deliver a metasploit based payload. Uses a customized java applet
+created by Thomas Werth to deliver the payload.
+
+ The Metasploit Browser Exploit method will utilize select Metasploit
+ browser exploits through an iframe and deliver a Metasploit payload.
+
+ The Credential Harvester method will utilize web cloning of a
+ website that has a username and password field and harvest all
+the information posted to the website.
+
+ The TabNabbing method will wait for a user to move to a different
+tab, then refresh the page to something different.
+
+ The Web-Jacking Attack method was introduced by white_sheep, emgent.
+ This method utilizes iframe replacements to make the highlighted URL
+ link to appear legitimate however when clicked a window pops up then
+ is replaced with the malicious link. You can edit the link replacement
+settings in the set_config if it's too slow/fast.
+
+ The Multi-Attack method will add a combination of attacks through
+ the web attack menu. For example, you can utilize the Java Applet,
+ Metasploit Browser, Credential Harvester/Tabnabbing all at once to see
+which is successful.
+
+ The HTA Attack method will allow you to clone a site and perform
+ powershell injection through HTA files which can be used for
+Windows-based powershell exploitation through the browser.
+
+ 1) Java Applet Attack Method
+ 2) Metasploit Browser Exploit Method
+ 3) Credential Harvester Attack Method
+ 4) Tabnabbing Attack Method
+ 5) Web Jacking Attack Method
+ 6) Multi-Attack Web Method
+ 7) HTA Attack Method
+99) Return to Main Menu
+
+set:webattack><strong>3</strong></div>
+
+  <p><strong>Step 5</strong></p>
+
+  <p><strong>Step 5.</strong> In the menu that appears next (see Example 7-4), select <strong>1) Web
+      Templates</strong> to use a predefined web template (Twitter). As you can see, you also have options to
+    clone an existing website or import a custom website. In this example, you use a predefined web
+    template.</p>
+
+  <p><strong><em>Example 7-4</em></strong> — Selecting a Predefined Web Template</p>
+  <div class="terminal"> The first method will allow SET to import a list of pre-defined web
+applications that it can utilize within the attack.
+
+ The second method will completely clone a website of your choosing
+ and allow you to utilize the attack vectors within the completely
+same web application you were attempting to clone.
+
+ The third method allows you to import your own website, note that you
+ should only have an index.html when using the import website
+functionality.
+
+ 1) Web Templates
+ 2) Site Cloner
+ 3) Custom Import
+99) Return to Webattack Menu
+
+set:webattack><strong>1</strong></div>
+
+  <p><strong>Step 6</strong></p>
+
+  <p><strong>Step 6.</strong> In the menu shown in Example 7-5, enter the IP address of the host that you would
+    like to use to harvest the user credentials (in this case, <strong>192.168.88.225</strong>). In this
+    example, SET has recognized the attacking system's IP address. If this occurs for you, you can just press
+    <strong>Enter</strong> to select the attacking system's IP address.</p>
+
+  <p><strong><em>Example 7-5</em></strong> — Entering the Credential Harvester's IP Address</p>
+  <div class="terminal"> [-] Credential harvester will allow you to utilize the clone
+capabilities within SET
+ [-] to harvest credentials or parameters from a website as well as
+place them into a report
+-----------------------------------------------------------------------
+ -- * IMPORTANT * READ THIS BEFORE ENTERING IN THE IP ADDRESS *
+IMPORTANT * --
+ The way that this works is by cloning a site and looking for form
+ fields to rewrite. If the POST fields are not usual methods for
+ posting forms this could fail. If it does, you can always save the
+ HTML, rewrite the forms to be standard forms and use the "IMPORT"
+feature. Additionally, really important:
+ If you are using an EXTERNAL IP ADDRESS, you need to place the
+ EXTERNAL IP address below, not your NAT address. Additionally, if
+ you don't know basic networking concepts, and you have a private
+ IP address, you will need to do port forwarding to your NAT IP
+ address from your external IP address. A browser doesn't know how
+ to communicate with a private IP address, so if you don't specify
+ an external IP address if you are using this from an external
+ perspective, it will not work. This isn't a SET issue this is how
+networking works.
+ set:webattack> IP address for the POST back in Harvester/Tabnabbing
+[<strong>192.168.88.225</strong>]:</div>
+
+  <p><strong>Step 7</strong></p>
+
+  <p><strong>Step 7.</strong> Select <strong>3. Twitter</strong>, as shown in Example 7-6.</p>
+
+  <p><strong><em>Example 7-6</em></strong> — Selecting the Template for Twitter</p>
+  <div class="terminal">--------------------------------------------------------
+ **** Important Information ****
+ For templates, when a POST is initiated to harvest
+ credentials, you will need a site for it to redirect.
+You can configure this option under:
+ /etc/setoolkit/set.config
+Edit this file, and change HARVESTER_REDIRECT and
+ HARVESTER_URL to the sites you want to redirect to
+ after it is posted. If you do not set these, then
+ it will not redirect properly. This only goes for
+templates.
+--------------------------------------------------------
+ 1. Java Required
+ 2. Google
+ 3. Twitter
+set:webattack> Select a template:<strong>3</strong>
+[*] Cloning the website: http://www.twitter.com
+[*] This could take a little bit...
+ The best way to use this attack is if username and password form
+ fields are available. Regardless, this captures all POSTs on a
+website.
+ [*] The Social-Engineer Toolkit Credential Harvester Attack
+[*] Credential Harvester is running on port 80
+ [*] Information will be displayed to you as it arrives below:</div>
+
+  <p>You can then redirect users to this fake Twitter site by sending a spear phishing email or taking advantage
+    of web vulnerabilities such as cross-site scripting (XSS) and cross-site request forgery (CSRF). Figure 7-2
+    shows the fake Twitter login page, where the user enters their credentials.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-7-2-Fake-Login-Page.jpg"
+      alt="Figure 7-2 Fake Login Page">
+    <figcaption>Figure 7-2 — Fake Login Page</figcaption>
+  </figure>
+
+  <p>Example 7-7 shows how the attacking system harvests the user credentials. The username entered is
+    <em>santosomar</em>, and the password is <em>superbadpassword</em>. You can also see the session token.</p>
+
+  <p><strong><em>Example 7-7</em></strong> — Harvesting the User Credentials</p>
+  <div class="terminal"> 192.168.78.238 - - [28/Jun/2021 23:07:41] "GET / HTTP/1.1" 200 -
+[*] WE GOT A HIT! Printing the output:
+POSSIBLE USERNAME FIELD FOUND: session[username_or_email]=santosomar
+POSSIBLE PASSWORD FIELD FOUND: session[password]=superbadpassword
+PARAM: authenticity_token=dba33c0b2bfdd8e6dcb14a7ab4bd121f38177d52
+PARAM: scribe_log=
+POSSIBLE USERNAME FIELD FOUND: redirect_after_login=
+PARAM: authenticity_token=dba33c0b2bfdd8e6dcb14a7ab4bd121f38177d52
+ [*] WHEN YOU'RE FINISHED, HIT CONTROL-C TO GENERATE A REPORT.
+ 192.168.78.238 - - [28/Jun/2021 23:08:27] "POST /sessions HTTP/1.1"
+302 -</div>
+
+  <p>Attackers have been known to harvest cloud service provider credentials once they get into their victims'
+    systems. Different threat actors have extended their credential harvesting capabilities to target multiple
+    cloud and non-cloud services in victims' internal networks and systems after the exploitation of other
+    vulnerabilities.</p>
+
+  <h3>7.1.4 Practice — Credential Harvesting</h3>
+
+  <div class="quiz-block" id="quiz-7-2">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">Pixel Paradise currently only requires gamers to login with a username and password.
+      This type of login is very susceptible to phishing attacks that attempt to redirect gamers to a fake
+      website. Which tool best helps mitigate this type of credential harvesting?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-7-2" value="0"> Social Engineering
+          Training</label></li>
+      <li data-index="1"><label><input type="radio" name="q-7-2" value="1"> Multi-factor
+          Authentication</label></li>
+      <li data-index="2"><label><input type="radio" name="q-7-2" value="2"> SSO</label></li>
+      <li data-index="3"><label><input type="radio" name="q-7-2" value="3"> Federated
+          Authentication</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit"
+        onclick="submitQuiz('quiz-7-2', 1, 'Multi-factor Authentication (MFA) best mitigates this type of credential harvesting. Even if an attacker successfully tricks a user into entering their username and password on a fake website, MFA requires an additional verification factor that the attacker would not have, preventing account compromise. The text specifically notes that MFA is why it is so important to protect against phishing-based credential harvesting.')">Check
+        Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-7-2')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <h3>7.1.5 Privilege Escalation</h3>
+
+  <p><strong><em>Privilege escalation</em></strong> is the act of exploiting a bug or design flaw in a software
+    or firmware application to gain access to resources that normally would have been protected from an
+    application or a user. This results in a user gaining additional privileges beyond what the application
+    developer originally intended (for example, a regular user gaining administrative control or a particular
+    user being able to read another user's email without authorization).</p>
+
+  <p>The original developer does not intend for the attacker to gain higher levels of access but probably
+    doesn't enforce a need-to-know policy properly and/or hasn't validated the code of the application
+    appropriately. Attackers take advantage of this to gain access to protected areas of operating systems or to
+    applications (for example, reading another user's email without authorization). Buffer overflows are used on
+    Windows computers to elevate privileges as well. To bypass digital rights management (DRM) on games and
+    music, attackers use a method known as <em>jailbreaking</em>, which is another type of privilege escalation,
+    most commonly found on Apple iOS-based mobile devices. Malware also attempts to exploit privilege escalation
+    vulnerabilities, if any exist on the system. Privilege escalation can also be attempted on network devices.
+    Generally, the fix for this is simply to update the device and to check for updates on a regular basis.</p>
+
+  <p>The following are a couple different types of privilege escalation:</p>
+
+  <p><strong>Vertical Privilege Escalation</strong></p>
+  <p>This type of privilege escalation, also called privilege elevation, occurs when a lower-privileged user
+    accesses functions reserved for higher-privileged users (for example, a standard user accessing functions of
+    an administrator). To protect against this situation, you should update the network device firmware. In the
+    case of an operating system, it should again be updated. The use of some type of access control system – for
+    example, User Account Control (UAC) – is also advisable.</p>
+
+  <p><strong>Horizontal Privilege Escalation</strong></p>
+  <p>This type of privilege escalation occurs when a normal user accesses functions or content reserved for
+    other normal users (for example, one user reading another's email). This can be done through hacking or by a
+    person walking over to someone else's computer and simply reading their email. Always have your users lock
+    their computer (or log off) when they are not physically at their desk.</p>
+
+  <h3>7.1.6 Account Takeover</h3>
+
+  <p>The underlying mechanics and the attacker motive of a cloud account takeover attack are the same as for an
+    account takeover that takes place on premises. In an <strong><em>account takeover</em></strong>, the threat
+    actor gains access to a user or application account and uses it to then gain access to more accounts and
+    information. There are different ways that an account takeover can happen in the cloud. The impact that an
+    account takeover has in the cloud can also be a bit different from the impact of an on-premises attack. Some
+    of the biggest differences are the organization's ability to detect a cloud account takeover, find out what
+    was impacted, and determine how to remediate and recover.</p>
+
+  <p>There are a number of ways to detect account takeover attacks. Select each for more detail.</p>
+
+  <p><strong>Login location</strong></p>
+  <p>The location of the user can clue you in to a takeover. For instance, you may not do business in certain
+    geographic locations and countries. You can prevent a user from logging in from IP addresses that reside in
+    those locations. Keep in mind, however, that an attacker can easily use a VPN to bypass this
+    restriction.</p>
+
+  <p><strong>Failed login attempts</strong></p>
+  <p>It is now fairly easy to detect and block failed login attempts from a user or an attacker.</p>
+
+  <p><strong>Lateral phishing emails</strong></p>
+  <p>These are phishing emails that originate from an account that has already been compromised by the
+    attacker.</p>
+
+  <p><strong>Malicious OAuth, SAML, or OpenID Connect connections</strong></p>
+  <p>An attacker could create a fake application that could require read, write, and send permissions for email
+    SaaS offerings such as Office 365 and Gmail. Once the application is granted permission by the user to
+    "connect" and authenticate to these services, the attacker could manipulate it.</p>
+
+  <p><strong>Abnormal file sharing and downloading</strong></p>
+  <p>You might suspect an account takeover attack if you notice that a particular user is suddenly sharing or
+    downloading a large number of files.</p>
+
+  <h3>7.1.7 Metadata Service Attacks</h3>
+
+  <p>Traditionally, software developers used hard-coded credentials to access different services, such as
+    databases and shared files on an FTP server. To reduce the exposure of such insecure practices, cloud
+    providers (such as Amazon Web Services [AWS]) have implemented <em>metadata services</em>. When an
+    application requires access to specific assets, it can query the metadata service to get a set of temporary
+    access credentials. This temporary set of credentials can then be used to access services such as AWS Simple
+    Cloud Storage (S3) buckets and other resources. In addition, these metadata services are used to store the
+    user data supplied when launching a new virtual machine (VM) – such as an Amazon Elastic Compute Cloud or
+    AWS EC2 instance – and configure the application during instantiation.</p>
+
+  <p>As you can probably already guess, metadata services are some of the most attractive services on AWS for an
+    attacker to access. If you are able to access these resources, at the very least, you will get a set of
+    valid AWS credentials to interface with the API. Software developers often include sensitive information in
+    user startup scripts. These user startup scripts can be accessed through a metadata service and allow AWS
+    EC2 instances (or similar services with other cloud providers) to be launched with certain configurations.
+    Sometimes startup scripts even contain usernames and passwords used to access various services.</p>
+
+  <p>By using tools such as nimbostratus (<a href="https://github.com/andresriancho/nimbostratus"
+      target="_blank"><em>https://github.com/andresriancho/nimbostratus</em></a>), you can find vulnerabilities
+    that could lead to <strong><em>metadata service attacks</em></strong>.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>When you are pen testing a web application, look for functionality that fetches page data and returns it
+      to the end user (similar to the way a proxy would). The metadata service doesn't require any particular
+      parameters. If you access the URL
+      https://x.x.x.x/latest/meta-data/iam/security-credentials/IAM_USER_ROLE_HERE, it will return the
+      AccessKeyID, SecretAccessKey, and Token values you need to authenticate into the account.</p>
+  </div>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png" alt="Instructor avatar">
+  </div>
+
+  <h3>7.1.8 Attacks Against Misconfigured Cloud Assets</h3>
+
+  <p>Attackers can leverage misconfigured cloud assets in a number of ways. Select each for more
+    information.</p>
+
+  <p><strong>Identity and Access Management (IAM) Implementations</strong></p>
+  <p>IAM solutions are used to administer user and application authentication and authorization. Key IAM
+    features include SSO, multifactor authentication, and user provisioning and life cycle management. If an
+    attacker is able to manipulate a cloud-based IAM solution in an IaaS or PaaS environment, it could be
+    catastrophic for the cloud consumer (that is, the organization developing, deploying, and consuming cloud
+    applications).</p>
+
+  <p><strong>Federation Misconfigurations</strong></p>
+  <p>Federated authentication (or federated identity) is a method of associating a user's identity across
+    different identity management systems. For example, every time you access a website, a web application, or a
+    mobile application that allows you to log in or register with your Facebook, Google, or Twitter account,
+    that application is using federated authentication.</p>
+
+  <p>Often application developers misconfigure the implementation of the underlying protocols used in a
+    federated identity environment (such as SAML, OAuth, and OpenID). For instance, a SAML assertion – that is,
+    the XML document the identity provider sends to the service provider that contains the user authorization –
+    should contain a unique ID that is accepted only once by the application. If you do not configure your
+    application this way, an attacker could replay a SAML message to create multiple sessions. Attackers could
+    also change the expiration date on an expired SAML message to make it valid again or change the user ID to a
+    different valid user. In some cases, an application could grant default permissions or higher permissions to
+    an unmapped user. Subsequently, if an attacker changes the user ID to an invalid user, the application could
+    be tricked into giving access to the specific resource.</p>
+
+  <p>In addition, your application might use security tokens like the JSON Web Token (JWT) and SAML assertions
+    to associate permissions from one platform to another. An attacker could steal such tokens and leverage
+    misconfigured environments to access sensitive data and resources.</p>
+
+  <p><strong>Object Storage</strong></p>
+  <p>Insecure permission configurations for cloud object storage services, such as Amazon's AWS S3 buckets, are
+    often the cause of data breaches.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>Omar Santos has included several tools that can be used to scan insecure S3 buckets at my GitHub
+      repository, at <a href="https://github.com/The-Art-of-Hacking/h4cker/tree/master/cloud_resources"
+        target="_blank"><em>https://github.com/The-Art-of-Hacking/h4cker/tree/master/cloud_resources</em></a>.</p>
+  </div>
+
+  <p><strong>Containerization Technologies</strong></p>
+  <p>Attacks against container-based deployments (such as Docker, Rocket, LXC, and containerd) have led to
+    massive data breaches. For instance, you can passively obtain information from Shodan (shodan.io) or run
+    active recon scans to find cloud deployments widely exposing the Docker daemon or Kubernetes elements to the
+    Internet. Often attackers use stolen credentials or known vulnerabilities to compromise cloud-based
+    applications. Similarly, attackers use methods such as typosquatting to create malicious containers and post
+    them in Docker Hub. This attack, which can be considered a supply chain attack, can be very effective. You
+    could, for example, download the base image for NGINX or Apache HTTPd from Docker Hub, and that Docker image
+    might include a backdoor that the attacker can use to manipulate your applications and underlying
+    systems.</p>
+
+  <div class="callout callout-note">
+    <div class="callout-label">Note</div>
+    <p>Typosquatting is a technique that leverages human error when typing URLs in a web browser or accessing
+      other resources (as in the earlier example of impersonating legitimate Docker containers in Docker
+      Hub).</p>
+  </div>
+
+  <h3>7.1.9 Resource Exhaustion and DoS Attacks</h3>
+
+  <p>One of the benefits of leveraging cloud services is the distributed and resilient architecture that most
+    leading cloud providers offer. This architecture helps minimize the impact of a DoS or distributed
+    denial-of-service (DDoS) attack compared to what it would be if you were hosting your application on
+    premises in your data center. On the other hand, in recent years, the volume of bits per second (bps),
+    packets per second (pps), and HTTP(s) requests per second (rps) have increased significantly. Often
+    attackers use botnets of numerous compromised laptops and desktop systems and compromise mobile, IoT, and
+    cloud-based systems to launch these attacks. Figure 7-3 illustrates the key metrics used to identify
+    volumetric DDoS attacks.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-7-3-DDoS-Attack-Metrics.png"
+      alt="Figure 7-3 DDoS Attack Metrics">
+    <figcaption>Figure 7-3 — DDoS Attack Metrics</figcaption>
+  </figure>
+
+  <p>However, attackers can launch more strategic DoS attacks against applications hosted in the cloud that
+    could lead to <em>resource exhaustion</em>. For example, they can leverage a single-packet DoS
+    vulnerability in network equipment used in cloud environments, or they can leverage tools to generate
+    crafted packets to cause an application to crash. For instance, you can search in Exploit Database
+    (exploit-db.com) for exploits that can be used to leverage "denial of service" vulnerabilities, where an
+    attacker could just send a few packets and crash an application or the whole operating system. Example 7-8
+    shows how to search for exploits using the <strong>searchsploit</strong> tool.</p>
+
+  <p><strong><em>Example 7-8</em></strong> — Using the <strong><em>searchsploit</em></strong> to Search for
+    Exploits</p>
+  <div class="terminal">|--[omar@websploit]--[~]
+ |--- $<strong>searchsploit "Denial of Service" | grep "Linux Kernel" | awk '{print $(NF)}'</strong>
+linux/dos/19250.txt
+linux/dos/19272.txt
+linux/dos/22105.c
+linux/dos/19818.c
+linux/dos/21122.sh
+linux/dos/21598.c
+linux/dos/68.c
+linux/dos/686.c
+linux/dos/685.c
+linux/dos/691.c
+linux/dos/306.c
+linux/dos/33635.c
+linux/dos/33148.c
+linux/dos/32682.c
+linux/dos/33015.c
+&lt;output omitted for brevity&gt;</div>
+
+  <p>Another example of a DoS attack that can affect cloud environments is the
+    <strong><em>direct-to-origin (D2O) attack</em></strong>. In a D2O attack, threat actors are able to reveal
+    the origin network or IP address behind a content delivery network (CDN) or large proxy placed in front of
+    web services in a cloud provider. A D2O attack could allow attackers to bypass different anti-DDoS
+    mitigations.</p>
+
+  <div class="callout callout-note">
+    <div class="callout-label">Note</div>
+    <p>A CDN is a geographically distributed network of proxies in data centers around the world that offers
+      high availability and performance benefits by distributing web services to end users around the
+      world.</p>
+  </div>
+
+  <h3>7.1.10 Cloud Malware Injection Attacks</h3>
+
+  <p>Cloud deployments are susceptible to malware injection attacks. In a <strong><em>cloud malware injection
+        attack</em></strong>, the attacker creates a malicious application and injects it into a SaaS, PaaS, or
+    IaaS environment. Once the malware injection is completed, the malware is executed as one of the valid
+    instances running in the cloud infrastructure. Subsequently, the attacker can leverage this foothold to
+    launch additional attacks, such as covert channels, backdoors, eavesdropping, data manipulation, and data
+    theft.</p>
+
+  <h3>7.1.11 Side-Channel Attacks</h3>
+
+  <p><strong><em>Side-channel attacks</em></strong> are often based on information gained from the
+    implementation of the underlying computer system (or cloud environment) instead of a specific weakness in
+    the implemented technology or algorithm. For instance, different elements – such as computing timing
+    information, power consumption, electromagnetic leaks, and even sound – can provide detailed information
+    that can help an attacker compromise a system. The attacker aims to gather information from or influence an
+    application or a system by measuring or exploiting indirect effects of the system or its hardware. Most
+    side-channel attacks are used to exfiltrate credentials, cryptographic keys, and other sensitive information
+    by measuring coincidental hardware emissions.</p>
+
+  <p>Side-channel attacks can be used against VMs and in cloud computing environments where a compromised system
+    controlled by the attacker and target share the same physical hardware.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>Examples of vulnerabilities that could lead to side-channel attacks are the Spectre and Meltdown
+      vulnerabilities affecting Intel, AMD, and ARM processors. Cloud providers that use Intel CPUs in their
+      virtualized solutions could be affected by these vulnerabilities if they do not apply the appropriate
+      patches. You can find information about Spectre and Meltdown at <a href="https://spectreattack.com/"
+        target="_blank"><em>https://spectreattack.com</em></a>.</p>
+  </div>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png" alt="Instructor avatar">
+  </div>
+
+  <h3>7.1.12 Practice — Cloud Attack Types</h3>
+
+  <div class="quiz-block" id="quiz-7-3">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">Pixel Paradise makes heavy use of cloud services for both gamers and for storing
+      their code repositories. Therefore, they are vulnerable to all the cloud attacks discussed so far. To
+      verify you understand these cloud attacks, match each type to its description.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Attack Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>A — Credential harvesting</strong></td>
+          <td>Gathering and stealing usernames, passwords, tokens, and PINs.</td>
+        </tr>
+        <tr>
+          <td><strong>B — Privilege escalation</strong></td>
+          <td>Exploiting a bug or design flaw in an application to gain unauthorized levels of privilege to
+            resources.</td>
+        </tr>
+        <tr>
+          <td><strong>C — Resource exhaustion</strong></td>
+          <td>Leveraging tools to send crafted packets to overwhelm resources and cause an application to
+            crash.</td>
+        </tr>
+        <tr>
+          <td><strong>D — Malware injection</strong></td>
+          <td>Providing a foothold to launch additional attacks by injecting a malicious application to be
+            executed as one of the valid instances running in the cloud infrastructure.</td>
+        </tr>
+        <tr>
+          <td><strong>E — Account takeover</strong></td>
+          <td>Gaining access to a user or application account and then using it to gain access to more accounts
+            and information.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.1.13 Tools and Software Development Kits (SDKs)</h3>
+
+  <p>In Module 6, "Exploiting Application-Based Vulnerabilities," you learned that documents such as Swagger and
+    the OpenAPI Specification documents can help you greatly when you're assessing API implementations.</p>
+
+  <div class="callout callout-note">
+    <div class="callout-label">Note</div>
+    <p>Swagger is a modern framework of API documentation and development that is the basis of the OpenAPI
+      Specification (OAS). Additional information about Swagger can be obtained at 
+        href="https://swagger.io/" target="_blank"><em>https://swagger.io</em></a>. The OAS specification is
+      available at <a href="https://github.com/OAI/OpenAPI-Specification"
+        target="_blank"><em>https://github.com/OAI/OpenAPI-Specification</em></a>.</p>
+  </div>
+
+  <p><strong><em>Software development kits (SDKs)</em></strong> and cloud development kits (CDKs) can provide
+    great insights about cloud-hosted applications, as well as the underlying infrastructure. An SDK is a
+    collection of tools and resources to help with the creation of applications (on premises or in the cloud).
+    SDKs often include compilers, debuggers, and other software frameworks.</p>
+
+  <p>CDKs, on the other hand, help software developers and cloud consumers deploy applications in the cloud and
+    use the resources that the cloud provider offers. For example, the AWS Cloud Development Kit (AWS CDK) is an
+    open-source software development framework that cloud consumers and AWS customers use to define cloud
+    application resources using familiar programming languages.</p>
+
+  <div class="callout callout-note">
+    <div class="callout-label">Note</div>
+    <p>The following site provides detailed information on how to get started with the AWS CDK: 
+        href="https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html"
+        target="_blank"><em>https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html</em></a>.</p>
+  </div>
+
+  <!-- ── 7.2 Explaining Common Attacks and Vulnerabilities Against Specialized Systems ── -->
+  <h2>7.2 Explaining Common Attacks and Vulnerabilities Against Specialized Systems</h2>
+
+  <h3>7.2.1 Overview</h3>
+
+  <p>During our reconnaissance of the Pixel Paradise network, we discovered that they appear to be using
+    internet-connected surveillance cameras for security monitoring. The cameras are a common and well-known
+    brand. We will be testing for vulnerabilities in them as part of our pentesting agreement.</p>
+
+  <p>Pixel Paradise has not yet distributed their own gaming app for mobile. We offered to provide them with
+    some guidelines for secure mobile app development since we have some experience testing mobile apps for
+    other customers.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png" alt="Instructor avatar">
+  </div>
+
+  <p>In this section, you will learn about a variety of attacks against mobile devices, Internet of Things
+    (IoT) devices, data storage system vulnerabilities, vulnerabilities affecting VMs, and containerized
+    applications and workloads.</p>
+
+  <h3>7.2.2 Attacking Mobile Devices</h3>
+
+  <p>Attackers use various techniques to compromise mobile devices. Select each of these common mobile device
+    attacks for more information.</p>
+
+  <p><strong>Reverse Engineering</strong></p>
+  <p>The process of analyzing the compiled mobile app to extract information about its source code could be
+    used to understand the underlying architecture of a mobile application and potentially manipulate the mobile
+    device. Attackers use reverse engineering techniques to compromise the mobile device operating system (for
+    example, Android, Apple iOS) and root or jailbreak mobile devices.</p>
+
+  <div class="callout callout-note">
+    <div class="callout-label">Note</div>
+    <p>OWASP has different "crack-me" exercises that help you practice reverse engineering of Android and iOS
+      applications. See <a href="https://github.com/OWASP/owasp-mstg/tree/master/Crackmes"
+        target="_blank"><em>https://github.com/OWASP/owasp-mstg/tree/master/Crackmes</em></a>.</p>
+  </div>
+
+  <p><strong>Sandbox Analysis</strong></p>
+  <p>iOS and Android apps are isolated from each other via sandbox environments. Sandboxes in mobile devices
+    are a mandatory access control mechanism describing the resources that a mobile app can and can't access.
+    Android and iOS provide different interprocess communication (IPC) options for mobile applications to
+    communicate with the underlying operating system. An attacker could perform detailed analysis of the sandbox
+    implementation in a mobile device to potentially bypass the access control mechanisms implemented by Google
+    (Android) or Apple (iOS), as well as mobile app developers.</p>
+
+  <p><strong>Spamming</strong></p>
+  <p>Unsolicited messages are a problem with email and with text messages and other mobile messaging
+    applications as well. In Module 4, you learned about SMS phishing attacks, which continue to be some of the
+    most common attacks against mobile users. In such an attack, a user may be presented with links that could
+    redirect to malicious sites to steal sensitive information or install malware.</p>
+
+  <p>The following are some of the most prevalent vulnerabilities affecting mobile devices. Select each for
+    more information.</p>
+
+  <p><strong>Insecure storage</strong></p>
+  <p>A best practice is to save as little sensitive data as possible in a mobile device's permanent local
+    storage. However, at least some user data must be stored on most mobile devices. Both Android and iOS
+    provide secure storage APIs that allow mobile app developers to use the cryptographic hardware available on
+    the mobile platform. If these resources are used correctly, sensitive data and files can be secured via
+    hardware-based strong encryption. However, mobile app developers often do not use these secure storage APIs
+    successfully, and an attacker could leverage these vulnerabilities. For example, the iOS Keychain is
+    designed to securely store sensitive information, such as encryption keys and session tokens. It uses an
+    SQLite database that can be accessed through the Keychain APIs only. An attacker could use static analysis
+    or reverse engineering to see how applications create keys and store them in the Keychain.</p>
+
+  <p><strong>Passcode vulnerabilities and biometrics integrations</strong></p>
+  <p>Often mobile users "unlock" a mobile device by providing a valid PIN (passcode) or password or by using
+    biometric authentication, such as fingerprint scanning or face recognition. Android and iOS provide
+    different methods for integrating local authentication into mobile applications. Vulnerabilities in these
+    integrations could lead to sensitive data exposure and full compromise of the mobile device. Attacks such
+    as the objection biometric bypass attack can be used to bypass local authentication in iOS and Android
+    devices. OWASP provides guidance on how to test iOS local authentication at 
+      href="https://github.com/OWASP/owasp-mstg/blob/master/Document/0x06f-Testing-Local-Authentication.md"
+      target="_blank"><em>https://github.com/OWASP/owasp-mstg/blob/master/Document/0x06f-Testing-Local-Authentication.md</em></a>.</p>
+
+  <p><strong>Certificate pinning</strong></p>
+  <p>Attackers use certificate pinning to associate a mobile app with a particular digital certificate of a
+    server. The purpose is to avoid accepting any certificate signed by a trusted certificate authority (CA).
+    The idea is to force the mobile app to store the server certificate or public key and subsequently
+    establish connections only to the trusted/known server (referred to as "pinning" the server). The goal of
+    certificate pinning is to reduce the attack surface by removing the trust in external CAs. There have been
+    many incidents in which CAs have been compromised or tricked into issuing certificates to impostors.
+    Attackers have tried to bypass certificate pinning by jailbreaking mobile devices and using utilities such
+    as SSL Kill Switch 2 (see <a href="https://github.com/nabla-c0d3/ssl-kill-switch2"
+      target="_blank"><em>https://github.com/nabla-c0d3/ssl-kill-switch2</em></a>) or Burp Suite Mobile
+    Assistant app or by using binary patching and replacing the digital certificate.</p>
+
+  <p><strong>Using known vulnerable components</strong></p>
+  <p>Attackers may leverage known vulnerabilities against the underlying mobile operating system, or dependency
+    vulnerabilities (that is, vulnerabilities in dependencies of a mobile application). Patching fragmentation
+    is one of the biggest challenges in Android-based implementations. Android fragmentation is the term
+    applied to the numerous Android versions that are supported or not supported by different mobile devices.
+    Keep in mind that Android is not only used in mobile devices but also in IoT environments. Some mobile
+    platforms or IoT devices may not support a version of Android that has addressed known security
+    vulnerabilities. Attackers can leverage these compatibility issues and limitations to exploit such
+    vulnerabilities.</p>
+
+  <p><strong>Execution of activities using root and over-reach of permissions</strong></p>
+  <p>Application developers must practice the least privilege concept. That is, they should not allow mobile
+    applications to run as root and should give them only the access they need to perform their tasks.</p>
+
+  <p><strong>Business logic vulnerabilities</strong></p>
+  <p>An attacker can use legitimate transactions and flows of an application in a way that results in a
+    negative behavior or outcome. Most common business logic problems are different from the typical security
+    vulnerabilities in applications (such as XSS, CSRF, and SQL injection). A challenge with business logic
+    flaws is that they can't typically be found by using scanners or any other similar tools.</p>
+
+  <p>In Module 10, "Tools and Code Analysis," you will learn details about many tools used in pen testing
+    engagements. At this point, let's look at some of the tools most commonly used to perform security research
+    and test the security posture of mobile devices. Select each of the following tool for more
+    information.</p>
+
+  <p><strong>Burp Suite</strong></p>
+  <p>In Module 10, you will learn about proxies and web application security tools such as Burp Suite. Burp
+    Suite can also be used to test mobile applications and determine how they communicate with web services and
+    APIs. You can download Burp Suite from <a href="https://portswigger.net/burp"
+      target="_blank"><em>https://portswigger.net/burp</em></a>.</p>
+
+  <p><strong>Drozer</strong></p>
+  <p>This Android testing platform and framework provides access to numerous exploits that can be used to
+    attack Android platforms. You can download Drozer from <a href="https://labs.withsecure.com/tools/drozer"
+      target="_blank"><em>https://labs.withsecure.com/tools/drozer</em></a>.</p>
+
+  <p><strong>needle</strong></p>
+  <p>This open-source framework is used to test the security of iOS applications. You can download needle from
+    <a href="https://github.com/WithSecureLabs/needle"
+      target="_blank"><em>https://github.com/WithSecureLabs/needle</em></a>.</p>
+
+  <p><strong>Mobile Security Framework (MobSF)</strong></p>
+  <p>MobSF is an automated mobile application and malware analysis framework. You can download it from 
+      href="https://github.com/MobSF/Mobile-Security-Framework-MobSF"
+      target="_blank"><em>https://github.com/MobSF/Mobile-Security-Framework-MobSF</em></a>.</p>
+
+  <p><strong>Postman</strong></p>
+  <p>Postman is used to test and develop APIs. You can obtain information and download it from 
+      href="https://www.postman.com/" target="_blank"><em>https://www.postman.com</em></a>.</p>
+
+  <p><strong>Ettercap</strong></p>
+  <p>This tool is used to perform on-path attacks. You can download Ettercap from 
+      href="https://www.ettercap-project.org/"
+      target="_blank"><em>https://www.ettercap-project.org</em></a>. An alternative tool to Ettercap, called
+    Bettercap, is available at <a href="https://www.bettercap.org/"
+      target="_blank"><em>https://www.bettercap.org</em></a>.</p>
+
+  <p><strong>Frida</strong></p>
+  <p>Frida is a dynamic instrumentation toolkit for security researchers and reverse engineers. You can
+    download it from <a href="https://frida.re/" target="_blank"><em>https://frida.re</em></a>.</p>
+
+  <p><strong>Objection</strong></p>
+  <p>This runtime mobile platform and app exploration toolkit uses Frida behind the scenes. You can use
+    Objection to bypass certificate pinning, dump keychains, perform memory analysis, and launch other mobile
+    attacks. You can download Objection from <a href="https://github.com/sensepost/objection"
+      target="_blank"><em>https://github.com/sensepost/objection</em></a>.</p>
+
+  <p><strong>Android SDK tools</strong></p>
+  <p>You can use Android SDK tools to analyze and obtain detailed information about the Android environment.
+    You can download Android Studio, which is the primary Android SDK provided by Google, from 
+      href="https://developer.android.com/studio"
+      target="_blank"><em>https://developer.android.com/studio</em></a>.</p>
+
+  <p><strong>ApkX</strong></p>
+  <p>This tool enables you to decompile Android application package (APK) files. You can download it from 
+      href="https://github.com/b-mueller/apkx"
+      target="_blank"><em>https://github.com/b-mueller/apkx</em></a>.</p>
+
+  <p><strong>APK Studio</strong></p>
+  <p>You can use this tool to reverse engineer Android applications. You can download APK Studio from 
+      href="https://github.com/vaibhavpandeyvpz/apkstudio"
+      target="_blank"><em>https://github.com/vaibhavpandeyvpz/apkstudio</em></a>.</p>
+
+  <h3>7.2.3 Practice — Mobile Device Vulnerabilities</h3>
+
+  <div class="quiz-block" id="quiz-7-4">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">You are drafting a set of recommendations to give Pixel Paradise for guidance as
+      they design and code their planned mobile gaming app. You are writing about the principle of least
+      privilege. Why should the mobile application developers use this principle as they develop the mobile
+      application?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-7-4" value="0"> It ensures that mobile devices use
+          secure storage APIs for sensitive data.</label></li>
+      <li data-index="1"><label><input type="radio" name="q-7-4" value="1"> It limits device access and does
+          not allow applications to run as root.</label></li>
+      <li data-index="2"><label><input type="radio" name="q-7-4" value="2"> It ensures that IoT devices only
+          use supported Android versions.</label></li>
+      <li data-index="3"><label><input type="radio" name="q-7-4" value="3"> It prevents attackers from using
+          certificate pinning to remove the trust in external CAs.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit"
+        onclick="submitQuiz('quiz-7-4', 1, 'The principle of least privilege limits device access and does not allow applications to run as root. Application developers must practice least privilege by not allowing mobile applications to run as root and giving them only the access they need to perform their tasks. This reduces the attack surface and limits the damage an attacker can do if they exploit the application.')">Check
+        Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-7-4')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <h3>7.2.4 Practice — Attacking Mobile Devices</h3>
+
+  <div class="quiz-block" id="quiz-7-5">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">Pixel Paradise relies heavily on mobile devices both for its gaming users and for
+      its employees. Therefore, you need to be able to identify tools that are commonly used to perform
+      security research and tools used to test the security posture of mobile devices. Match each of the
+      following tool to its description.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>A — MobSF</strong></td>
+          <td>An automated mobile application and malware analysis framework.</td>
+        </tr>
+        <tr>
+          <td><strong>B — Postman</strong></td>
+          <td>Used to test and develop APIs.</td>
+        </tr>
+        <tr>
+          <td><strong>C — Frida</strong></td>
+          <td>Dynamic instrumentation toolkit for security researchers and reverse engineers.</td>
+        </tr>
+        <tr>
+          <td><strong>D — ApkX</strong></td>
+          <td>Decompiles Android application package files.</td>
+        </tr>
+        <tr>
+          <td><strong>E — Drozer</strong></td>
+          <td>Provides access to numerous exploits that can be used to attack Android platforms.</td>
+        </tr>
+        <tr>
+          <td><strong>F — Ettercap</strong></td>
+          <td>Used to perform on-path attacks.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.2.5 Attacking Internet of Things (IoT) Devices</h3>
+
+  <p>IoT is an incredibly broad term that can be applied across personal devices,
+    <strong><em>industrial control systems (ICS)</em></strong>, transportation, and many other businesses and
+    industries. Designing and securing IoT systems – (including <strong><em>supervisory control and data
+        acquisition (SCADA)</em></strong>, <strong><em>Industrial Internet of Things (IIoT)</em></strong>, and
+    ICS – involves a lot of complexity. For instance, IoT solutions have challenging integration requirements,
+    and IoT growth is expanding beyond the support capability of traditional IT stakeholders (in terms of
+    scalability and the skills required). Managing and orchestrating IoT systems introduces additional
+    complexity due to disparate hardware and software, the use of legacy technologies, and, often, multiple
+    vendors and integrators. IoT platforms must integrate a wide range of IoT edge devices with varying device
+    constraints and must be integrated to back-end business applications. In addition, no single solution on
+    the market today can be deployed across all IoT scenarios.</p>
+
+  <p>The IoT market is extremely large and includes multiple platform offerings from startups as well as very
+    large vendors. In many cases, IoT environments span a range of components that include sensors, gateways,
+    network connectivity, applications, and cloud infrastructure. The unfortunate reality is that most IoT
+    security efforts today focus on only a few elements of the entire system. A secure IoT platform should
+    provide the complete end-to-end infrastructure to build an IoT solution, including the software,
+    management, and security to effectively collect, transform, transport, and deliver data to provide business
+    value. This is, of course, easier said than done.</p>
+
+  <h3>7.2.6 Analyzing IoT Protocols</h3>
+
+  <p>Analyzing IoT protocols is important for tasks such as reconnaissance as well as exploitation. On the
+    other hand, in the IoT world, you will frequently encounter custom, proprietary, or new network protocols.
+    Some of the most common network protocols for IoT implementations include the following:</p>
+  <ul>
+    <li>Wi-Fi</li>
+    <li>Bluetooth and Bluetooth Low Energy (BLE)</li>
+    <li>Zigbee</li>
+    <li>Z-Wave</li>
+    <li>LoraWAN</li>
+    <li>Insteon</li>
+    <li>Modbus</li>
+    <li>Siemens S7comm (S7 Communication)</li>
+  </ul>
+
+  <p>For instance, <strong><em>Bluetooth Low Energy (BLE)</em></strong> is used by IoT home devices, medical,
+    industrial, and government equipment. You can analyze protocols such as BLE by using specialized antennas
+    and equipment such as the Ubertooth One (<a href="https://greatscottgadgets.com/ubertoothone/"
+      target="_blank"><em>https://greatscottgadgets.com/ubertoothone/</em></a>). BLE involves a three-phase
+    process to establish a connection:</p>
+
+  <p><strong>Phase 1.</strong> Pairing feature exchange</p>
+  <p><strong>Phase 2.</strong> Short-term key generation</p>
+  <p><strong>Phase 3.</strong> Transport-specific key distribution</p>
+
+  <p>BLE implements a number of cryptographic functions. It supports AES for encryption and key distribution
+    exchange to share different keys among the BLE-enabled devices. However, many devices that support BLE do
+    not even implement the BLE-layer encryption. In addition, mobile apps cannot control the pairing, which is
+    done at the operating system level. Attackers can scan BLE devices or listen to BLE advertisements and
+    leverage these misconfigurations. Then they can advertise clone/fake BLE devices and perform on-path
+    (formerly known as man-in-the-middle) attacks.</p>
+
+  <p>In some cases, IoT proprietary or custom protocols can be challenging. Even if you can capture network
+    traffic, packet analyzers like Wireshark often can't identify what you've found. Sometimes, you need to
+    write new tools to communicate with IoT devices.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>Tools such as GATTacker (<a href="https://github.com/securing/gattacker"
+        target="_blank"><em>https://github.com/securing/gattacker</em></a>) can be used to perform on-path
+      attacks in BLE implementations. BtleJuice (<a href="https://github.com/DigitalSecurity/BtleJuice"
+        target="_blank"><em>https://github.com/DigitalSecurity/BtleJuice</em></a>) is a framework for
+      performing interception and manipulation of BLE traffic.</p>
+  </div>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png" alt="Instructor avatar">
+  </div>
+
+  <h3>7.2.7 Practice — Analyzing IoT Protocols</h3>
+
+  <div class="quiz-block" id="quiz-7-6">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">Pixel Paradise does not rely heavily on IoT devices yet, except for some security
+      monitoring devices inside and outside their offices. However, Protego does have other clients that make
+      heavy use of IoT systems. What makes managing and securing IoT systems challenging? (Choose three.)</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="checkbox" name="q-7-6" value="0"> Use of standard protocols such
+          as Bluetooth Low Energy (BLE)</label></li>
+      <li data-index="1"><label><input type="checkbox" name="q-7-6" value="1"> The use of legacy
+          technologies</label></li>
+      <li data-index="2"><label><input type="checkbox" name="q-7-6" value="2"> Disparate hardware and software
+          manufacturers</label></li>
+      <li data-index="3"><label><input type="checkbox" name="q-7-6" value="3"> Deploying a single solution
+          across all IoT devices</label></li>
+      <li data-index="4"><label><input type="checkbox" name="q-7-6" value="4"> Prone to malware injection
+          attacks</label></li>
+      <li data-index="5"><label><input type="checkbox" name="q-7-6" value="5"> Multiple vendors and integrators
+          are included within a single system</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit"
+        onclick="submitMultiQuiz('quiz-7-6', [1,2,5], 'The three challenges that make managing and securing IoT systems difficult are: the use of legacy technologies; disparate hardware and software manufacturers; and multiple vendors and integrators within a single system. These all contribute to the complexity described in the section. BLE is not a standard protocol challenge — its lack of encryption is the concern. A single solution not existing across all IoT scenarios is a challenge, but the option states deploying one as a goal, which is not the challenge described.')">Check
+        Answer</button>
+      <button class="quiz-reset" onclick="resetMultiQuiz('quiz-7-6')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <h3>7.2.8 IoT Security Special Considerations</h3>
+
+  <p>There are a few special considerations to keep in mind when trying to secure IoT implementations. Select
+    each for more information.</p>
+
+  <p><strong>Fragile Environment</strong></p>
+  <p>Many IoT devices (including sensors and gateways) have limited compute resources. Because of this lack of
+    resources, some security features, including encryption, may not even be supported in IoT devices.</p>
+
+  <p><strong>Availability Concerns</strong></p>
+  <p>DoS attacks against IoT systems are a major concern.</p>
+
+  <p><strong>Data Corruption</strong></p>
+  <p>IoT protocols are often susceptible to input validation vulnerabilities, as well as data corruption
+    issues.</p>
+
+  <p><strong>Data Exfiltration</strong></p>
+  <p>IoT devices could be manipulated by an attacker and used for sensitive data exfiltration.</p>
+
+  <h3>7.2.9 Common IoT Vulnerabilities</h3>
+
+  <p>The following are some of the most common security vulnerabilities affecting IoT implementations. Select
+    each vulnerability for more information.</p>
+
+  <p><strong>Insecure defaults</strong></p>
+  <p>Default credentials and insecure default configurations are often concerns with IoT devices. For instance,
+    if you do a search in Shodan.io for IoT devices (or click on the Explore section), you will find hundreds
+    of IoT devices with default credentials and insecure configurations exposed on the Internet.</p>
+
+  <p><strong>Plaintext communication and data leakage</strong></p>
+  <p>As mentioned earlier, some IoT devices do not provide support for encryption. Even if encryption is
+    supported, many IoT devices fail to implement encrypted communications, and an attacker could easily steal
+    sensitive information. The leakage of sensitive information is always a concern with IoT devices.</p>
+
+  <p><strong>Hard-coded configurations</strong></p>
+  <p>Often IoT vendors sell their products with hard-coded insecure configurations or credentials (including
+    passwords, tokens, encryption keys, and more).</p>
+
+  <p><strong>Outdated firmware/hardware and the use of insecure or outdated components</strong></p>
+  <p>Many organizations continue to run outdated software and hardware in their IoT devices. In some cases,
+    some of these devices are never updated! Think about an IoT device controlling different operations on an
+    oil rig platform in the middle of the ocean. In some cases, these devices are never updated, and if you
+    update them, you will have to send a crew to physically perform a software or hardware upgrade. IoT devices
+    often lack a secure update mechanism.</p>
+
+  <h3>7.2.10 Practice — Common IoT Vulnerabilities</h3>
+
+  <div class="quiz-block" id="quiz-7-7">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">You are compiling a checklist of items that you will verify as part of the test of
+      the Pixel Paradise networked video surveillance devices. What should you verify to ensure that the devices
+      are secure? (Choose three.)</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="checkbox" name="q-7-7" value="0"> The IoT devices support
+          encrypted communications.</label></li>
+      <li data-index="1"><label><input type="checkbox" name="q-7-7" value="1"> The software on the video
+          devices is can be updated when needed.</label></li>
+      <li data-index="2"><label><input type="checkbox" name="q-7-7" value="2"> There are enough technical
+          personnel to monitor the video feeds hourly.</label></li>
+      <li data-index="3"><label><input type="checkbox" name="q-7-7" value="3"> The devices are powered by
+          uninterruptable power supplies.</label></li>
+      <li data-index="4"><label><input type="checkbox" name="q-7-7" value="4"> All of the video devices are
+          manufactured by the same vendor.</label></li>
+      <li data-index="5"><label><input type="checkbox" name="q-7-7" value="5"> The default configurations and
+          credentials of the IoT devices have been changed.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit"
+        onclick="submitMultiQuiz('quiz-7-7', [0,1,5], 'The three security checks are: the IoT devices support encrypted communications (to prevent plaintext communication and data leakage); the software on the video devices can be updated when needed (to address outdated firmware vulnerabilities); and the default configurations and credentials have been changed (to prevent insecure defaults exploitation). Personnel monitoring, UPS power, and single-vendor sourcing are operational concerns, not IoT security vulnerabilities.')">Check
+        Answer</button>
+      <button class="quiz-reset" onclick="resetMultiQuiz('quiz-7-7')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <h3>7.2.11 Data Storage System Vulnerabilities</h3>
+
+  <p>With the incredibly large number of IoT architectures and platforms available today, choosing which
+    direction to focus on is a major challenge. IoT architectures extend from IoT endpoint devices (things) to
+    intermediary "fog" networks and cloud computing. Gateways and edge nodes are devices such as switches,
+    routers, and computing platforms that act as intermediaries ("the fog layer") between the endpoints and the
+    higher layers of the IoT system. The IoT architectural hierarchy high-level layers are illustrated in
+    Figure 7-4.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-7-4-IoT-Architecture-Layers.png"
+      alt="Figure 7-4 IoT Architecture Layers">
+    <figcaption>Figure 7-4 — IoT Architecture Layers</figcaption>
+  </figure>
+
+  <p>Misconfigurations in IoT <em>on-premises and cloud-based solutions</em> can lead to data theft. The
+    following are some of the most common misconfigurations of IoT devices and cloud-based solutions. Select
+    each misconfiguration for more information.</p>
+
+  <p><strong>Default/blank username/password</strong></p>
+  <p>Hardcoded or default credentials are often left in place by administrators and in some cases by software
+    developers, exposing devices or the cloud environment to different attacks.</p>
+
+  <p><strong>Network exposure</strong></p>
+  <p>Many IoT, ICS, and SCADA systems should never be exposed to the Internet (see 
+      href="https://www.shodan.io/explore/category/industrial-control-systems"
+      target="_blank"><em>https://www.shodan.io/explore/category/industrial-control-systems</em></a>). For
+    example, programmable logic controllers (PLCs) controlling turbines in a power plant, the lighting at a
+    stadium, and robots in a factory should never be exposed to the Internet. However, you can often see such
+    systems in Shodan scan results.</p>
+
+  <p><strong>Lack of user input sanitization</strong></p>
+  <p>Input validation vulnerabilities in protocols such as Modbus, S7 Communication, DNP3, and Zigbee could
+    lead to DoS and code execution.</p>
+
+  <p><strong>Underlying software vulnerabilities and injection vulnerabilities</strong></p>
+  <p>In Module 6, you learned about SQL injection and how attackers can inject malicious SQL statements after
+    "escaping input" with a single quote (by using the single quote method). IoT systems can be susceptible to
+    similar vulnerabilities.</p>
+
+  <p><strong>Error messages and debug handling</strong></p>
+  <p>Many IoT systems include details in error messages and debugging output that can allow an attacker to
+    obtain sensitive information from the system and underlying network.</p>
+
+  <h3>7.2.12 Management Interface Vulnerabilities</h3>
+
+  <p>IoT implementations have suffered from many <em>management interface vulnerabilities</em>. For example,
+    the <strong><em>Intelligent Platform Management Interface (IPMI)</em></strong> is a collection of compute
+    interface specifications (often used by IoT systems) designed to offer management and monitoring
+    capabilities independently of the host system's CPU, firmware, and operating system. System administrators
+    can use IPMI to enable out-of-band management of computer systems (including IoT systems) and to monitor
+    their operation. For instance, you can use IPMI to manage a system that may be powered off or otherwise
+    unresponsive by using a network connection to the hardware rather than to an operating system or login
+    shell. Many IoT devices have supported IPMI to allow administrators to remotely connect and manage such
+    systems.</p>
+
+  <p>An IPMI subsystem includes a main controller, called a baseboard management controller (BMC), and other
+    management controllers, called satellite controllers. The satellite controllers within the same physical
+    device connect to the BMC via the system interface called Intelligent Platform Management Bus/Bridge
+    (IPMB). Similarly, the BMC connects to satellite controllers or another BMC in other remote systems via the
+    IPMB.</p>
+
+  <p>The BMC, which has direct access to the system's motherboard and other hardware, may be leveraged to
+    compromise the system. If you compromise the BMC, it will provide you with the ability to monitor, reboot,
+    and even potentially install implants (or any other software) in the system. Access to the BMC is basically
+    the same as physical access to the underlying system.</p>
+
+  <h3>7.2.13 Practice — Management Interface Vulnerabilities</h3>
+
+  <div class="quiz-block" id="quiz-7-8">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">An organization is using IPMI to manage its server network. How does IPMI
+      introduce vulnerabilities into the network?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-7-8" value="0"> It allows an attacker to control a
+          hypervisor, install other malicious hypervisors, or perform hyperjacking attacks.</label></li>
+      <li data-index="1"><label><input type="radio" name="q-7-8" value="1"> It provides access to resources and
+          data between virtual machines.</label></li>
+      <li data-index="2"><label><input type="radio" name="q-7-8" value="2"> It allows an attacker to monitor,
+          reboot, and install implants and other software in the system.</label></li>
+      <li data-index="3"><label><input type="radio" name="q-7-8" value="3"> It allows an attacker to expose
+          IoT, ICS, and SCADA systems to the internet.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit"
+        onclick="submitQuiz('quiz-7-8', 2, 'IPMI introduces vulnerability through the BMC (baseboard management controller), which has direct access to the system\'s motherboard and hardware. If an attacker compromises the BMC, they gain the ability to monitor, reboot, and even install implants or other software in the system — equivalent to having physical access to the underlying hardware.')">Check
+        Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-7-8')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <h3>7.2.14 Exploiting Virtual Machines</h3>
+
+  <p>A VM is supposed to be a completely isolated system. One VM should not have access to resources and data
+    from another VM unless that is strictly allowed and configured. Figure 7-5 shows three VMs running
+    different applications and operating systems.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-7-5-VM-Example.png"
+      alt="Figure 7-5 VM Example">
+    <figcaption>Figure 7-5 — VM Example</figcaption>
+  </figure>
+
+  <p>The hypervisor is the entity that controls and manages the VMs. There are two types of hypervisors:</p>
+  <ul>
+    <li>Type 1 hypervisors (also known as native or bare-metal hypervisors) run directly on the physical
+      (bare-metal) system. Examples of Type 1 hypervisors include VMware ESXi, Proxmox Virtual Environment,
+      Xen, and Microsoft Hyper-V.</li>
+    <li>Type 2, or hosted, hypervisors run on top of other operating systems. Examples of type 2 hypervisors
+      include VirtualBox and VMware Player or Workstation.</li>
+  </ul>
+
+  <p>These virtual systems have been susceptible to many vulnerabilities, including the following:</p>
+  <ul>
+    <li><strong><em>VM escape vulnerabilities:</em></strong> These vulnerabilities allow an attacker to
+      "escape" the VM and obtain access to other virtual machines on the system or access to the hypervisor.
+      In Figure 7-6, an attacker finds a VM escape vulnerability in the underlying hypervisor and uses that
+      vulnerability to access data from another VM.</li>
+  </ul>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-7-6-VM-Escape-Attack.png"
+      alt="Figure 7-6 VM Escape Attack">
+    <figcaption>Figure 7-6 — VM Escape Attack</figcaption>
+  </figure>
+
+  <ul>
+    <li><strong>Hypervisor vulnerabilities such as hyperjacking:</strong> <em>Hyperjacking</em> is a
+      vulnerability that could allow an attacker to control the hypervisor. Hyperjacking attacks often require
+      the installation of a malicious (or "fake") hypervisor that can manage the entire virtual environment.
+      The compromised or fake hypervisor operates in a stealth mode, avoiding detection. Hyperjacking attacks
+      can be launched by injecting a rogue hypervisor beneath the original hypervisor or by directly obtaining
+      control of the original hypervisor. You can also launch a hyperjacking attack by running a rogue
+      hypervisor on top of an existing hypervisor.</li>
+    <li><strong>VM repository vulnerabilities:</strong> Attackers can leverage these vulnerabilities to
+      compromise many systems and applications. There are many public and private VM repositories that users
+      can leverage to deploy VMs, including different operating systems, development tools, databases, and
+      other solutions. Examples include the VMware Marketplace (
+        href="https://marketplace.cloud.vmware.com/"
+        target="_blank"><em>https://marketplace.cloud.vmware.com/</em></a>) and AWS Marketplace (
+        href="https://aws.amazon.com/marketplace"
+        target="_blank"><em>https://aws.amazon.com/marketplace</em></a>). Attackers have found ways to upload
+      fake or impersonated VMs with malicious software and backdoors. These ready-to-use VMs are deployed by
+      many organizations, allowing the attacker to manipulate the user's systems, applications, and
+      data.</li>
+  </ul>
+
+  <h3>7.2.15 Vulnerabilities Related to Containerized Workloads</h3>
+
+  <p>As shown in Figure 7-7, computing has evolved from traditional physical (bare-metal) servers to VMs,
+    containers, and serverless architectures.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-7-7-The-Evolution-of-Computing.png"
+      alt="Figure 7-7 The Evolution of Computing">
+    <figcaption>Figure 7-7 — The Evolution of Computing</figcaption>
+  </figure>
+
+  <p>Vulnerabilities in applications and in open-source software running in containers such as Docker, Rocket,
+    and containerd are often overlooked by developers and IT staff. Attackers may take advantage of these
+    vulnerabilities to compromise applications and data. A variety of security layers apply to containerized
+    workloads:</p>
+  <ul>
+    <li>The container image</li>
+    <li>Software inside the container</li>
+    <li>The host operating system</li>
+    <li>Interaction between containers and the host operating system</li>
+    <li>Security in runtime environment and orchestration platforms such as Kubernetes</li>
+  </ul>
+
+  <p>Figure 7-8 shows three key security best practices that organizations should use to create a secure
+    container image.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-7-8-Securing-Container-Images.png"
+      alt="Figure 7-8 Securing Container Images">
+    <figcaption>Figure 7-8 — Securing Container Images</figcaption>
+  </figure>
+
+  <p>Often software developers run containers with root privileges. These containers are one vulnerability away
+    from full compromise.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>The CIS Benchmarks for Docker and Kubernetes provide detailed guidance on how to secure Docker
+      containers and Kubernetes deployments. You can access all the CIS Benchmarks at: 
+        href="https://www.cisecurity.org/cis-benchmarks"
+        target="_blank"><em>https://www.cisecurity.org/cis-benchmarks</em></a>.</p>
+  </div>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png" alt="Instructor avatar">
+  </div>
+
+  <p>A number of tools allow you to scan Docker images for vulnerabilities and assess Kubernetes deployments.
+    The following are a few examples of these tools. Select each tool for more information.</p>
+
+  <p><strong>Anchore's Grype</strong></p>
+  <p>Grype is an open-source container vulnerability scanner that you can download from 
+      href="https://github.com/anchore/grype"
+      target="_blank"><em>https://github.com/anchore/grype</em></a>. Figure 7-9 demonstrates the use of the
+    Grype scanner to find vulnerabilities in a Docker image.</p>
+
+  <p><strong>Clair</strong></p>
+  <p>Clair is another open-source container vulnerability scanner. You can download it from 
+      href="https://github.com/quay/clair"
+      target="_blank"><em>https://github.com/quay/clair</em></a>.</p>
+
+  <p><strong>Dagda</strong></p>
+  <p>This set of open-source static analysis tools can help detect vulnerabilities, Trojans, backdoors, and
+    malware in Docker images and containers. It uses the ClamAV antivirus engine to detect malware and
+    vulnerabilities. You can download Dagda from <a href="https://github.com/eliasgranderubio/dagda/"
+      target="_blank"><em>https://github.com/eliasgranderubio/dagda/</em></a>.</p>
+
+  <p><strong>kube-bench</strong></p>
+  <p>This open-source tool performs a security assessment of Kubernetes clusters based on the CIS Kubernetes
+    Benchmark. You can download kube-bench from <a href="https://github.com/aquasecurity/kube-bench"
+      target="_blank"><em>https://github.com/aquasecurity/kube-bench</em></a>.</p>
+
+  <p><strong>kube-hunter</strong></p>
+  <p>This open-source tool is designed to check the security posture of Kubernetes clusters. You can download
+    kube-hunter from <a href="https://kube-hunter.aquasec.com/"
+      target="_blank"><em>https://kube-hunter.aquasec.com/</em></a>.</p>
+
+  <p><strong>Falco</strong></p>
+  <p>You can download this threat detection engine for Kubernetes from <a href="https://falco.org/"
+      target="_blank"><em>https://falco.org/</em></a>.</p>
+
+  <figure>
+    <img
+      src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-7-9-Scanning-Container-Images-with-Grype.jpg"
+      alt="Figure 7-9 Scanning Container Images with Grype">
+    <figcaption>Figure 7-9 — Scanning Container Images with Grype</figcaption>
+  </figure>
+
+  <p>Another strategy that threat actors have used for years is to insert malicious code into Docker images on
+    Docker Hub (<a href="https://hub.docker.com/"
+      target="_blank"><em>https://hub.docker.com</em></a>). This has been a very effective "supply chain"
+    attack.</p>
+
+  <h3>7.2.16 Practice — Vulnerabilities Related to Containerized Workloads</h3>
+
+  <div class="quiz-block" id="quiz-7-9">
+    <div class="quiz-label">Practice</div>
+    <p class="quiz-question">Pixel Paradise is considering a variety of container and serverless architectures
+      as they begin to plan their move towards a CI/CD development process. They will be implementing
+      continuous integration (CI) for merging new code and continuous delivery (CD) for automating building and
+      testing their games. Your familiarity with container vulnerability scanning tools will be crucial as you
+      continue to grow at Protego. Match each tool to its description.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>A — Anchore's Grype</strong></td>
+          <td>Open-source container vulnerability scanner.</td>
+        </tr>
+        <tr>
+          <td><strong>B — Falco</strong></td>
+          <td>Threat detection engine for Kubernetes.</td>
+        </tr>
+        <tr>
+          <td><strong>C — Kube-bench</strong></td>
+          <td>Tool that performs a security assessment of Kubernetes clusters based on the CIS Kubernetes
+            Benchmark.</td>
+        </tr>
+        <tr>
+          <td><strong>D — Dagda</strong></td>
+          <td>Set of open-source static analysis tools to help detect vulnerabilities, Trojans, backdoors, and
+            malware in Docker images and containers.</td>
+        </tr>
+        <tr>
+          <td><strong>E — Kube-hunter</strong></td>
+          <td>Open-source security tool designed to check the security posture of Kubernetes clusters.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+    <script>
+      function submitQuiz(quizId, correctIndex, explanation) {
+        const block = document.getElementById(quizId);
+        const selected = block.querySelector('input[type="radio"]:checked');
+
+        if (!selected) return; // nothing chosen yet
+
+        const chosenIndex = parseInt(selected.value);
+        const items = block.querySelectorAll(".quiz-options li");
+        const feedback = block.querySelector(".quiz-feedback");
+        const submitBtn = block.querySelector(".quiz-submit");
+        const resetBtn = block.querySelector(".quiz-reset");
+
+        // mark every option
+        items.forEach((li, i) => {
+          const lbl = li.querySelector("label");
+          if (i === correctIndex) {
+            li.classList.add("correct");
+            lbl.setAttribute("data-mark", "✓");
+          } else if (i === chosenIndex && chosenIndex !== correctIndex) {
+            li.classList.add("incorrect");
+            lbl.setAttribute("data-mark", "✗");
+          }
+        });
+
+        // show feedback
+        const isCorrect = chosenIndex === correctIndex;
+        feedback.className =
+          "quiz-feedback show " + (isCorrect ? "correct" : "incorrect");
+        feedback.innerHTML = isCorrect
+          ? "✓ Correct — " + explanation
+          : "✗ Incorrect — " + explanation;
+
+        // toggle buttons
+        submitBtn.disabled = true;
+        resetBtn.style.display = "inline-block";
+        block.classList.add("submitted");
+      }
+
+      function resetQuiz(quizId) {
+        const block = document.getElementById(quizId);
+        const items = block.querySelectorAll(".quiz-options li");
+        const feedback = block.querySelector(".quiz-feedback");
+        const submitBtn = block.querySelector(".quiz-submit");
+        const resetBtn = block.querySelector(".quiz-reset");
+
+        // clear all states
+        items.forEach((li) => {
+          li.classList.remove("correct", "incorrect");
+          const lbl = li.querySelector("label");
+          lbl.removeAttribute("data-mark");
+          const radio = li.querySelector('input[type="radio"]');
+          radio.checked = false;
+        });
+
+        feedback.className = "quiz-feedback";
+        feedback.innerHTML = "";
+        submitBtn.disabled = false;
+        resetBtn.style.display = "none";
+        block.classList.remove("submitted");
+      }
+    </script>
+  </body>
+</html>

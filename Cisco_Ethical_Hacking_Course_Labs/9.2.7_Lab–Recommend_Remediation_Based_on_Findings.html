@@ -1,0 +1,2437 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    /* ── Fonts ── */
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+
+    /* ── Reset & Base ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --border: #d8d5cc;
+      --text: #0f0e0d;
+      --muted: #3a3835;
+      --accent: #c0392b;
+      --accent-lt: #fdf0ee;
+      --tip-bg: #fffbea;
+      --tip-border: #e6c84a;
+      --note-bg: #eef4ff;
+      --note-border: #4a7ce6;
+      --term-bg: #1a1917;
+      --term-text: #e8e6e0;
+      --term-green: #4ec94e;
+      --radius: 6px;
+      --max-w: 860px;
+      --font-body: "IBM Plex Sans", sans-serif;
+      --font-mono: "IBM Plex Mono", monospace;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      margin: 1rem;
+    }
+
+    /* ── Layout ── */
+    .page-wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* ── Lists ── */
+    ol,
+    ul {
+      padding-left: 1.5rem;
+      margin-bottom: 0.9rem;
+    }
+
+    li {
+      margin-bottom: 0.3rem;
+    }
+
+    li>ul,
+    ol>li {
+      margin-left: 0 !important;
+    }
+
+    /* ── Tables ── */
+    table {
+      margin-top: 1rem;
+      border: 1px solid var(--border);
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-body);
+      font-size: 0.93rem;
+    }
+
+    table>thead>tr>.openTableTextBox__table-header-data {
+      text-align: center;
+      font-size: 0.93rem;
+      font-family: var(--font-body);
+      font-weight: 700;
+      background: var(--note-bg);
+      padding: 0.5rem 0.75rem;
+      line-height: 1.5;
+    }
+
+    .openTableTextBox__answerText table>thead>tr>.openTableTextBox__table-header-data {
+      background: var(--accent-lt) !important;
+    }
+
+    td {
+      font-size: 0.93rem;
+      font-family: var(--font-body);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.75rem;
+      vertical-align: top;
+    }
+
+    table tbody tr th,
+    table thead tr th {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-weight: 700;
+      padding: 0.45rem 0.75rem;
+    }
+
+    .table-inner .table__widget table tr.TableHeading th,
+    .table-inner .table__widget table tr.TableHeading td,
+    .table-inner .table__widget table tr td.TableHeading,
+    .opentabletextbox-table thead tr.TableHeading th,
+    .opentabletextbox-table tbody tr.TableHeading td,
+    .opentabletextbox-table tbody tr td.TableHeading {
+      background: var(--bg);
+      text-align: center;
+      font-weight: 700;
+    }
+
+    /* ── Open Text Box ── */
+    .openTextBox__textArea-container {
+      margin: 0.6rem 0;
+      font-size: 0.93rem;
+      font-family: var(--font-body);
+      width: 50%;
+    }
+
+    textarea {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 0.93rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.5rem 0.75rem;
+      background: var(--surface);
+      color: var(--text);
+      resize: vertical;
+    }
+
+    .openTableTextBox__fieldset {
+      padding: 5px;
+    }
+
+    .answergray {
+      padding: 0.2rem;
+      background-color: var(--bg);
+    }
+
+    .openTableTextBox__widget>.answergray {
+      background-color: #fff !important;
+    }
+
+    .openTextBox__inner .openTextBox__widget .answergray.is-graphic-in-openTextBox {
+      background-color: transparent;
+    }
+
+    .openTextBox__inner .openTextBox__widget .answergray.is-graphic-in-openTextBox img {
+      margin-block: 1rem;
+      margin-left: initial;
+    }
+
+    .opentabletextbox-inner .opentabletextBox__widget .openTableTextBox__answerText.answergray {
+      background-color: transparent;
+    }
+
+    /* ── Widgets ── */
+    .openTableTextBox__widget {
+      margin: 0.6rem 0 0.6rem 1.5rem;
+    }
+
+    .openTextBox__widget {
+      margin-left: 1.5rem;
+    }
+
+    /* ── Show/Hide Answer Buttons ── */
+    .show-answer,
+    .hide-answer {
+      display: inline-block;
+      padding: 0.42rem 1.1rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      margin: 0.5rem 0;
+      transition: opacity 0.15s;
+    }
+
+    .show-answer:hover,
+    .hide-answer:hover {
+      opacity: 0.85;
+    }
+
+    .openTextBoxController__button-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .btn-text {
+      display: inline-block;
+      padding: 0.42rem 1.1rem;
+      background: var(--text);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-text:hover {
+      opacity: 0.8;
+    }
+
+    .u-display-none {
+      display: none;
+    }
+
+    /* ── Check Button ── */
+    .check__button {
+      display: inline-block;
+      padding: 0.42rem 1.1rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      min-width: 100px;
+      margin: 0.625rem 0;
+      transition: opacity 0.15s;
+    }
+
+    .check__button:hover {
+      opacity: 0.85;
+    }
+
+    .check__hidden {
+      display: none;
+    }
+
+    .check-inner .check__widget .check__solution .DevConfigGray {
+      background-color: var(--bg);
+      font-weight: 700;
+    }
+
+    .check-inner .check__widget .check__solution .DevConfigs {
+      margin: 0;
+      line-height: 1.6;
+      font-family: var(--font-mono);
+    }
+
+    .check__solution {
+      line-height: 1.7;
+    }
+
+    /* ── MCQ ── */
+    .mcq__inner .mcq__widget .mcq__widget-inner {
+      margin-block: 1rem;
+    }
+
+    .mcq__inner .mcq__widget .mcq__item {
+      display: flex;
+      gap: 0.2rem;
+    }
+
+    .mcq__inner .mcq__widget .mcq__item .mcq__item-label .mcq__item-text .screenReader-position-text {
+      display: none;
+    }
+
+    /* ── Headings ── */
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      border-left: 4px solid var(--accent);
+      padding-left: 0.75rem;
+      margin: 2.5rem 0 1rem;
+      line-height: 1.3;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      margin: 2rem 0 0.6rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Component Titles ── */
+    .component__title {
+      font-family: var(--font-body);
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .component__body {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    .block__title-inner,
+    .article__title-inner {
+      display: block;
+      font-size: 1.3rem;
+      font-weight: 700;
+      border-left: 4px solid var(--accent);
+      padding-left: 0.75rem;
+      margin: 2.5rem 0 1rem;
+      line-height: 1.3;
+    }
+
+    /* ── Body Text Indent Classes ── */
+    .component__content .component__body-inner .BodyTextL25Bold,
+    .component__content .component__body-inner .DnTbold,
+    .table-inner .table__widget table tr .DnTbold,
+    .openTextBox__inner .openTextBox__widget .DnTbold,
+    .openTextBox__inner .openTextBox__widget .BodyTextL25Bold {
+      font-weight: 700;
+    }
+
+    .component__content .component__body-inner .BodyTextL50 {
+      margin-inline-start: 1.875rem;
+    }
+
+    .component__content .component__body-inner .SubStepNum {
+      text-indent: -1.594rem;
+      margin-inline-start: 3.125rem;
+    }
+
+    .component__content .component__body-inner .SubStepAlpha,
+    .openTextBox__inner .openTextBox__widget .ReflectionQ {
+      text-indent: -1.594rem;
+      margin-inline-start: 1.875rem;
+    }
+
+    .component__content .component__body-inner .Bulletlevel1 {
+      text-indent: -1.188rem;
+      margin-inline-start: 3rem;
+    }
+
+    .component__content .component__body-inner .Bulletlevel2 {
+      text-indent: -1.188rem;
+      margin-inline-start: 4.5rem;
+    }
+
+    /* ── CMD / Terminal Styles ── */
+    .component__content .component__body-inner .CMD,
+    .component__content .component__body-inner .CMDOutput,
+    .component__content .component__body-inner .CMDOutput__table,
+    .openTextBox__inner .openTextBox__widget .CMD,
+    .openTextBox__inner .openTextBox__widget .CMDOutput {
+      font-family: var(--font-mono);
+      font-size: 0.87rem;
+      background: var(--term-bg);
+      color: var(--term-text);
+      border-radius: var(--radius);
+      padding: 0.2rem 0.5rem;
+      margin: 4px 0 4px 1.875rem;
+      display: block;
+      line-height: 1.6;
+    }
+
+    [dir="rtl"] .component__content .component__body-inner .CMDOutput__table span {
+      direction: ltr;
+      display: inline-block;
+    }
+
+    /* ── Command Output Table ── */
+    .command-output>.table-inner>.table-wrapper>.table-widget>table,
+    .command-output>.table-inner>.table-wrapper>.table-widget>table>tbody>tr>td,
+    .command-output>.table-inner>.table-wrapper>.table-widget>table>tbody>tr>th {
+      border: none !important;
+      text-align: right !important;
+      background: transparent;
+      font-family: var(--font-mono);
+    }
+
+    /* ── Simple Table ── */
+    .simple-table>.table-inner>.table-wrapper {
+      margin-left: 1.5rem;
+    }
+
+    /* ── Images ── */
+    img {
+      width: 30%;
+      height: auto;
+      margin-top: 1rem;
+      margin-left: 3rem;
+    }
+
+    /* ── Page Tracer ── */
+    .component__content .component__body-inner .pageTracer-h4-title-hide {
+      margin: 0;
+      font-size: 0;
+      color: var(--muted);
+      font-weight: normal;
+    }
+
+    /* ── Accessibility ── */
+    .accessibility-completion-indicator {
+      display: none;
+    }
+
+    .edit-comment,
+    .js-heading-inner {
+      display: none;
+    }
+
+    .openTextBox__postText,
+    .openTableTextBox__postText {
+      margin-top: 0.5rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      h2 {
+        font-size: 1.1rem;
+      }
+
+      img {
+        width: 60%;
+        margin-left: 1rem;
+      }
+
+      .openTextBox__textArea-container {
+        width: 100%;
+      }
+    }
+  </style>
+
+</head>
+
+<body><!---->
+  <div
+    class="article 64a71b4de25bb14aec1fabde remove-top-padding remove-padding-bottom background-color-white remove-padding-top ">
+    <div class="article__inner">
+      <div class=" no-adaptive-scroll">
+        <!--?lit$1026265282$-->
+        <div class="">
+          <base-view type="article" model="[object Object]" customclass="" lowercase_component="" is-touch="false"
+            fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+            orientation="landscape" themetype="article-base-theme"><!---->
+            <div
+              class="article__header-wrapper remove-top-padding remove-padding-bottom background-color-white remove-padding-top ">
+              <div class="article__header ">
+                <div class="article__header-inner ">
+
+                  <!--?lit$1026265282$-->
+                  <!--?lit$1026265282$-->
+                  <!--?lit$1026265282$-->
+                  <!--?lit$1026265282$-->
+                  <!--?lit$1026265282$-->
+                </div>
+              </div>
+            </div>
+
+          </base-view>
+          <div class="block__container " style="">
+            <!--?lit$1026265282$--><!---->
+            <block-view modelid="64a71b4de25bb14aec1fabdf" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 9.09091%;"><!---->
+
+              <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabdf"
+                class="64a71b4de25bb14aec1fabdf block remove-top-padding remove-padding-bottom background-color-white is-complete">
+                <div class="block__inner">
+                  <base-view type="block" modelid="64a71b4de25bb14aec1fabdf" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$1026265282$-->
+                          <div class=" block__title ">
+                            <!--?lit$1026265282$--><heading-view aria-hidden="true"
+                              id="64a71b4de25bb14aec1fabdf-heading-view"
+                              headingtitle="Lab - Recommend Remediation Based on Findings"
+                              modelid="64a71b4de25bb14aec1fabdf" is-touch="false" fullscreen="true" device="large"
+                              browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                              orientation="landscape" themetype="article-base-theme"><!---->
+                              <div class="js-heading is-complete">
+                                <div class="js-heading-inner" role="heading" id="block-heading" aria-level="3">
+                                  <span class="aria-label"> <!--?lit$1026265282$-->Complete
+                                    &nbsp;<!--?lit$1026265282$-->Lab - Recommend Remediation Based on Findings</span>
+                                </div>
+                              </div>
+                            </heading-view>
+                            <div tabindex="0" role="heading" class="block__title-inner " aria-level="3">
+                              <span class="accessibility-completion-indicator"><!--?lit$1026265282$-->Complete </span>
+                              <!--?lit$1026265282$-->Lab - Recommend Remediation Based on Findings
+                            </div>
+                          </div>
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$1026265282$--><!----><text-view modelid="64a71b4de25bb14aec1fabee" class="is-full"
+                      is-touch="false" fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr"
+                      location="page" theme="light" orientation="landscape" themetype="article-base-theme"
+                      sgpulse-type="component"><!---->
+                      <div class="text-inner component__inner">
+                        <div class="component__header-container">
+                          <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabee"
+                            class="component text 64a71b4de25bb14aec1fabee  is-full is-complete  ">
+                            <base-view type="component" lowercase_component="text" model="[object Object]"
+                              customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                              os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                              themetype="article-base-theme"><!---->
+                              <div class="component__header-wrapper  ">
+                                <div class="component__header text__header">
+                                  <div class="component__header-inner text__header-inner">
+
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                    <div class="component__content">
+                                      <div tabindex="0" class="component__body text__body">
+                                        <div class="component__body-inner text__body-inner"><!--?lit$1026265282$-->
+                                          <h1>Objectives</h1>
+                                          <p>In this lab, you will complete the following objectives:</p>
+                                          <ul>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Identify and prioritize
+                                              vulnerabilities found on the DVWA server.</li>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Research and recommend mitigation
+                                              strategies.</li>
+                                          </ul>
+                                          <h1>Background / Scenario</h1>
+                                          <p><span>Your pentesting team scanned the server at 10.6.6.13 with Nikto and
+                                              determined that vulnerabilities exist on the server. It is your
+                                              responsibility to further investigate the findings and determine which
+                                              mitigation recommendations need to be included in the pentest
+                                              report.</span></p>
+                                          <h1>Required Resources</h1>
+                                          <ul>
+                                            <li><!--[if !supportLists]-->Kali VM customized for the Ethical Hacker
+                                              course</li>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Internet access</li>
+                                          </ul>
+                                          <script id="extension-end-user-informaion-tmp-script"
+                                            src="moz-extension://a462ecaa-aa7c-49a0-abd9-c169d4958ace/resource/userInformation.js"
+                                            type="text/javascript"></script>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                  </div>
+                                </div>
+                              </div>
+
+                            </base-view>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- div><div class="component__inner"></div></div -->
+                    </text-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="64a71b4de25bb14aec1fabe0" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 9.09091%;"><!---->
+
+              <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabe0"
+                class="64a71b4de25bb14aec1fabe0 block remove-top-padding remove-padding-bottom background-color-white ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="64a71b4de25bb14aec1fabe0" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$1026265282$--><!----><text-view modelid="64a71b4ee25bb14aec1fabef" class="is-full"
+                      is-touch="false" fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr"
+                      location="page" theme="light" orientation="landscape" themetype="article-base-theme"
+                      sgpulse-type="component"><!---->
+                      <div class="text-inner component__inner">
+                        <div class="component__header-container">
+                          <div data-socialgoodpulse-id="64a71b4ee25bb14aec1fabef"
+                            class="component text 64a71b4ee25bb14aec1fabef  is-full   ">
+                            <base-view type="component" lowercase_component="text" model="[object Object]"
+                              customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                              os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                              themetype="article-base-theme"><!---->
+                              <div class="component__header-wrapper  ">
+                                <div class="component__header text__header">
+                                  <div class="component__header-inner text__header-inner">
+
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                    <div class="component__content">
+                                      <div tabindex="0" class="component__body text__body">
+                                        <div class="component__body-inner text__body-inner"><!--?lit$1026265282$-->
+                                          <h1>Instructions</h1>
+                                          <h2 style="margin-left:0in"><!--[if !supportLists]--><span><span>Part 1:
+                                              </span></span><!--[endif]-->Identify and Prioritize Vulnerabilities Found
+                                            on the DVWA Server</h2>
+                                          <h3 style="margin-left:0in"><!--[if !supportLists]--><span><span>Step 1:
+                                              </span></span><!--[endif]-->Scan a vulnerable host with Nikto and create a
+                                            report.</h3>
+                                          <p>Run a quick scan of the DVWA server using Nikto and output the results to
+                                            an HTM file. A number of vulnerabilities were discovered.</p>
+                                          <pre style="margin-left:40px">┌──(kali<span>㉿</span>Kali)-[~]</pre>
+                                          <pre
+                                            style="margin-left:40px">└─$ <strong>nikto -h 10.6.6.13 -o pentest.htm</strong></pre>
+                                          <p>You can use this report to investigate vulnerabilities that were found on
+                                            the target.</p>
+                                          <h3 style="margin-left:0in"><!--[if !supportLists]--><span><span>Step 2:
+                                              </span></span><!--[endif]-->Perform a detail scan using GVM to further
+                                            investigate the vulnerabilities on the server.</h3>
+                                          <ol start="1" style="list-style-type:lower-alpha">
+                                            <li><!--[if !supportLists]-->Start the GVM Dashboard to scan the DVWA
+                                              server.</li>
+                                          </ol>
+                                          <pre style="margin-left:40px">┌──(kali<span>㉿</span>Kali)-[/home/kali]</pre>
+                                          <pre style="margin-left:40px"><strong>└─# sudo gvm-start</strong></pre>
+                                          <ol start="2" style="list-style-type:lower-alpha">
+                                            <li><!--[if !supportLists]-->When the Firefox browser opens, login with the
+                                              username <strong>admin</strong> and the password of <strong>kali</strong>.
+                                            </li>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Start a new task using the
+                                              <strong>Task Wizard</strong> by clicking <strong>Scans</strong> from the
+                                              menu bar and then selecting the <strong>Task Wizard</strong> from the
+                                              magic wand icon on the top left of the scan window.</li>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Enter the IP address
+                                              <strong>10.6.6.13</strong> in the IP address or hostname field. Click
+                                              <strong>Start Scan</strong>. The scan may take a few minutes, the status
+                                              bar next to the scan name indicates the percent completed.</li>
+                                          </ol>
+                                          <h3 style="margin-left:0in"><!--[if !supportLists]--><span><span>Step 3:
+                                              </span></span><!--[endif]-->Research the risks associated with each
+                                            vulnerability.</h3>
+                                          <ol start="1" style="list-style-type:lower-alpha">
+                                            <li><!--[if !supportLists]--><!--[endif]-->When the GVM scan completes, go
+                                              to the <strong>Scans</strong> menu and select <strong>Reports</strong>.
+                                              You should see the report for your last scan listed there.</li>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Click the date and time entry for
+                                              the task to view the report. Click the <strong>Results</strong> tab to
+                                              view the results of your scan.</li>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Click each vulnerability that was
+                                              found to display the detailed information about the risks associated with
+                                              the vulnerability.</li>
+                                            <li><!--[if !supportLists]-->Open the Nikto pentest.htm scan report file
+                                              that was created in Step 1.</li>
+                                            <li><!--[if !supportLists]-->Use internet resources to further research the
+                                              vulnerabilities that were discovered using Nikto and GVM. Fill in the
+                                              table with the information that you found. Based on your research, assign
+                                              a priority to mitigation efforts.</li>
+                                          </ol>
+                                          <ul>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Priority 1 vulnerabilities should
+                                              be fixed immediately.</li>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Priority 2 vulnerabilities should
+                                              be fixed but are less likely or more difficult to exploit.</li>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Priority 3 vulnerabilities are
+                                              low risk and unlikely to be exploited.</li>
+                                          </ul>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                  </div>
+                                </div>
+                              </div>
+
+                            </base-view>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- div><div class="component__inner"></div></div -->
+                    </text-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="64a71b4de25bb14aec1fabe1" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 9.09091%;"><!---->
+
+              <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabe1"
+                class="64a71b4de25bb14aec1fabe1 block remove-top-padding remove-padding-bottom background-color-white ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="64a71b4de25bb14aec1fabe1" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$1026265282$--><!----><opentabletextbox-view modelid="64a7288932ea9a4d121fcfac"
+                      class="is-full" is-touch="false" fullscreen="true" device="large" browser="Chrome" os="windows"
+                      dir="ltr" location="page" theme="light" orientation="landscape" themetype="article-base-theme"
+                      sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="opentabletextbox-inner component__inner">
+                          <div data-socialgoodpulse-id="64a7288932ea9a4d121fcfac"
+                            class="component opentabletextbox 64a7288932ea9a4d121fcfac  is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="64a7288932ea9a4d121fcfac" class="opentabletextbox ">
+                                <base-view type="component" lowercase_component="openTableTextBox"
+                                  model="[object Object]" customclass="" is-touch="false" fullscreen="true"
+                                  device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                                  orientation="landscape" themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper  ">
+                                    <div class="component__header openTableTextBox__header">
+                                      <div class="component__header-inner openTableTextBox__header-inner">
+
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget opentabletextBox__widget question-container ">
+                              <div class="openTableTextBox__preText">
+                                <!--?lit$1026265282$-->
+                              </div>
+                              <div class="opentabletextbox-container openTableTextBox__table-container">
+                                <table class="opentabletextbox-table" tabindex="0">
+                                  <!--?lit$1026265282$-->
+                                  <thead class="openTableTextBox__table-header">
+                                    <tr>
+                                      <!--?lit$1026265282$--><!---->
+                                      <th tabindex="0" scope="col"><!--?lit$1026265282$-->Priority</th><!----><!---->
+                                      <th tabindex="0" scope="col"><!--?lit$1026265282$-->Vulnerability</th>
+                                      <!----><!---->
+                                      <th tabindex="0" scope="col"><!--?lit$1026265282$-->Impact</th><!----><!---->
+                                      <th tabindex="0" scope="col"><!--?lit$1026265282$-->Severity</th><!---->
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <!--?lit$1026265282$--><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div><!--?lit$1026265282$-->The anti-clickjacking X-Frame-Options header is
+                                            not present.</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div><!--?lit$1026265282$-->The X-Content-Type-Options header is not set.
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div><!--?lit$1026265282$-->Directory indexing found.</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div><!--?lit$1026265282$-->Operating System End-of-Life</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div><!--?lit$1026265282$-->Missing “HttpOnly” Cookie Attribute (HTTP)</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div><!--?lit$1026265282$-->Cleartext Transmission of Sensitive Information
+                                            via HTTP</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div><!--?lit$1026265282$-->TCP timestamps</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div><!--?lit$1026265282$-->ICMP Timestamp Reply Information Disclosure</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <!--?lit$1026265282$-->
+                                          <div class="openTableTextBox__textArea-container">
+                                            <fieldset class="openTableTextBox__fieldset">
+                                              <legend class="openTableTextBox__legend">
+                                                <!--?lit$1026265282$-->Answer Area
+                                              </legend>
+                                              <textarea class="openTableTextBox__textArea" rows="3" name="answerArea"
+                                                tabindex="0"
+                                                placeholder="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                            </fieldset>
+                                          </div>
+
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!---->
+                                  </tbody>
+                                </table>
+                              </div>
+                              <div
+                                class="openTableTextBox__answerText answergray openTableTextBox__table-container is-full hide">
+                                <table class="opentabletextbox-table openTableTextBox__table-inner" tabindex="0">
+                                  <!--?lit$1026265282$-->
+                                  <thead class="openTableTextBox__table-header">
+                                    <tr tabindex="0">
+                                      <!--?lit$1026265282$--><!---->
+                                      <th scope="col"><!--?lit$1026265282$-->Priority</th><!----><!---->
+                                      <th scope="col"><!--?lit$1026265282$-->Vulnerability</th><!----><!---->
+                                      <th scope="col"><!--?lit$1026265282$-->Impact</th><!----><!---->
+                                      <th scope="col"><!--?lit$1026265282$-->Severity</th><!---->
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <!--?lit$1026265282$--><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->2</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->The anti-clickjacking X-Frame-Options header is
+                                            not present.</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Potentially could enable click-jacking attacks.
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Medium</div>
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->3</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->The X-Content-Type-Options header is not set.
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Might cause browsers to transform non-executable
+                                            content into executable content.</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Low</div>
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->2</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Directory indexing found.</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Content listing of directories is possible
+                                            revealing potentially sensitive information.</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Medium</div>
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->1</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Operating System End-of-Life</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Not receiving security updates</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->High</div>
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->2</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Missing “HttpOnly” Cookie Attribute (HTTP)</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Missing “HttpOnly” Cookie Attribute (HTTP) Allows
+                                            a cookie to be accessed by JavaScript which can allow session hijacking.
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Medium</div>
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->1</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Cleartext Transmission of Sensitive Information
+                                            via HTTP</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Attacker can eavesdrop or man-in-the-middle attack
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Medium</div>
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->3</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->TCP timestamps</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Uptime of the remote host can be computed.</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Low</div>
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!----><!---->
+                                    <tr class="openTableTextBox__table-row ">
+                                      <!--?lit$1026265282$--><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->3</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->ICMP Timestamp Reply Information Disclosure</div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Could be used to exploit weak time-based services
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <!----><!---->
+                                      <td tabindex="0" class="openTableTextBox__table-row-data ">
+                                        <div class="openTableTextBox__textArea-container">
+                                          <div><!--?lit$1026265282$-->Low</div>
+                                        </div>
+                                      </td>
+                                      <!---->
+                                    </tr>
+                                    <!---->
+                                  </tbody>
+                                </table>
+                              </div>
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTableTextBox__showButton show-answer show"><!--?lit$1026265282$-->Show
+                                  Table</button>
+                                <button
+                                  class="btn-text openTableTextBox__showButton hide-answer hide"><!--?lit$1026265282$-->Hide
+                                  Table</button>
+                              </div>
+                              <div class="openTableTextBox__postText">
+                                <!--?lit$1026265282$-->
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </opentabletextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="64a71b4de25bb14aec1fabe3" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 9.09091%;"><!---->
+
+              <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabe3"
+                class="64a71b4de25bb14aec1fabe3 block remove-top-padding remove-padding-bottom background-color-white ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="64a71b4de25bb14aec1fabe3" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$1026265282$--><!----><text-view modelid="64a71b4ee25bb14aec1fabf2" class="is-full"
+                      is-touch="false" fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr"
+                      location="page" theme="light" orientation="landscape" themetype="article-base-theme"
+                      sgpulse-type="component"><!---->
+                      <div class="text-inner component__inner">
+                        <div class="component__header-container">
+                          <div data-socialgoodpulse-id="64a71b4ee25bb14aec1fabf2"
+                            class="component text 64a71b4ee25bb14aec1fabf2  is-full   ">
+                            <base-view type="component" lowercase_component="text" model="[object Object]"
+                              customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                              os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                              themetype="article-base-theme"><!---->
+                              <div class="component__header-wrapper  ">
+                                <div class="component__header text__header">
+                                  <div class="component__header-inner text__header-inner">
+
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                    <div class="component__content">
+                                      <div tabindex="0" class="component__body text__body">
+                                        <div class="component__body-inner text__body-inner"><!--?lit$1026265282$-->
+                                          <h2 style="margin-left:0in"><!--[if !supportLists]--><span><span>Part 2:
+                                              </span></span><!--[endif]-->Research and Recommend Mitigation Strategies
+                                          </h2>
+                                          <p>At the end of a penetration testing project, a report or series of reports
+                                            are created to inform the stakeholders of the test results. One of the main
+                                            components of the report is the suggested fixes to mitigate, or work-around,
+                                            the identified vulnerabilities. In this part, you will research each of the
+                                            critical vulnerabilities and identify the necessary remediation.</p>
+                                          <p>For each of the listed vulnerabilities, describe a suggested fix or
+                                            mitigation strategy.</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                  </div>
+                                </div>
+                              </div>
+
+                            </base-view>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- div><div class="component__inner"></div></div -->
+                    </text-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="64a71b4de25bb14aec1fabe4" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 9.09091%;"><!---->
+
+              <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabe4"
+                class="64a71b4de25bb14aec1fabe4 block remove-top-padding remove-padding-bottom background-color-white ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="64a71b4de25bb14aec1fabe4" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$1026265282$--><!----><opentextbox-view modelid="64a71b4ee25bb14aec1fabf3" class="is-full"
+                      is-touch="false" fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr"
+                      location="page" theme="light" orientation="landscape" themetype="article-base-theme"
+                      sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="64a71b4ee25bb14aec1fabf3"
+                            class="component opentextbox 64a71b4ee25bb14aec1fabf3  is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="64a71b4ee25bb14aec1fabf3" class="opentabletextbox ">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper  ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$1026265282$-->
+                              <div class="openTextBox__preText"><!--?lit$1026265282$-->What is your suggested fix for
+                                the <b>Operating System End-of-Life</b> vulnerability?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$1026265282$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$1026265282$-->
+                                <!--?lit$1026265282$-->Update to the current supported version of the operating system
+                                and plan a means of keeping the OS up to date in the future.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$1026265282$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$1026265282$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$1026265282$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="64a71b4de25bb14aec1fabe5" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 9.09091%;"><!---->
+
+              <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabe5"
+                class="64a71b4de25bb14aec1fabe5 block remove-top-padding remove-padding-bottom background-color-white ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="64a71b4de25bb14aec1fabe5" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$1026265282$--><!----><opentextbox-view modelid="64a72c0daf46d24ecf461c0e" class="is-full"
+                      is-touch="false" fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr"
+                      location="page" theme="light" orientation="landscape" themetype="article-base-theme"
+                      sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="64a72c0daf46d24ecf461c0e"
+                            class="component opentextbox 64a72c0daf46d24ecf461c0e  is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="64a72c0daf46d24ecf461c0e" class="opentabletextbox ">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper  ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$1026265282$-->
+                              <div class="openTextBox__preText"><!--?lit$1026265282$-->What is your suggested fix for
+                                the <b>Directory indexing found</b> vulnerability?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$1026265282$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$1026265282$-->
+                                <!--?lit$1026265282$-->Add a blank index page in each web-accessible directory or
+                                disable the feature in the web server configuration file.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$1026265282$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$1026265282$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$1026265282$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="64a71b4de25bb14aec1fabe6" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 9.09091%;"><!---->
+
+              <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabe6"
+                class="64a71b4de25bb14aec1fabe6 block remove-top-padding remove-padding-bottom background-color-white ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="64a71b4de25bb14aec1fabe6" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$1026265282$--><!----><opentextbox-view modelid="64a72c994fa0304b40b7cffb" class="is-full"
+                      is-touch="false" fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr"
+                      location="page" theme="light" orientation="landscape" themetype="article-base-theme"
+                      sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="64a72c994fa0304b40b7cffb"
+                            class="component opentextbox 64a72c994fa0304b40b7cffb  is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="64a72c994fa0304b40b7cffb" class="opentabletextbox ">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper  ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$1026265282$-->
+                              <div class="openTextBox__preText"><!--?lit$1026265282$-->What is your suggested fix for
+                                the <b>Cleartext Transmission of Sensitive Information via HTTP</b> vulnerability?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$1026265282$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$1026265282$-->
+                                <!--?lit$1026265282$-->Use encryption protocols such as SSL/TLS or HTTPS to ensure data
+                                is encrypted in transit.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$1026265282$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$1026265282$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$1026265282$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="64a71b4de25bb14aec1fabe7" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 9.09091%;"><!---->
+
+              <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabe7"
+                class="64a71b4de25bb14aec1fabe7 block remove-top-padding remove-padding-bottom background-color-white ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="64a71b4de25bb14aec1fabe7" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$1026265282$--><!----><opentextbox-view modelid="64a72d56af46d24ecf461c10" class="is-full"
+                      is-touch="false" fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr"
+                      location="page" theme="light" orientation="landscape" themetype="article-base-theme"
+                      sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="64a72d56af46d24ecf461c10"
+                            class="component opentextbox 64a72d56af46d24ecf461c10  is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="64a72d56af46d24ecf461c10" class="opentabletextbox ">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper  ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$1026265282$-->
+                              <div class="openTextBox__preText"><!--?lit$1026265282$-->What is your suggested fix for
+                                the <b>Missing “HttpOnly” Cookie Attribute (HTTP)</b> vulnerability?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$1026265282$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$1026265282$-->
+                                <!--?lit$1026265282$-->Tag cookies with the HttpOnly flag which tells the browser that
+                                this particular cookie should only be accessed by the server.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$1026265282$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$1026265282$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$1026265282$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="64a71b4de25bb14aec1fabe8" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 9.09091%;"><!---->
+
+              <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabe8"
+                class="64a71b4de25bb14aec1fabe8 block remove-top-padding remove-padding-bottom background-color-white ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="64a71b4de25bb14aec1fabe8" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$1026265282$--><!----><opentextbox-view modelid="64a72d92f336464efa0c81b8" class="is-full"
+                      is-touch="false" fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr"
+                      location="page" theme="light" orientation="landscape" themetype="article-base-theme"
+                      sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="64a72d92f336464efa0c81b8"
+                            class="component opentextbox 64a72d92f336464efa0c81b8  is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="64a72d92f336464efa0c81b8" class="opentabletextbox ">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper  ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$1026265282$-->
+                              <div class="openTextBox__preText"><!--?lit$1026265282$-->What is your suggested fix for
+                                the <b>anti-clickjacking X-Frame-Options header is not present</b> vulnerability?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$1026265282$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$1026265282$-->
+                                <!--?lit$1026265282$-->Send the proper X-Frame-Options in HTTP response headers that
+                                instruct the browser to not allow framing from other domains. Employ defensive code in
+                                the UI to ensure that the current frame is the most top level window.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$1026265282$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$1026265282$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$1026265282$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="64a71b4de25bb14aec1fabeb" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 9.09091%;"><!---->
+
+              <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabeb"
+                class="64a71b4de25bb14aec1fabeb block remove-top-padding remove-padding-bottom background-color-white ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="64a71b4de25bb14aec1fabeb" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$1026265282$--><!----><text-view modelid="64a71b4ee25bb14aec1fabfa"
+                      class="is-full remove-top-padding remove-padding-bottom background-color-white" is-touch="false"
+                      fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr" location="page"
+                      theme="light" orientation="landscape" themetype="article-base-theme"
+                      sgpulse-type="component"><!---->
+                      <div class="text-inner component__inner">
+                        <div class="component__header-container">
+                          <div data-socialgoodpulse-id="64a71b4ee25bb14aec1fabfa"
+                            class="component text 64a71b4ee25bb14aec1fabfa remove-top-padding remove-padding-bottom background-color-white is-full   ">
+                            <base-view type="component" lowercase_component="text" model="[object Object]"
+                              customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                              os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                              themetype="article-base-theme"><!---->
+                              <div
+                                class="component__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                                <div class="component__header text__header">
+                                  <div class="component__header-inner text__header-inner">
+
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                    <div class="component__content">
+                                      <div tabindex="0" class="component__body text__body">
+                                        <div class="component__body-inner text__body-inner"><!--?lit$1026265282$-->
+                                          <h1>Reflection</h1>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--?lit$1026265282$-->
+                                    <!--?lit$1026265282$-->
+                                  </div>
+                                </div>
+                              </div>
+
+                            </base-view>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- div><div class="component__inner"></div></div -->
+                    </text-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="64a71b4de25bb14aec1fabec" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 9.09091%;"><!---->
+
+              <div data-socialgoodpulse-id="64a71b4de25bb14aec1fabec"
+                class="64a71b4de25bb14aec1fabec block remove-top-padding remove-padding-bottom background-color-white ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="64a71b4de25bb14aec1fabec" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                          <!--?lit$1026265282$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$1026265282$--><!----><opentextbox-view modelid="64a71b4fe25bb14aec1fabfb"
+                      class="is-full remove-top-padding remove-padding-bottom background-color-white" is-touch="false"
+                      fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr" location="page"
+                      theme="light" orientation="landscape" themetype="article-base-theme"
+                      sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="64a71b4fe25bb14aec1fabfb"
+                            class="component opentextbox 64a71b4fe25bb14aec1fabfb remove-top-padding remove-padding-bottom background-color-white is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="64a71b4fe25bb14aec1fabfb"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom background-color-white">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div
+                                    class="component__header-wrapper remove-top-padding remove-padding-bottom background-color-white ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                        <!--?lit$1026265282$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$1026265282$-->
+                              <div class="openTextBox__preText"><!--?lit$1026265282$-->Why is it important to use
+                                multiple methods to find vulnerabilities and misconfigurations in web servers?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$1026265282$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$1026265282$-->
+                                <!--?lit$1026265282$-->Because not all vulnerability scanners use the same methodologies
+                                to uncover vulnerabilities. To get the most complete view of the device, it can be
+                                necessary to use multiple scanning tools.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$1026265282$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$1026265282$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$1026265282$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!---->
+          </div>
+        </div>
+        <!--?lit$1026265282$-->
+      </div>
+    </div>
+  </div>
+  <sgpluse-opentextboxcontroller-view modelid="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+    os="windows" dir="ltr" location="page" theme="light" orientation="landscape" themetype="article-base-theme"><!---->
+    <div class="openTextBoxController__button-container">
+      <button tabindex="0"
+        class="btn-text showhidebtn openTextBoxController__showButton show-answer show"><!--?lit$1026265282$-->Show All
+        Answers</button>
+      <button tabindex="0"
+        class="btn-text showhidebtn openTextBoxController__hideButton hide-answer hide"><!--?lit$1026265282$-->Hide All
+        Answers</button>
+      <button class="btn-text resetbtn openTextBoxController__resetButton"><!--?lit$1026265282$-->Clear My
+        Responses</button>
+    </div>
+    <!--?lit$1026265282$-->
+    <hr>
+    <!--?lit$1026265282$-->
+    <div class="post-text" tabindex="0">
+      <!--?lit$1026265282$-->© 2017 - 2023 Cisco and/or its affiliates. All rights reserved. Cisco Public
+    </div>
+
+  </sgpluse-opentextboxcontroller-view>
+  <script></script>
+</body>
+<script>
+  window.addEventListener("load", function () {
+    console.log("loaded");
+    document.querySelectorAll(".answergray").forEach(function (ele) {
+      ele.classList.add("u-display-none");
+    });
+    document.querySelectorAll(".hide-answer").forEach(function (ele) {
+      ele.classList.add("u-display-none");
+    });
+    document.querySelectorAll(".show-answer").forEach(function (ele) {
+      ele.addEventListener("click", function (e) {
+        e.currentTarget.nextElementSibling.classList.remove("u-display-none");
+        e.currentTarget
+          .closest(".question-container")
+          .querySelectorAll(".answergray")
+          .forEach(function (ele) {
+            ele.classList.remove("u-display-none");
+          });
+        ele.classList.add("u-display-none");
+      });
+    });
+    document.querySelectorAll(".hide-answer").forEach(function (ele) {
+      ele.addEventListener("click", function (e) {
+        e.currentTarget.previousElementSibling.classList.remove("u-display-none");
+        e.currentTarget
+          .closest(".question-container")
+          .querySelectorAll(".answergray")
+          .forEach(function (ele) {
+            ele.classList.add("u-display-none");
+          });
+        ele.classList.add("u-display-none");
+      });
+    });
+    var event = new Event("click", {
+      bubbles: true,
+      cancelable: true,
+    });
+    document
+      .querySelectorAll(".openTextBoxController__showButton")
+      .forEach(function (ele) {
+        ele.addEventListener("click", function (e) {
+          e.currentTarget.nextElementSibling.classList.remove("u-display-none");
+          ele.classList.add("u-display-none");
+          document.querySelectorAll(".show-answer").forEach(function (ele) {
+            ele.dispatchEvent(event);
+          });
+        });
+      });
+
+    document
+      .querySelectorAll(".openTextBoxController__hideButton")
+      .forEach(function (ele) {
+        ele.addEventListener("click", function (e) {
+          e.currentTarget.previousElementSibling.classList.remove("u-display-none");
+          ele.classList.add("u-display-none");
+          document.querySelectorAll(".hide-answer").forEach(function (ele) {
+            ele.dispatchEvent(event);
+          });
+        });
+      });
+
+    document
+      .querySelectorAll(".openTextBoxController__resetButton")
+      .forEach(function (ele) {
+        ele.addEventListener("click", function (e) {
+          document.querySelectorAll("textArea").forEach(function (ele) {
+            ele.value = "";
+          });
+        });
+      });
+
+    document
+      .querySelectorAll('textarea')
+      .forEach(function (ele) {
+        ele.defaultValue = ele.defaultValue.replace(/<!--.*?-->/g, '');
+      })
+    let checkButtonLabel = "check_button_label_placeHolder";
+    let hideButtonLabel = "hide_button_label_placeHolder";
+    document.querySelectorAll(".check__button").forEach(function (ele) {
+      let answerBox = document.querySelector(".check__solution")
+      if (!answerBox.classList.contains("check__hidden")) {
+        answerBox.classList.add("check__hidden");
+        ele.innerText = checkButtonLabel;
+      }
+      ele.addEventListener("click", function (e) {
+        if (answerBox.classList.contains("check__hidden")) {
+          answerBox.classList.remove("check__hidden")
+          ele.innerText = hideButtonLabel;
+        } else {
+          answerBox.classList.add("check__hidden")
+          ele.innerText = checkButtonLabel;
+        }
+      })
+    })
+  });
+</script>
+
+</html>

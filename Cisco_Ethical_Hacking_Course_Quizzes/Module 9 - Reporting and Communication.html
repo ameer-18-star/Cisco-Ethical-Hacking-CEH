@@ -1,0 +1,2865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .quiz-section {
+            display: none;
+            padding: 40px;
+        }
+
+        .quiz-section.active {
+            display: block;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .rules-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .rules-card ol {
+            margin-left: 20px;
+        }
+
+        .rules-card li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .primary-btn {
+            background: #28a745;
+        }
+
+        .primary-btn:hover {
+            background: #218838;
+        }
+
+        .secondary-btn {
+            background: #6c757d;
+        }
+
+        .secondary-btn:hover {
+            background: #5a6268;
+        }
+
+        .warning-btn {
+            background: #dc3545;
+        }
+
+        .warning-btn:hover {
+            background: #c82333;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .question-type {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .selection-hint {
+            background: #fff3cd;
+            color: #856404;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            border: 1px solid #ffeaa7;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .options-container {
+            margin: 15px 0;
+        }
+
+        .option {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.correct-answer {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .option.wrong-answer {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .explanation {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #2196f3;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation strong {
+            color: #1976d2;
+        }
+
+        .pbq-answer {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .pbq-answer:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .result-card {
+            text-align: center;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-top: 4px solid #667eea;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .result-message {
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .result-message.pass {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .result-message.fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .results-table thead {
+            background: #667eea;
+            color: white;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .results-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+
+        .results-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-correct {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-incorrect {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .status-icon {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-section {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .results-table {
+                font-size: 0.9em;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="quiz-container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="quiz-section active">
+            <h1>Welcome to the Quiz!</h1>
+            <p style="text-align: center; font-size: 1.2em; margin-bottom: 20px;">Test your knowledge with MCQs and
+                Practice-Based Questions.</p>
+
+            <div class="rules-card">
+                <h2>Quiz Rules:</h2>
+                <ol>
+                    <li>Complete all MCQ questions first, then move to Practice-Based Questions.</li>
+                    <li>For multiple choice questions, select the exact number of options specified.</li>
+                    <li>Do not refresh or close the page during the quiz.</li>
+                    <li>Achieve <strong>75% or higher</strong> on MCQs to pass this module.</li>
+                    <li>PBQs are for practice only and won't affect your score.</li>
+                </ol>
+            </div>
+
+            <div style="text-align: center;">
+                <button id="startButton" class="btn">Start Quiz</button>
+            </div>
+        </div>
+
+        <!-- MCQ Screen -->
+        <div id="mcqScreen" class="quiz-section">
+            <h1>Multiple Choice Questions</h1>
+            <div class="progress-bar-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+
+            <div id="mcqContainer"></div>
+
+            <div class="button-group">
+                <button id="resetMcqButton" class="btn warning-btn">Reset All Selections</button>
+                <button id="submitMcqButton" class="btn primary-btn">Submit MCQs</button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="quiz-section">
+            <div class="result-card">
+                <h1>MCQ Results</h1>
+
+                <div class="result-stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalMcqResult">0</div>
+                        <div class="stat-label">Total MCQs</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="correctAnswersResult">0</div>
+                        <div class="stat-label">Correct Answers</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="incorrectAnswersResult">0</div>
+                        <div class="stat-label">Incorrect Answers</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="finalPercentage">0%</div>
+                        <div class="stat-label">Score</div>
+                    </div>
+                </div>
+
+                <div class="result-message" id="resultMessage"></div>
+
+                <h2 style="margin-top: 40px; margin-bottom: 20px;">Detailed Results</h2>
+                <div style="overflow-x: auto;">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Question ID</th>
+                                <th>Question</th>
+                                <th>Status</th>
+                                <th>Your Answer</th>
+                                <th>Correct Answer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="button-group">
+                    <button id="assessmentButton" class="btn primary-btn">View Assessment</button>
+                    <button id="continueToPbqButton" class="btn secondary-btn">Continue to Practice Questions</button>
+                    <button id="retakeQuizButton" class="btn warning-btn">Retake Quiz</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PBQ Screen -->
+        <div id="pbqScreen" class="quiz-section">
+            <h1>Practice-Based Questions</h1>
+            <p style="text-align: center; margin-bottom: 30px; color: #6c757d;">These questions are for practice only
+                and do not affect your score.</p>
+
+            <div id="pbqContainer"></div>
+
+            <div class="button-group">
+                <button id="finishQuizButton" class="btn primary-btn">Finish Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Questions - Replace with your actual questions
+        const questions = [
+            {
+                "id": "MCQ001",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is considered the final deliverable of a penetration test engagement?",
+                "options": [
+                    { "text": "The testing logs", "isCorrect": false },
+                    { "text": "The final report", "isCorrect": true },
+                    { "text": "The captured data", "isCorrect": false },
+                    { "text": "The signed contract", "isCorrect": false }
+                ],
+                "explanation": "Whether performing an internal test or a contracted one, the final deliverable for a penetration test is the final report."
+            },
+            {
+                "id": "MCQ002",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which of the following are common C-suite executives who may receive a penetration test report?",
+                "options": [
+                    { "text": "CEO", "isCorrect": true },
+                    { "text": "CFO", "isCorrect": true },
+                    { "text": "Junior Developer", "isCorrect": false },
+                    { "text": "CSO", "isCorrect": true },
+                    { "text": "IT Intern", "isCorrect": false }
+                ],
+                "explanation": "Common C-suite executives include the CEO, CFO, COO, CIO, and CSO."
+            },
+            {
+                "id": "MCQ003",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which section of the report provides a high-level summary for non-technical audiences?",
+                "options": [
+                    { "text": "Scope Details", "isCorrect": false },
+                    { "text": "Methodology", "isCorrect": false },
+                    { "text": "Executive Summary", "isCorrect": true },
+                    { "text": "Appendix", "isCorrect": false }
+                ],
+                "explanation": "A clearly written executive summary is important because it breaks down technical findings for an audience that may not be technical."
+            },
+            {
+                "id": "MCQ004",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the industry-standard scale for CVSS scores?",
+                "options": [
+                    { "text": "1 to 5", "isCorrect": false },
+                    { "text": "0 to 10", "isCorrect": true },
+                    { "text": "A to F", "isCorrect": false },
+                    { "text": "1 to 100", "isCorrect": false }
+                ],
+                "explanation": "CVSS scores are rated from 0 to 10, with 10 being the most severe."
+            },
+            {
+                "id": "MCQ005",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What are the two primary catalogs of known vulnerabilities mentioned in the sources?",
+                "options": [
+                    { "text": "CVE", "isCorrect": true },
+                    { "text": "Nmap Logs", "isCorrect": false },
+                    { "text": "CVSS", "isCorrect": true },
+                    { "text": "Metasploit Wiki", "isCorrect": false }
+                ],
+                "explanation": "The two catalogs mentioned that security analysts need to be familiar with are CVE and CVSS."
+            },
+            {
+                "id": "MCQ006",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool is specifically mentioned for note-taking and collaborative workspace management?",
+                "options": [
+                    { "text": "Nmap", "isCorrect": false },
+                    { "text": "Dradis", "isCorrect": true },
+                    { "text": "Wireshark", "isCorrect": false },
+                    { "text": "Metasploit", "isCorrect": false }
+                ],
+                "explanation": "Dradis is a tool that can ingest results from many tools and help produce reports while organizing findings."
+            },
+            {
+                "id": "MCQ007",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which control category involves technology like system hardening and firewalls?",
+                "options": [
+                    { "text": "Administrative Controls", "isCorrect": false },
+                    { "text": "Operational Controls", "isCorrect": false },
+                    { "text": "Technical Controls", "isCorrect": true },
+                    { "text": "Physical Controls", "isCorrect": false }
+                ],
+                "explanation": "Technical controls make use of technology, such as system hardening, to reduce vulnerabilities."
+            },
+            {
+                "id": "MCQ008",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "According to the sources, what are the two ways to distribute a final report?",
+                "options": [
+                    { "text": "Hard copy", "isCorrect": true },
+                    { "text": "Social Media", "isCorrect": false },
+                    { "text": "Electronically", "isCorrect": true },
+                    { "text": "Public Web Link", "isCorrect": false }
+                ],
+                "explanation": "There are generally two ways to distribute a report: as a hard copy or electronically."
+            },
+            {
+                "id": "MCQ009",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which NIST Special Publication provides guidance for media sanitization?",
+                "options": [
+                    { "text": "SP 800-50", "isCorrect": false },
+                    { "text": "SP 800-145", "isCorrect": false },
+                    { "text": "SP 800-88", "isCorrect": true },
+                    { "text": "SP 800-53", "isCorrect": false }
+                ],
+                "explanation": "NIST Special Publication 800-88, Revision 1, provides guidance for media sanitization."
+            },
+            {
+                "id": "MCQ010",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the term for tagging along with an authorized person through a secure door?",
+                "options": [
+                    { "text": "Microsegmentation", "isCorrect": false },
+                    { "text": "Tailgating", "isCorrect": true },
+                    { "text": "Hyperjacking", "isCorrect": false },
+                    { "text": "Port Mirroring", "isCorrect": false }
+                ],
+                "explanation": "While 'tailgating' is the common term used in context, the source refers to preventing unauthorized access via access control vestibules (mantraps)."
+            },
+            {
+                "id": "MCQ011",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What should a pentester do immediately upon finding indicators of prior compromise?",
+                "options": [
+                    { "text": "Include it in the final report only", "isCorrect": false },
+                    { "text": "Attempt to hack the malicious attacker", "isCorrect": false },
+                    { "text": "Immediately communicate it to the client", "isCorrect": true },
+                    { "text": "Delete the evidence to avoid scope creep", "isCorrect": false }
+                ],
+                "explanation": "You should immediately communicate any indicators of prior compromise and not wait until you deliver the final report."
+            },
+            {
+                "id": "MCQ012",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which items are listed as essential for post-engagement cleanup?",
+                "options": [
+                    { "text": "Tester-created credentials", "isCorrect": true },
+                    { "text": "Shells spawned on exploited systems", "isCorrect": true },
+                    { "text": "Tools installed on systems under test", "isCorrect": true },
+                    { "text": "The final report draft", "isCorrect": false },
+                    { "text": "The client's original database backups", "isCorrect": false }
+                ],
+                "explanation": "Cleanup includes removing tester-created credentials, shells, and tools installed on target systems."
+            },
+            {
+                "id": "MCQ013",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary difference between a false positive and a false negative?",
+                "options": [
+                    { "text": "A false positive is a missed attack; a false negative is a false alarm", "isCorrect": false },
+                    { "text": "A false positive is a false alarm; a false negative is a missed malicious activity", "isCorrect": true },
+                    { "text": "There is no difference between them", "isCorrect": false },
+                    { "text": "False positives only occur in manual testing", "isCorrect": false }
+                ],
+                "explanation": "False positives are 'false alarms,' while false negatives are malicious activities not detected by security devices."
+            },
+            {
+                "id": "MCQ014",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which CVSS metric group includes 'Remediation Level' and 'Report Confidence'?",
+                "options": [
+                    { "text": "Base metric group", "isCorrect": false },
+                    { "text": "Temporal metric group", "isCorrect": true },
+                    { "text": "Environmental metric group", "isCorrect": false },
+                    { "text": "Physical metric group", "isCorrect": false }
+                ],
+                "explanation": "The temporal metric group includes exploit code maturity, remediation level, and report confidence."
+            },
+            {
+                "id": "MCQ015",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the goal of 'Microsegmentation' in modern virtual environments?",
+                "options": [
+                    { "text": "To physical separate servers in different rooms", "isCorrect": false },
+                    { "text": "To enforce policies at the VM or container level", "isCorrect": true },
+                    { "text": "To increase the length of Ethernet cables", "isCorrect": false },
+                    { "text": "To disable all east-west traffic", "isCorrect": false }
+                ],
+                "explanation": "Microsegmentation is at the VM level or between containers, regardless of a VLAN or subnet, following a zero-trust model."
+            },
+            {
+                "id": "MCQ016",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which of the following are administrative controls?",
+                "options": [
+                    { "text": "RBAC", "isCorrect": true },
+                    { "text": "Video Surveillance", "isCorrect": false },
+                    { "text": "Policies and procedures", "isCorrect": true },
+                    { "text": "MFA", "isCorrect": false }
+                ],
+                "explanation": "Administrative controls are policies, rules, or training, such as RBAC and policies/procedures."
+            },
+            {
+                "id": "MCQ017",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What does a 'zero-trust model' dictate?",
+                "options": [
+                    { "text": "Users should trust the network by default", "isCorrect": false },
+                    { "text": "Only C-suite executives are trusted", "isCorrect": false },
+                    { "text": "Users and applications cannot communicate unless a policy permits it", "isCorrect": true },
+                    { "text": "Encryption is unnecessary", "isCorrect": false }
+                ],
+                "explanation": "Zero-trust dictates that users and applications cannot talk to each other unless a defined set of policies permits them to do so."
+            },
+            {
+                "id": "MCQ018",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "What are valid triggers for communication during a pentest?",
+                "options": [
+                    { "text": "Critical findings", "isCorrect": true },
+                    { "text": "Status reports", "isCorrect": true },
+                    { "text": "Indicators of prior compromise", "isCorrect": true },
+                    { "text": "Finding a public Wi-Fi password", "isCorrect": false }
+                ],
+                "explanation": "Communication triggers include critical findings, status reports, and indicators of prior compromise."
+            },
+            {
+                "id": "MCQ019",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which license is the Dradis Community Edition available under?",
+                "options": [
+                    { "text": "Proprietary Commercial License", "isCorrect": false },
+                    { "text": "GPLv2", "isCorrect": true },
+                    { "text": "MIT License", "isCorrect": false },
+                    { "text": "Creative Commons", "isCorrect": false }
+                ],
+                "explanation": "The Community Edition (CE) is an open-source version freely available under the GPLv2 license."
+            },
+            {
+                "id": "MCQ020",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the purpose of 'Key Rotation'?",
+                "options": [
+                    { "text": "Physically turning a server key", "isCorrect": false },
+                    { "text": "Retiring an encryption key and replacing it with a new one", "isCorrect": true },
+                    { "text": "Sharing passwords with teammates", "isCorrect": false },
+                    { "text": "Updating the BIOS", "isCorrect": false }
+                ],
+                "explanation": "Key rotation involves retiring an encryption key and replacing it by generating a new cryptographic key at regular intervals."
+            },
+            {
+                "id": "MCQ021",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "According to NIST SP 800-50, why are security education and training important?",
+                "options": [
+                    { "text": "They teach specific skills", "isCorrect": true },
+                    { "text": "They replace technical firewalls", "isCorrect": false },
+                    { "text": "They are the basis for decision-making", "isCorrect": true },
+                    { "text": "They eliminate the need for reports", "isCorrect": false }
+                ],
+                "explanation": "Security education and training teach specific skills and are the basis for decision-making."
+            },
+            {
+                "id": "MCQ022",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'RBAC'?",
+                "options": [
+                    { "text": "Remote Backup and Control", "isCorrect": false },
+                    { "text": "Role-based access control", "isCorrect": true },
+                    { "text": "Root-level Binary Access", "isCorrect": false },
+                    { "text": "Registry Binary Authorization", "isCorrect": false }
+                ],
+                "explanation": "RBAC is a type of administrative control where access permissions are based on specific roles or functions."
+            },
+            {
+                "id": "MCQ023",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which factor in MFA uses biometrics like fingerprints?",
+                "options": [
+                    { "text": "Something you know", "isCorrect": false },
+                    { "text": "Something you have", "isCorrect": false },
+                    { "text": "Something you are", "isCorrect": true },
+                    { "text": "Somewhere you are", "isCorrect": false }
+                ],
+                "explanation": "The 'something you are' factor is based on biometrics such as fingerprints or retinal patterns."
+            },
+            {
+                "id": "MCQ024",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What are examples of operational controls?",
+                "options": [
+                    { "text": "Job rotation", "isCorrect": true },
+                    { "text": "Mandatory vacations", "isCorrect": true },
+                    { "text": "Biometric scanning", "isCorrect": false },
+                    { "text": "Encryption", "isCorrect": false }
+                ],
+                "explanation": "Operational controls include job rotation and mandatory vacations."
+            },
+            {
+                "id": "MCQ025",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the recommended method to prevent SQL injection in applications?",
+                "options": [
+                    { "text": "Closing port 21", "isCorrect": false },
+                    { "text": "Parameterized queries", "isCorrect": true },
+                    { "text": "Using hard-coded credentials", "isCorrect": false },
+                    { "text": "Mandatory vacations", "isCorrect": false }
+                ],
+                "explanation": "SQL injection is best prevented through the use of parameterized queries and input validation."
+            },
+            {
+                "id": "MCQ026",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Who is the 'Primary contact' in a pentest engagement?",
+                "options": [
+                    { "text": "The IT intern", "isCorrect": false },
+                    { "text": "The stakeholder who hired you", "isCorrect": true },
+                    { "text": "The emergency police number", "isCorrect": false },
+                    { "text": "The software developer", "isCorrect": false }
+                ],
+                "explanation": "The primary contact is the stakeholder who hired you or the main contact identified by them."
+            },
+            {
+                "id": "MCQ027",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "What information should be in an electronic report distribution tracking log?",
+                "options": [
+                    { "text": "Name of recipient", "isCorrect": true },
+                    { "text": "ID or copy number", "isCorrect": true },
+                    { "text": "Date distributed", "isCorrect": true },
+                    { "text": "Recipient's personal home address", "isCorrect": false }
+                ],
+                "explanation": "A tracking log should include who it was distributed to, the ID/copy number, and the date."
+            },
+            {
+                "id": "MCQ028",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which CVSS group includes 'Confidentiality requirements'?",
+                "options": [
+                    { "text": "Base", "isCorrect": false },
+                    { "text": "Temporal", "isCorrect": false },
+                    { "text": "Environmental", "isCorrect": true },
+                    { "text": "Executive", "isCorrect": false }
+                ],
+                "explanation": "The environmental metric group includes confidentiality, integrity, and availability requirements."
+            },
+            {
+                "id": "MCQ029",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What should be provided in the Findings section to prove a flaw is not a false positive?",
+                "options": [
+                    { "text": "A verbal promise", "isCorrect": false },
+                    { "text": "A bill for services", "isCorrect": false },
+                    { "text": "Proof of exploitation (e.g., screenshots)", "isCorrect": true },
+                    { "text": "A list of tools used", "isCorrect": false }
+                ],
+                "explanation": "You need to provide proof that a flaw is not a false positive, ideally with screenshots showing the results of exploitation."
+            },
+            {
+                "id": "MCQ030",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which control category includes video surveillance?",
+                "options": [
+                    { "text": "Technical", "isCorrect": false },
+                    { "text": "Administrative", "isCorrect": false },
+                    { "text": "Operational", "isCorrect": false },
+                    { "text": "Physical", "isCorrect": true }
+                ],
+                "explanation": "Physical controls include access control vestibules, biometric controls, and video surveillance."
+            },
+            {
+                "id": "MCQ031",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In the CVSS, a score of 10 indicates what level of severity?",
+                "options": [
+                    { "text": "Low", "isCorrect": false },
+                    { "text": "Medium", "isCorrect": false },
+                    { "text": "Severe/Most Severe", "isCorrect": true },
+                    { "text": "Informational", "isCorrect": false }
+                ],
+                "explanation": "Scores are rated from 0 to 10, with 10 being the most severe."
+            },
+            {
+                "id": "MCQ032",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What are two specific examples of secrets management solutions offered by cloud providers?",
+                "options": [
+                    { "text": "AWS Secrets Manager", "isCorrect": true },
+                    { "text": "Google Cloud Secret Manager", "isCorrect": true },
+                    { "text": "Nmap Secret Key", "isCorrect": false },
+                    { "text": "Cisco Secret Vault", "isCorrect": false }
+                ],
+                "explanation": "Cloud providers offer solutions like AWS Secrets Manager and Google Cloud Secret Manager."
+            },
+            {
+                "id": "MCQ033",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary objective of a 'Cybersecurity Policy'?",
+                "options": [
+                    { "text": "To explain exactly how to configure a router", "isCorrect": false },
+                    { "text": "To define how the organization protects its information assets", "isCorrect": true },
+                    { "text": "To list the salaries of IT staff", "isCorrect": false },
+                    { "text": "To provide technical code for SQL injection", "isCorrect": false }
+                ],
+                "explanation": "A cybersecurity policy defines how the organization protects its information assets and ensures compliance."
+            },
+            {
+                "id": "MCQ034",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which metrics are part of the 'Base' group in CVSS?",
+                "options": [
+                    { "text": "Attack vector", "isCorrect": true },
+                    { "text": "Attack complexity", "isCorrect": true },
+                    { "text": "Remediation level", "isCorrect": false },
+                    { "text": "Report confidence", "isCorrect": false }
+                ],
+                "explanation": "The base metric group includes exploitability metrics like attack vector and attack complexity."
+            },
+            {
+                "id": "MCQ035",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which organization maintains the CVSS?",
+                "options": [
+                    { "text": "Cisco", "isCorrect": false },
+                    { "text": "NIST", "isCorrect": false },
+                    { "text": "FIRST.org", "isCorrect": true },
+                    { "text": "OWASP", "isCorrect": false }
+                ],
+                "explanation": "CVSS was developed and is maintained by FIRST.org."
+            },
+            {
+                "id": "MCQ036",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Attestation of findings'?",
+                "options": [
+                    { "text": "A cleanup script", "isCorrect": false },
+                    { "text": "Acknowledgment proving the assessment was performed and reporting findings", "isCorrect": true },
+                    { "text": "A list of tools used in the test", "isCorrect": false },
+                    { "text": "A type of firewall rule", "isCorrect": false }
+                ],
+                "explanation": "Attestation of findings is clear acknowledgment proving the assessment was performed and reporting findings."
+            },
+            {
+                "id": "MCQ037",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What should you do to control electronic report distribution over a network?",
+                "options": [
+                    { "text": "Encrypt the document", "isCorrect": true },
+                    { "text": "Encrypt the method of transport", "isCorrect": true },
+                    { "text": "Post it on a public server", "isCorrect": false },
+                    { "text": "Email it to all employees", "isCorrect": false }
+                ],
+                "explanation": "When transferring a report over a network, ensure the document and transport method are encrypted."
+            },
+            {
+                "id": "MCQ038",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool edition includes 'project management' features?",
+                "options": [
+                    { "text": "Dradis Community Edition", "isCorrect": false },
+                    { "text": "Dradis Professional Edition", "isCorrect": true },
+                    { "text": "Nmap SE", "isCorrect": false },
+                    { "text": "Metasploit Free", "isCorrect": false }
+                ],
+                "explanation": "The Dradis Professional Edition (PE) includes additional features for managing projects."
+            },
+            {
+                "id": "MCQ039",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What does 'SSDLC' stand for?",
+                "options": [
+                    { "text": "Simple Software Development Life Cycle", "isCorrect": false },
+                    { "text": "Secure software development life cycle", "isCorrect": true },
+                    { "text": "Static Server Data Life Code", "isCorrect": false },
+                    { "text": "Secure System Distribution Level Circuit", "isCorrect": false }
+                ],
+                "explanation": "SSDLC stands for secure software development life cycle."
+            },
+            {
+                "id": "MCQ040",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which CVSS 'Base' metrics fall under 'Impact'?",
+                "options": [
+                    { "text": "Confidentiality impact", "isCorrect": true },
+                    { "text": "Integrity impact", "isCorrect": true },
+                    { "text": "Attack vector", "isCorrect": false },
+                    { "text": "User interaction", "isCorrect": false }
+                ],
+                "explanation": "Impact metrics in the base group include confidentiality, integrity, and availability impact."
+            },
+            {
+                "id": "MCQ041",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In CVSS, which metric group is 'tailored to a specific organization's threat surface'?",
+                "options": [
+                    { "text": "Base", "isCorrect": false },
+                    { "text": "Temporal", "isCorrect": false },
+                    { "text": "Environmental", "isCorrect": true },
+                    { "text": "Administrative", "isCorrect": false }
+                ],
+                "explanation": "The environmental metric group provides ratings tailored to a specific organization's threat surface."
+            },
+            {
+                "id": "MCQ042",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Deconfliction'?",
+                "options": [
+                    { "text": "Starting a fire on a server", "isCorrect": false },
+                    { "text": "Removing potentially redundant or irrelevant information", "isCorrect": true },
+                    { "text": "Hiding findings from the client", "isCorrect": false },
+                    { "text": "Encrypting the final report", "isCorrect": false }
+                ],
+                "explanation": "Deconfliction involves removing redundant or irrelevant information from reports and communication."
+            },
+            {
+                "id": "MCQ043",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What are two specific factors in the 'Temporal' metric group of CVSS?",
+                "options": [
+                    { "text": "Exploit code maturity", "isCorrect": true },
+                    { "text": "Remediation level", "isCorrect": true },
+                    { "text": "Attack complexity", "isCorrect": false },
+                    { "text": "Availability requirements", "isCorrect": false }
+                ],
+                "explanation": "The temporal metric group includes exploit code maturity and remediation level."
+            },
+            {
+                "id": "MCQ044",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which control involves 'closing unnecessary open ports'?",
+                "options": [
+                    { "text": "Job rotation", "isCorrect": false },
+                    { "text": "System hardening", "isCorrect": true },
+                    { "text": "MFA", "isCorrect": false },
+                    { "text": "Video Surveillance", "isCorrect": false }
+                ],
+                "explanation": "System hardening includes closing unnecessary open ports and services and disabling unused ports."
+            },
+            {
+                "id": "MCQ045",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which organizations provide guidance for the secure software development life cycle?",
+                "options": [
+                    { "text": "OWASP", "isCorrect": true },
+                    { "text": "NIST", "isCorrect": false },
+                    { "text": "FIRST.org", "isCorrect": false },
+                    { "text": "SANS", "isCorrect": false }
+                ],
+                "explanation": "The sources mention OWASP providing best practices for SSDLC and the SAMM model."
+            },
+            {
+                "id": "MCQ046",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the 'communicate and move on' rule applied to in the sources?",
+                "options": [
+                    { "text": "Talking to C-suite executives", "isCorrect": false },
+                    { "text": "Talking to busy people", "isCorrect": true },
+                    { "text": "Dealing with emergency services", "isCorrect": false },
+                    { "text": "Note-taking during testing", "isCorrect": false }
+                ],
+                "explanation": "When asking questions of busy people, you should quickly ask and move on, similar to how reports should present info clearly for busy audiences."
+            },
+            {
+                "id": "MCQ047",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "What specific post-engagement actions are listed in the sources?",
+                "options": [
+                    { "text": "Client acceptance", "isCorrect": true },
+                    { "text": "Lessons learned", "isCorrect": true },
+                    { "text": "Follow-up retest", "isCorrect": true },
+                    { "text": "Automatic server reboot", "isCorrect": false }
+                ],
+                "explanation": "Post-engagement activities include client acceptance, lessons learned, and follow-up/retests."
+            },
+            {
+                "id": "MCQ048",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What risk rating system does OWASP publish for businesses?",
+                "options": [
+                    { "text": "CVSS Professional", "isCorrect": false },
+                    { "text": "OWASP Testing Guideline Score", "isCorrect": false },
+                    { "text": "Risk Rating Methodology", "isCorrect": true },
+                    { "text": "The Art of Hacking Score", "isCorrect": false }
+                ],
+                "explanation": "OWASP publishes the Risk Rating Methodology as part of the OWASP Testing Guide."
+            },
+            {
+                "id": "MCQ049",
+                "type": "single",
+                "selectCount": 1,
+                "text": "When should note-taking and documentation ideally begin?",
+                "options": [
+                    { "text": "After the report is delivered", "isCorrect": false },
+                    { "text": "While you are still testing", "isCorrect": true },
+                    { "text": "When the client asks for a status report", "isCorrect": false },
+                    { "text": "Only when an exploit fails", "isCorrect": false }
+                ],
+                "explanation": "The most accurate way to compile a report is to start collecting and organizing results while you are still testing."
+            },
+            {
+                "id": "MCQ050",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which metrics are part of the CVSS Environmental metric group?",
+                "options": [
+                    { "text": "Modified base metrics", "isCorrect": true },
+                    { "text": "Confidentiality requirements", "isCorrect": true },
+                    { "text": "Report confidence", "isCorrect": false },
+                    { "text": "Attack vector", "isCorrect": false }
+                ],
+                "explanation": "The environmental metric group includes modified base metrics and confidentiality requirements."
+            },
+            {
+                "id": "MCQ051",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the consequence of failing to validate a finding like an SQL injection flaw?",
+                "options": [
+                    { "text": "The developer gets a promotion", "isCorrect": false },
+                    { "text": "The tester might be reporting a false positive", "isCorrect": true },
+                    { "text": "The network speed increases", "isCorrect": false },
+                    { "text": "The report automatically deletes itself", "isCorrect": false }
+                ],
+                "explanation": "Failing to validate findings leads to false positives, wasting developers' and management's time and money."
+            },
+            {
+                "id": "MCQ052",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which control category includes 'access control vestibules'?",
+                "options": [
+                    { "text": "Administrative", "isCorrect": false },
+                    { "text": "Technical", "isCorrect": false },
+                    { "text": "Operational", "isCorrect": false },
+                    { "text": "Physical", "isCorrect": true }
+                ],
+                "explanation": "Physical controls include access control vestibules, formerly known as mantraps."
+            },
+            {
+                "id": "MCQ053",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which stakeholders should be documented as part of the communication path?",
+                "options": [
+                    { "text": "Primary contact", "isCorrect": true },
+                    { "text": "Technical contacts", "isCorrect": true },
+                    { "text": "Emergency contacts", "isCorrect": true },
+                    { "text": "The company's social media manager", "isCorrect": false }
+                ],
+                "explanation": "The communication path includes primary, technical, and emergency contacts."
+            },
+            {
+                "id": "MCQ054",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'SAMM' in the context of OWASP?",
+                "options": [
+                    { "text": "Secure Application Monitoring Method", "isCorrect": false },
+                    { "text": "Software Assurance Maturity Model", "isCorrect": true },
+                    { "text": "Static Analysis of Managed Media", "isCorrect": false },
+                    { "text": "Standardized Audit Management Metrics", "isCorrect": false }
+                ],
+                "explanation": "SAMM is the Software Assurance Maturity Model provided by OWASP to analyze and improve software security posture."
+            },
+            {
+                "id": "MCQ055",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What are two reasons why automated scanner results should not just be 'regurgitated'?",
+                "options": [
+                    { "text": "Presence of false positives", "isCorrect": true },
+                    { "text": "Presence of false negatives", "isCorrect": true },
+                    { "text": "Scanners are never technical enough", "isCorrect": false },
+                    { "text": "Scanners only work on Windows", "isCorrect": false }
+                ],
+                "explanation": "You should not just regurgitate scanner findings because there are almost always false positives or false negatives."
+            },
+            {
+                "id": "MCQ056",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which factor in MFA covers 'geofencing' or 'GPS'?",
+                "options": [
+                    { "text": "Something you know", "isCorrect": false },
+                    { "text": "Something you have", "isCorrect": false },
+                    { "text": "Something you are", "isCorrect": false },
+                    { "text": "Somewhere you are", "isCorrect": true }
+                ],
+                "explanation": "Authenticating based on geographic boundaries using geofencing or GPS is the 'somewhere you are' factor."
+            },
+            {
+                "id": "MCQ057",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the purpose of 'Deescalation'?",
+                "options": [
+                    { "text": "To increase the severity of a finding", "isCorrect": false },
+                    { "text": "To handle potentially intense situations with a client properly", "isCorrect": true },
+                    { "text": "To remove shells from a system", "isCorrect": false },
+                    { "text": "To encrypt a report", "isCorrect": false }
+                ],
+                "explanation": "Deescalation involves knowing the proper ways to handle situations encountered with a client."
+            },
+            {
+                "id": "MCQ058",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which technical controls are related to application security specifically?",
+                "options": [
+                    { "text": "User input sanitization", "isCorrect": true },
+                    { "text": "Query parameterization", "isCorrect": true },
+                    { "text": "Video surveillance", "isCorrect": false },
+                    { "text": "Mandatory vacations", "isCorrect": false }
+                ],
+                "explanation": "Mitigations for application vulnerabilities include input sanitization and query parameterization."
+            },
+            {
+                "id": "MCQ059",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is a 'true positive'?",
+                "options": [
+                    { "text": "A false alarm", "isCorrect": false },
+                    { "text": "A missed attack", "isCorrect": false },
+                    { "text": "A successful identification of a security attack", "isCorrect": true },
+                    { "text": "Acceptable behavior identified as acceptable", "isCorrect": false }
+                ],
+                "explanation": "A true positive is a successful identification of a security attack or malicious event."
+            },
+            {
+                "id": "MCQ060",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'east-west' traffic in a data center?",
+                "options": [
+                    { "text": "Traffic moving between clients and the internet", "isCorrect": false },
+                    { "text": "Traffic moving between internal applications and servers", "isCorrect": true },
+                    { "text": "Traffic flowing from the CEO to the CFO", "isCorrect": false },
+                    { "text": "Traffic that only moves during morning hours", "isCorrect": false }
+                ],
+                "explanation": "Most traffic in data centers is now 'east-west' traffic (internal application-to-application traffic)."
+            },
+            {
+                "id": "MCQ061",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What specific items are mentioned as 'secrets' in secrets management solutions?",
+                "options": [
+                    { "text": "Passwords", "isCorrect": true },
+                    { "text": "API keys", "isCorrect": true },
+                    { "text": "Nmap scanning scripts", "isCorrect": false },
+                    { "text": "Public LinkedIn profiles", "isCorrect": false }
+                ],
+                "explanation": "Secrets include passwords, API keys, and tokens used in applications and services."
+            },
+            {
+                "id": "MCQ062",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Job rotation'?",
+                "options": [
+                    { "text": "Rotating the direction of a server rack", "isCorrect": false },
+                    { "text": "Allowing employees to rotate from one team/role to another", "isCorrect": true },
+                    { "text": "Updating a password every 90 days", "isCorrect": false },
+                    { "text": "Switching the primary contact during a test", "isCorrect": false }
+                ],
+                "explanation": "Job rotation is an operational control allowing employees to rotate roles to learn new skills and get exposure."
+            },
+            {
+                "id": "MCQ063",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which are metric groups in determining CVSS scores?",
+                "options": [
+                    { "text": "Base", "isCorrect": true },
+                    { "text": "Temporal", "isCorrect": true },
+                    { "text": "Environmental", "isCorrect": true },
+                    { "text": "Administrative", "isCorrect": false },
+                    { "text": "Operational", "isCorrect": false }
+                ],
+                "explanation": "CVSS uses three metric groups: Base, Temporal, and Environmental."
+            },
+            {
+                "id": "MCQ064",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the risk of having too many false positives?",
+                "options": [
+                    { "text": "The network becomes faster", "isCorrect": false },
+                    { "text": "It can cause you to overlook real security events", "isCorrect": true },
+                    { "text": "Reports become shorter", "isCorrect": false },
+                    { "text": "Management becomes more trusting", "isCorrect": false }
+                ],
+                "explanation": "Having too many false positives is an operational nightmare and likely causes one to overlook real security events."
+            },
+            {
+                "id": "MCQ065",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which section of the report documents 'references and a glossary of terms'?",
+                "options": [
+                    { "text": "Methodology", "isCorrect": false },
+                    { "text": "Findings", "isCorrect": false },
+                    { "text": "Conclusion", "isCorrect": false },
+                    { "text": "Appendix", "isCorrect": true }
+                ],
+                "explanation": "The appendix documents references and includes a glossary of terms for the audience."
+            },
+            {
+                "id": "MCQ066",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which activities should a tester participate in as a pentest engagement closes?",
+                "options": [
+                    { "text": "Restoring systems", "isCorrect": true },
+                    { "text": "Removing created accounts", "isCorrect": true },
+                    { "text": "Starting new unauthorized exploits", "isCorrect": false },
+                    { "text": "Publicly leaking findings", "isCorrect": false }
+                ],
+                "explanation": "Closing activities include restoring systems and removing created accounts and files."
+            },
+            {
+                "id": "MCQ067",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Time-of-day restriction'?",
+                "options": [
+                    { "text": "Limiting the duration of a report presentation", "isCorrect": false },
+                    { "text": "Restricting system access based on the time of day", "isCorrect": true },
+                    { "text": "Measuring how long an exploit takes to run", "isCorrect": false },
+                    { "text": "A rule that limits testers to 8 hours of sleep", "isCorrect": false }
+                ],
+                "explanation": "Time-of-day restriction is an operational control that allows access only during specific hours."
+            },
+            {
+                "id": "MCQ068",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which items are exploitability metrics in the CVSS 'Base' group?",
+                "options": [
+                    { "text": "Attack vector", "isCorrect": true },
+                    { "text": "Privileges required", "isCorrect": true },
+                    { "text": "User interaction", "isCorrect": true },
+                    { "text": "Exploit code maturity", "isCorrect": false }
+                ],
+                "explanation": "Exploitability metrics include attack vector, complexity, privileges required, and user interaction."
+            },
+            {
+                "id": "MCQ069",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the benefit of using an integrated workspace like cloud-based project management tools for pentesting?",
+                "options": [
+                    { "text": "They automatically perform the hacks", "isCorrect": false },
+                    { "text": "They keep all notes and testing logs in one place", "isCorrect": true },
+                    { "text": "They eliminate the need for a final report", "isCorrect": false },
+                    { "text": "They allow testers to avoid communication with clients", "isCorrect": false }
+                ],
+                "explanation": "Integrated tools provide a workspace where all notes and logs are saved in one place and can even generate reports."
+            },
+            {
+                "id": "MCQ070",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the significance of the 0 to 10 score in CVSS?",
+                "options": [
+                    { "text": "It indicates the number of vulnerabilities found", "isCorrect": false },
+                    { "text": "It indicates the severity of a vulnerability", "isCorrect": true },
+                    { "text": "It measures the speed of the pentester", "isCorrect": false },
+                    { "text": "It is a count of stakeholders involved", "isCorrect": false }
+                ],
+                "explanation": "The CVSS score from 0 to 10 indicates the severity of a vulnerability."
+            },
+            {
+                "id": "MCQ071",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Scope Creep' in a pentest?",
+                "options": [
+                    { "text": "A type of malware that moves slowly", "isCorrect": false },
+                    { "text": "Poor change management leading to unplanned testing expansion", "isCorrect": true },
+                    { "text": "When the report takes too long to write", "isCorrect": false },
+                    { "text": "The movement from technical to non-technical sections", "isCorrect": false }
+                ],
+                "explanation": "Scope creep can occur due to poor change management or ineffective identification of required elements."
+            },
+            {
+                "id": "MCQ072",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What are two requirements for a 'good policy'?",
+                "options": [
+                    { "text": "Realistic and attainable", "isCorrect": true },
+                    { "text": "Adaptable and enforceable", "isCorrect": true },
+                    { "text": "Contains exact router passwords", "isCorrect": false },
+                    { "text": "Secretly hidden from employees", "isCorrect": false }
+                ],
+                "explanation": "A good policy must be endorsed, relevant, realistic, attainable, adaptable, enforceable, and inclusive."
+            },
+            {
+                "id": "MCQ073",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which control involves 'removing unnecessary software'?",
+                "options": [
+                    { "text": "Administrative control", "isCorrect": false },
+                    { "text": "System hardening", "isCorrect": true },
+                    { "text": "MFA", "isCorrect": false },
+                    { "text": "Biometric control", "isCorrect": false }
+                ],
+                "explanation": "System hardening includes closing ports and removing unnecessary software."
+            },
+            {
+                "id": "MCQ074",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which items are impact metrics in the CVSS 'Base' group?",
+                "options": [
+                    { "text": "Confidentiality impact", "isCorrect": true },
+                    { "text": "Integrity impact", "isCorrect": true },
+                    { "text": "Availability impact", "isCorrect": true },
+                    { "text": "Attack complexity", "isCorrect": false }
+                ],
+                "explanation": "Impact metrics include confidentiality, integrity, and availability impact."
+            },
+            {
+                "id": "MCQ075",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Goal Reprioritization'?",
+                "options": [
+                    { "text": "Changing the report font", "isCorrect": false },
+                    { "text": "The client tweaking testing goals based on findings", "isCorrect": true },
+                    { "text": "Firing the pentest team", "isCorrect": false },
+                    { "text": "Moving from hard copy to electronic distribution", "isCorrect": false }
+                ],
+                "explanation": "Depending on weaknesses found, a client may tweak or reprioritize the goal of testing."
+            },
+            {
+                "id": "MCQ076",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What are two specific examples of physical controls?",
+                "options": [
+                    { "text": "Access control vestibules", "isCorrect": true },
+                    { "text": "Biometric controls", "isCorrect": true },
+                    { "text": "Network segmentation", "isCorrect": false },
+                    { "text": "Password complexity", "isCorrect": false }
+                ],
+                "explanation": "Physical controls include access control vestibules and biometrics."
+            },
+            {
+                "id": "MCQ077",
+                "text": "What does a 'true negative' mean?",
+                "type": "single",
+                "selectCount": 1,
+                "options": [
+                    { "text": "An intrusion device misses an attack", "isCorrect": false },
+                    { "text": "An intrusion device identifies acceptable behavior as acceptable", "isCorrect": true },
+                    { "text": "An intrusion device triggers a false alarm", "isCorrect": false },
+                    { "text": "The pentest scope is too small", "isCorrect": false }
+                ],
+                "explanation": "A true negative occurs when an intrusion detection device identifies an activity as acceptable, and it is actually acceptable."
+            },
+            {
+                "id": "MCQ078",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which items are essential components of an 'Executive Summary'?",
+                "options": [
+                    { "text": "High-level description of scope", "isCorrect": true },
+                    { "text": "Summary of major findings", "isCorrect": true },
+                    { "text": "The exact code of every SQL injection", "isCorrect": false },
+                    { "text": "The personal email of the lead tester", "isCorrect": false }
+                ],
+                "explanation": "A brief high-level summary describes the pentest scope and major findings."
+            },
+            {
+                "id": "MCQ079",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the suggested way to handle sensitive info in a report screenshot?",
+                "options": [
+                    { "text": "Delete the screenshot", "isCorrect": false },
+                    { "text": "Redact the screenshot", "isCorrect": true },
+                    { "text": "Show it in full color without editing", "isCorrect": false },
+                    { "text": "Highlight it in bold", "isCorrect": false }
+                ],
+                "explanation": "If screenshots contain sensitive info, you should redact them sufficiently to limit the sensitivity."
+            },
+            {
+                "id": "MCQ080",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which metrics are listed under 'Environmental' CVSS metrics?",
+                "options": [
+                    { "text": "Modified base metrics", "isCorrect": true },
+                    { "text": "Integrity requirements", "isCorrect": true },
+                    { "text": "Exploit code maturity", "isCorrect": false },
+                    { "text": "Remediation level", "isCorrect": false }
+                ],
+                "explanation": "The environmental group includes modified base metrics and integrity requirements."
+            },
+            {
+                "id": "MCQ081",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Why should you label each hard copy of a report with a specific ID or number?",
+                "options": [
+                    { "text": "To make it look professional", "isCorrect": false },
+                    { "text": "To tie each copy to the specific person it is distributed to", "isCorrect": true },
+                    { "text": "To track the version of the software used", "isCorrect": false },
+                    { "text": "To identify the font style", "isCorrect": false }
+                ],
+                "explanation": "Labeling each copy with an ID tied to a person helps control distribution."
+            },
+            {
+                "id": "MCQ082",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the best option for cleaning a database after an automated vulnerability scan?",
+                "options": [
+                    { "text": "Deleting the entire server", "isCorrect": false },
+                    { "text": "Reverting or restoring the database to a previous state", "isCorrect": true },
+                    { "text": "Updating the antivirus", "isCorrect": false },
+                    { "text": "Closing all ports", "isCorrect": false }
+                ],
+                "explanation": "After testing, the best option is usually to revert or restore the database to a previous state."
+            },
+            {
+                "id": "MCQ083",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which technical controls are related to cryptography management?",
+                "options": [
+                    { "text": "Key rotation", "isCorrect": true },
+                    { "text": "Certificate management", "isCorrect": true },
+                    { "text": "System hardening", "isCorrect": false },
+                    { "text": "RBAC", "isCorrect": false }
+                ],
+                "explanation": "Technical controls include key rotation and certificate management."
+            },
+            {
+                "id": "MCQ084",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Situational Awareness' in report communication?",
+                "options": [
+                    { "text": "Knowing exactly where the servers are located physically", "isCorrect": false },
+                    { "text": "Properly communicating significant findings to the client in a timely manner", "isCorrect": true },
+                    { "text": "Understanding the weather conditions during a test", "isCorrect": false },
+                    { "text": "Knowing the names of the C-suite executives", "isCorrect": false }
+                ],
+                "explanation": "It is important to have situational awareness to properly communicate any significant findings to your client."
+            },
+            {
+                "id": "MCQ085",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which items are part of a 'Methodology' section in a report?",
+                "options": [
+                    { "text": "Port scanning details", "isCorrect": true },
+                    { "text": "Attack narrative", "isCorrect": true },
+                    { "text": "The CEO's home phone number", "isCorrect": false },
+                    { "text": "The final cleanup script", "isCorrect": false }
+                ],
+                "explanation": "The methodology should provide details on tools like port scanning/Nmap and the attack narrative."
+            },
+            {
+                "id": "MCQ086",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Process-level remediation'?",
+                "options": [
+                    { "text": "Closing a VLAN", "isCorrect": false },
+                    { "text": "Protecting OS processes from attacker manipulation", "isCorrect": true },
+                    { "text": "Mandating vacations", "isCorrect": false },
+                    { "text": "Rotating keys", "isCorrect": false }
+                ],
+                "explanation": "Process-level remediation protects OS processes and ensures an attacker has not created or manipulated them."
+            },
+            {
+                "id": "MCQ087",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What are two factors that determine report classification?",
+                "options": [
+                    { "text": "The organization's policies on classification", "isCorrect": true },
+                    { "text": "The specific results found in the test", "isCorrect": true },
+                    { "text": "The color of the report cover", "isCorrect": false },
+                    { "text": "The number of pages in the methodology", "isCorrect": false }
+                ],
+                "explanation": "Classification is driven by organization policies and the contents of the report."
+            },
+            {
+                "id": "MCQ088",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which control involves 'closing unnecessary open ports and services'?",
+                "options": [
+                    { "text": "Administrative", "isCorrect": false },
+                    { "text": "Technical", "isCorrect": true },
+                    { "text": "Operational", "isCorrect": false },
+                    { "text": "Physical", "isCorrect": false }
+                ],
+                "explanation": "This is a form of technical control known as system hardening."
+            },
+            {
+                "id": "MCQ089",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the purpose of 'Mandatory Vacations' as a security control?",
+                "options": [
+                    { "text": "To save the company money", "isCorrect": false },
+                    { "text": "To help prevent fraud or detect irregular activities while an employee is away", "isCorrect": true },
+                    { "text": "To make the IT team happier", "isCorrect": false },
+                    { "text": "To allow the pentest team easier access", "isCorrect": false }
+                ],
+                "explanation": "Operational controls like mandatory vacations are intermediate-level strategies implemented by people to ensure policies are followed."
+            },
+            {
+                "id": "MCQ090",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which items belong in an 'Appendix'?",
+                "options": [
+                    { "text": "References", "isCorrect": true },
+                    { "text": "Glossary of terms", "isCorrect": true },
+                    { "text": "Executive Summary", "isCorrect": false },
+                    { "text": "CVSS scores for critical findings", "isCorrect": false }
+                ],
+                "explanation": "The appendix includes references and a glossary."
+            },
+            {
+                "id": "MCQ091",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which control category focuses on day-to-day operations implemented by people?",
+                "options": [
+                    { "text": "Technical", "isCorrect": false },
+                    { "text": "Administrative", "isCorrect": false },
+                    { "text": "Operational", "isCorrect": true },
+                    { "text": "Physical", "isCorrect": false }
+                ],
+                "explanation": "Operational controls focus on day-to-day operations and are implemented by people."
+            },
+            {
+                "id": "MCQ092",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "What are three characteristics of a good policy?",
+                "options": [
+                    { "text": "Inclusive", "isCorrect": true },
+                    { "text": "Enforceable", "isCorrect": true },
+                    { "text": "Endorsed", "isCorrect": true },
+                    { "text": "Describes exact commands for firewalls", "isCorrect": false }
+                ],
+                "explanation": "Successful policies must be endorsed, relevant, realistic, attainable, adaptable, enforceable, and inclusive."
+            },
+            {
+                "id": "MCQ093",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is a 'root shell'?",
+                "options": [
+                    { "text": "The first command ever written", "isCorrect": false },
+                    { "text": "Highest administrative access on a system", "isCorrect": true },
+                    { "text": "A type of database reverting tool", "isCorrect": false },
+                    { "text": "A physical server case", "isCorrect": false }
+                ],
+                "explanation": "A root shell (like those obtained via Metasploit) provides full administrative access to a system."
+            },
+            {
+                "id": "MCQ094",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'User input sanitization'?",
+                "options": [
+                    { "text": "Physically cleaning a keyboard", "isCorrect": false },
+                    { "text": "Cleaning user data to prevent attacks like XSS", "isCorrect": true },
+                    { "text": "Deleting user accounts after a test", "isCorrect": false },
+                    { "text": "Updating a user's password", "isCorrect": false }
+                ],
+                "explanation": "Sanitizing user input is recommended to mitigate vulnerabilities like cross-site scripting and SQL injection."
+            },
+            {
+                "id": "MCQ095",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which CVSS groups are NOT considered 'static' (i.e., they can change over time or per organization)?",
+                "options": [
+                    { "text": "Temporal", "isCorrect": true },
+                    { "text": "Environmental", "isCorrect": true },
+                    { "text": "Base", "isCorrect": false },
+                    { "text": "Historical", "isCorrect": false }
+                ],
+                "explanation": "Base metrics are fixed; temporal and environmental metrics can change based on the organization or current time."
+            },
+            {
+                "id": "MCQ096",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the purpose of 'Root cause analysis' in a report?",
+                "options": [
+                    { "text": "To find the name of the attacker", "isCorrect": false },
+                    { "text": "To identify the underlying reason why a vulnerability exists", "isCorrect": true },
+                    { "text": "To calculate the final bill", "isCorrect": false },
+                    { "text": "To list every port on the server", "isCorrect": false }
+                ],
+                "explanation": "A quality report provides a detailed root cause analysis for each vulnerability."
+            },
+            {
+                "id": "MCQ097",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which control prevents tailgating using interlocking doors?",
+                "options": [
+                    { "text": "System hardening", "isCorrect": false },
+                    { "text": "Access control vestibule", "isCorrect": true },
+                    { "text": "MFA", "isCorrect": false },
+                    { "text": "Job rotation", "isCorrect": false }
+                ],
+                "explanation": "An access control vestibule uses two sets of interlocking doors to ensure security."
+            },
+            {
+                "id": "MCQ098",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "What metrics are included in 'Environmental' CVSS metrics?",
+                "options": [
+                    { "text": "Modified base metrics", "isCorrect": true },
+                    { "text": "Confidentiality requirements", "isCorrect": true },
+                    { "text": "Integrity requirements", "isCorrect": true },
+                    { "text": "Remediation level", "isCorrect": false }
+                ],
+                "explanation": "Environmental metrics include modified base metrics and confidentiality, integrity, and availability requirements."
+            },
+            {
+                "id": "MCQ099",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Attestation of findings' typically for?",
+                "options": [
+                    { "text": "Internal development only", "isCorrect": false },
+                    { "text": "Providing clear acknowledgement proving the assessment was performed", "isCorrect": true },
+                    { "text": "Requesting more money", "isCorrect": false },
+                    { "text": "Cleaning up shells", "isCorrect": false }
+                ],
+                "explanation": "Attestation proves the assessment was performed and reports findings formally."
+            },
+            {
+                "id": "MCQ100",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which factor in MFA covers 'one-time verification codes'?",
+                "options": [
+                    { "text": "Something you know", "isCorrect": false },
+                    { "text": "Something you have", "isCorrect": true },
+                    { "text": "Something you are", "isCorrect": false },
+                    { "text": "A factor provided to a device in your possession", "isCorrect": true }
+                ],
+                "explanation": "MFA factors like a one-time verification code provided to a user represent 'something you have'."
+            },
+            {
+                "id": "PBQ001",
+                "type": "pbq",
+                "text": "<h3>Pentest Report Components Matching</h3><p>Identify the purpose of each common section of a penetration testing report as described in Module 9.</p><ul><li><b>Executive Summary</b></li><li><b>Scope Details</b></li><li><b>Methodology</b></li><li><b>Findings</b></li><li><b>Remediation</b></li></ul>",
+                "explanation": "<b>Explanation:</b> According to the sources, the sections serve these purposes:<ul><li><b>Executive Summary:</b> A high-level summary of the scope and major findings for non-technical audiences.</li><li><b>Scope Details:</b> Defines the network and systems tested to distinguish between in-scope and out-of-scope segments.</li><li><b>Methodology:</b> Details the tools (e.g., Nmap) and the attack narrative used during testing.</li><li><b>Findings:</b> Technical details of vulnerabilities and how they can be exploited, typically using CVSS risk ratings.</li><li><b>Remediation:</b> Clear guidance on how to mitigate and remediate each vulnerability found.</li></ul>"
+            },
+            {
+                "id": "PBQ002",
+                "type": "pbq",
+                "text": "<h3>CVSS Metric Group Categorization</h3><p>The Common Vulnerability Scoring System (CVSS) uses three distinct metric groups. Categorize the following elements into their respective groups: <b>Attack Vector, Exploit Code Maturity, Remediation Level, Attack Complexity, Integrity Requirements, Availability Requirements.</b></p>",
+                "explanation": "<b>Explanation:</b> Based on the CVSS group definitions in Topic 9.1.2:<ul><li><b>Base Metric Group:</b> Includes Attack Vector and Attack Complexity.</li><li><b>Temporal Metric Group:</b> Includes Exploit Code Maturity and Remediation Level.</li><li><b>Environmental Metric Group:</b> Includes Integrity Requirements and Availability Requirements.</li></ul>"
+            },
+            {
+                "id": "PBQ003",
+                "type": "pbq",
+                "text": "<h3>Security Control Category Classification</h3><p>Match each specific security measure to its correct category: <b>Technical, Administrative, Operational, or Physical.</b></p><ul><li>System Hardening</li><li>RBAC</li><li>Mandatory Vacations</li><li>Access Control Vestibule</li><li>Multifactor Authentication</li></ul>",
+                "explanation": "<b>Explanation:</b> According to the source material:<ul><li><b>Technical Controls:</b> System Hardening and Multifactor Authentication.</li><li><b>Administrative Controls:</b> Role-based access control (RBAC).</li><li><b>Operational Controls:</b> Mandatory vacations.</li><li><b>Physical Controls:</b> Access control vestibule.</li></ul>"
+            },
+            {
+                "id": "PBQ004",
+                "type": "pbq",
+                "text": "<h3>Communication Triggers Scenario</h3><p>During a pentest, different events require immediate communication versus final report documentation. Identify the <b>Communication Triggers</b> for the following scenarios:</p><ul><li>The discovery of a high-severity SQL injection flaw.</li><li>Discovery of a suspicious file that is recognized as a known malicious backdoor.</li><li>A weekly update on general testing progress.</li></ul>",
+                "explanation": "<b>Explanation:</b> Based on the sources:<ul><li><b>Critical Findings:</b> Reporting a high-severity SQL injection may be required at the time of discovery depending on pre-engagement agreements.</li><li><b>Indicators of Prior Compromise:</b> A known backdoor suggests a malicious attacker is already present; this must be communicated <i>immediately</i>.</li><li><b>Status Reports:</b> Periodic updates on testing progress requested by the client.</li></ul>"
+            },
+            {
+                "id": "PBQ005",
+                "type": "pbq",
+                "text": "<h3>Post-Engagement Cleanup Checklist</h3><p>Describe the specific technical items that must be removed or reverted after a penetration test to ensure the target environment is restored to its original state.</p>",
+                "explanation": "<b>Explanation:</b> As per the post-engagement cleanup guidelines:<ul><li><b>Tester-created credentials:</b> Remove all user accounts created for persistent access.</li><li><b>Shells:</b> Remove any shells spawned on exploited systems.</li><li><b>Tools:</b> Remove any software or binaries installed during the test.</li><li><b>Databases:</b> Revert or restore databases to a previous state to remove test data or malicious scripts.</li><li><b>Files:</b> Any residual files created during testing or failed exploits (e.g., buffer overflow residues) must be identified and removed.</li></ul>"
+            }
+        ];
+        // Fisher-Yates shuffle algorithm for randomizing arrays
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Randomize questions and their options
+        function randomizeQuestions(questionsArray) {
+            return questionsArray.map(question => {
+                if (question.type !== 'pbq') {
+                    // Randomize options for MCQs
+                    return {
+                        ...question,
+                        options: shuffleArray(question.options)
+                    };
+                }
+                return question;
+            });
+        }
+
+        // Initialize randomized questions
+        let randomizedQuestions = randomizeQuestions(questions);
+        let mcqQuestions = shuffleArray(randomizedQuestions.filter(q => q.type !== 'pbq'));
+        let pbqQuestions = randomizedQuestions.filter(q => q.type === 'pbq');
+
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const mcqScreen = document.getElementById('mcqScreen');
+        const resultScreen = document.getElementById('resultScreen');
+        const pbqScreen = document.getElementById('pbqScreen');
+        const startButton = document.getElementById('startButton');
+        const mcqContainer = document.getElementById('mcqContainer');
+        const pbqContainer = document.getElementById('pbqContainer');
+        const submitMcqButton = document.getElementById('submitMcqButton');
+        const resetMcqButton = document.getElementById('resetMcqButton');
+        const progressBar = document.getElementById('progressBar');
+        const totalMcqResult = document.getElementById('totalMcqResult');
+        const correctAnswersResult = document.getElementById('correctAnswersResult');
+        const incorrectAnswersResult = document.getElementById('incorrectAnswersResult');
+        const finalPercentage = document.getElementById('finalPercentage');
+        const resultMessage = document.getElementById('resultMessage');
+        const resultsTableBody = document.getElementById('resultsTableBody');
+        const assessmentButton = document.getElementById('assessmentButton');
+        const continueToPbqButton = document.getElementById('continueToPbqButton');
+        const retakeQuizButton = document.getElementById('retakeQuizButton');
+        const finishQuizButton = document.getElementById('finishQuizButton');
+
+        // State
+        let userAnswers = {};
+        let quizStarted = false;
+        let quizFinished = false;
+        const STORAGE_KEY = 'quiz_app_results';
+
+        // Check if localStorage is available
+        function isLocalStorageAvailable() {
+            try {
+                const test = '__storage_test__';
+                localStorage.setItem(test, test);
+                localStorage.removeItem(test);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        const storageAvailable = isLocalStorageAvailable();
+
+        // Load saved results from localStorage
+        function loadSavedResults() {
+            if (!storageAvailable) return null;
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error('Error loading saved results:', e);
+            }
+            return null;
+        }
+
+        // Save results to localStorage
+        function saveResults(results) {
+            if (!storageAvailable) return;
+            try {
+                const dataToSave = {
+                    timestamp: new Date().toISOString(),
+                    ...results
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+            } catch (e) {
+                console.error('Error saving results:', e);
+            }
+        }
+
+        // Clear saved results
+        function clearSavedResults() {
+            if (!storageAvailable) return;
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (e) {
+                console.error('Error clearing results:', e);
+            }
+        }
+
+        // Check for saved results on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!storageAvailable) return;
+            const savedResults = loadSavedResults();
+            if (savedResults && savedResults.total) {
+                if (confirm('You have a previous quiz result. Would you like to view it?')) {
+                    displaySavedResults(savedResults);
+                }
+            }
+        });
+
+        function displaySavedResults(savedResults) {
+            totalMcqResult.textContent = savedResults.total;
+            correctAnswersResult.textContent = savedResults.correct;
+            incorrectAnswersResult.textContent = savedResults.incorrect;
+            finalPercentage.textContent = `${savedResults.percentage.toFixed(2)}%`;
+
+            if (savedResults.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+
+            // Show saved results in table
+            resultsTableBody.innerHTML = '';
+            if (savedResults.detailedResults) {
+                savedResults.detailedResults.forEach(result => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${result.id}</strong></td>
+                        <td>${result.question}</td>
+                        <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                            <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                            ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                        </td>
+                        <td>${result.userAnswer}</td>
+                        <td>${result.correctAnswer}</td>
+                    `;
+                    resultsTableBody.appendChild(row);
+                });
+            }
+
+            const timestamp = new Date(savedResults.timestamp);
+            const timeString = timestamp.toLocaleString();
+
+            const timestampNote = document.createElement('p');
+            timestampNote.style.textAlign = 'center';
+            timestampNote.style.color = '#6c757d';
+            timestampNote.style.marginTop = '20px';
+            timestampNote.textContent = `Results from: ${timeString}`;
+
+            const existingNote = resultScreen.querySelector('.timestamp-note');
+            if (existingNote) {
+                existingNote.remove();
+            }
+            timestampNote.className = 'timestamp-note';
+            resultScreen.querySelector('.result-card').insertBefore(timestampNote, resultScreen.querySelector('.button-group'));
+
+            showScreen('resultScreen');
+        }
+
+        // Disable F5 and Ctrl+W
+        document.addEventListener('keydown', function (e) {
+            // Disable F5 (refresh)
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                if (quizStarted && !quizFinished) {
+                    e.preventDefault();
+                    alert('Please complete the quiz before refreshing the page.');
+                    return false;
+                }
+            }
+
+            // Disable Ctrl+W (close window/tab)
+            if (e.ctrlKey && e.key === 'w') {
+                if (quizStarted && !quizFinished) {
+                    e.preventDefault();
+                    alert('Please complete the MCQ section before closing the page.');
+                    return false;
+                }
+            }
+        });
+
+        // Warn on page exit
+        window.addEventListener('beforeunload', function (e) {
+            if (quizStarted && !quizFinished) {
+                e.preventDefault();
+                e.returnValue = '';
+                return 'Are you sure you want to leave? Your quiz progress may be lost!';
+            }
+        });
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.quiz-section').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function renderMCQs() {
+            mcqContainer.innerHTML = '';
+
+            mcqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${question.id}`;
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = question.type === 'single' ? 'Single Choice' : 'Multiple Choice';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const selectionHint = document.createElement('div');
+                selectionHint.className = 'selection-hint';
+                selectionHint.textContent = `Select exactly ${question.selectCount} option${question.selectCount > 1 ? 's' : ''}`;
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(selectionHint);
+                questionCard.appendChild(questionText);
+
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+
+                question.options.forEach((option, optIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.onclick = () => handleAnswerSelection(question.id, optIndex, question.selectCount);
+
+                    const input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.id = `q${question.id}-opt${optIndex}`;
+                    input.style.pointerEvents = 'none';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `q${question.id}-opt${optIndex}`;
+                    label.textContent = option.text;
+                    label.style.pointerEvents = 'none';
+
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    optionsContainer.appendChild(optionDiv);
+                });
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(optionsContainer);
+                questionCard.appendChild(explanation);
+
+                mcqContainer.appendChild(questionCard);
+            });
+        }
+
+        function handleAnswerSelection(questionId, optionIndex, selectCount) {
+            if (!userAnswers[questionId]) {
+                userAnswers[questionId] = [];
+            }
+
+            const currentSelections = userAnswers[questionId];
+            const optionIndexInArray = currentSelections.indexOf(optionIndex);
+
+            if (optionIndexInArray > -1) {
+                // Deselect if already selected
+                currentSelections.splice(optionIndexInArray, 1);
+            } else {
+                // Select new option
+                if (selectCount === 1) {
+                    // For single selection, replace the selection
+                    userAnswers[questionId] = [optionIndex];
+                } else {
+                    // For multiple selection, add only if limit not reached
+                    if (currentSelections.length < selectCount) {
+                        currentSelections.push(optionIndex);
+                    } else {
+                        // Already at max, don't add
+                        return;
+                    }
+                }
+            }
+
+            // Update visual state
+            updateQuestionVisuals(questionId);
+            updateProgressBar();
+        }
+
+        function updateQuestionVisuals(questionId) {
+            const questionCard = document.getElementById(`question-${questionId}`);
+            const options = questionCard.querySelectorAll('.option');
+            const selectedIndices = userAnswers[questionId] || [];
+
+            options.forEach((optionDiv, idx) => {
+                const checkbox = optionDiv.querySelector('input[type="checkbox"]');
+                if (selectedIndices.includes(idx)) {
+                    optionDiv.classList.add('selected');
+                    checkbox.checked = true;
+                } else {
+                    optionDiv.classList.remove('selected');
+                    checkbox.checked = false;
+                }
+            });
+        }
+
+        function resetAllSelections() {
+            if (confirm('Are you sure you want to reset all your selections?')) {
+                userAnswers = {};
+                mcqQuestions.forEach(q => {
+                    updateQuestionVisuals(q.id);
+                });
+                updateProgressBar();
+            }
+        }
+
+        function updateProgressBar() {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+            const progress = (answeredCount / mcqQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function calculateResults() {
+            let correct = 0;
+            const detailedResults = [];
+
+            mcqQuestions.forEach(question => {
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                const isCorrect = userAnswer.length === correctIndices.length &&
+                    userAnswer.every(idx => correctIndices.includes(idx)) &&
+                    correctIndices.every(idx => userAnswer.includes(idx));
+
+                if (isCorrect) {
+                    correct++;
+                }
+
+                const userAnswerText = userAnswer.map(idx => question.options[idx].text).join(', ') || 'No answer';
+                const correctAnswerText = correctIndices.map(idx => question.options[idx].text).join(', ');
+
+                detailedResults.push({
+                    id: question.id,
+                    question: question.text,
+                    isCorrect,
+                    userAnswer: userAnswerText,
+                    correctAnswer: correctAnswerText
+                });
+            });
+
+            const total = mcqQuestions.length;
+            const incorrect = total - correct;
+            const percentage = total > 0 ? (correct / total) * 100 : 0;
+
+            return { total, correct, incorrect, percentage, detailedResults };
+        }
+
+        function showResults() {
+            const results = calculateResults();
+
+            // Save results to localStorage
+            saveResults(results);
+
+            totalMcqResult.textContent = results.total;
+            correctAnswersResult.textContent = results.correct;
+            incorrectAnswersResult.textContent = results.incorrect;
+            finalPercentage.textContent = `${results.percentage.toFixed(2)}%`;
+
+            if (results.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+
+            // Populate results table
+            resultsTableBody.innerHTML = '';
+            results.detailedResults.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${result.id}</strong></td>
+                    <td>${result.question}</td>
+                    <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                        <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                        ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                    </td>
+                    <td>${result.userAnswer}</td>
+                    <td>${result.correctAnswer}</td>
+                `;
+                resultsTableBody.appendChild(row);
+            });
+
+            showScreen('resultScreen');
+        }
+
+        function showAssessment() {
+            showScreen('mcqScreen');
+
+            mcqQuestions.forEach(question => {
+                const questionCard = document.getElementById(`question-${question.id}`);
+                const options = questionCard.querySelectorAll('.option');
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                options.forEach((optionDiv, idx) => {
+                    optionDiv.style.pointerEvents = 'none';
+
+                    if (correctIndices.includes(idx)) {
+                        optionDiv.classList.add('correct-answer');
+                    }
+
+                    if (userAnswer.includes(idx) && !correctIndices.includes(idx)) {
+                        optionDiv.classList.add('wrong-answer');
+                    }
+                });
+
+                const explanation = document.getElementById(`explanation-${question.id}`);
+                explanation.classList.add('show');
+            });
+
+            // Hide submit button but keep reset and continue buttons visible
+            submitMcqButton.style.display = 'none';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Retake Quiz';
+            resetMcqButton.classList.remove('warning-btn');
+            resetMcqButton.classList.add('secondary-btn');
+
+            // Add continue to PBQ button if not already present
+            let continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (!continueBtnInAssessment) {
+                continueBtnInAssessment = document.createElement('button');
+                continueBtnInAssessment.id = 'continueToPbqInAssessment';
+                continueBtnInAssessment.className = 'btn primary-btn';
+                continueBtnInAssessment.textContent = 'Continue to Practice Questions';
+                continueBtnInAssessment.onclick = () => {
+                    if (pbqQuestions.length > 0) {
+                        renderPBQs();
+                        showScreen('pbqScreen');
+                    } else {
+                        quizFinished = true;
+                        alert('No practice questions available. Quiz completed!');
+                    }
+                };
+
+                // Insert button in the button group
+                const buttonGroup = mcqScreen.querySelector('.button-group');
+                buttonGroup.appendChild(continueBtnInAssessment);
+            }
+            continueBtnInAssessment.style.display = 'inline-block';
+        }
+
+        function renderPBQs() {
+            pbqContainer.innerHTML = '';
+
+            if (pbqQuestions.length === 0) {
+                pbqContainer.innerHTML = '<p style="text-align: center; color: #6c757d;">No practice-based questions available.</p>';
+                return;
+            }
+
+            pbqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Practice Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = 'Practice Question';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                const textarea = document.createElement('textarea');
+                textarea.className = 'pbq-answer';
+                textarea.placeholder = 'Write your answer here...';
+                textarea.id = `pbq-${question.id}`;
+
+                const showAnswerBtn = document.createElement('button');
+                showAnswerBtn.className = 'btn secondary-btn';
+                showAnswerBtn.textContent = 'Show Answer';
+                showAnswerBtn.style.marginTop = '10px';
+                showAnswerBtn.onclick = () => togglePbqAnswer(question.id);
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `pbq-explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Answer:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(questionText);
+                questionCard.appendChild(textarea);
+                questionCard.appendChild(showAnswerBtn);
+                questionCard.appendChild(explanation);
+
+                pbqContainer.appendChild(questionCard);
+            });
+        }
+
+        function togglePbqAnswer(questionId) {
+            const explanation = document.getElementById(`pbq-explanation-${questionId}`);
+            explanation.classList.toggle('show');
+        }
+
+        function resetQuiz() {
+            // Randomize questions and options again
+            randomizedQuestions = randomizeQuestions(questions);
+            mcqQuestions = shuffleArray(randomizedQuestions.filter(q => q.type !== 'pbq'));
+            pbqQuestions = randomizedQuestions.filter(q => q.type === 'pbq');
+
+            userAnswers = {};
+            quizStarted = false;
+            quizFinished = false;
+            progressBar.style.width = '0%';
+            submitMcqButton.style.display = 'inline-block';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Reset All Selections';
+            resetMcqButton.classList.add('warning-btn');
+            resetMcqButton.classList.remove('secondary-btn');
+
+            // Hide continue button in assessment if exists
+            const continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (continueBtnInAssessment) {
+                continueBtnInAssessment.style.display = 'none';
+            }
+
+            // Clear saved results when retaking
+            clearSavedResults();
+
+            showScreen('startScreen');
+        }
+
+        // Event Listeners
+        startButton.addEventListener('click', () => {
+            quizStarted = true;
+            renderMCQs();
+            showScreen('mcqScreen');
+        });
+
+        submitMcqButton.addEventListener('click', () => {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+
+            if (answeredCount < mcqQuestions.length) {
+                if (!confirm('You have not answered all MCQs correctly (some may have incorrect number of selections). Do you want to submit anyway?')) {
+                    return;
+                }
+            }
+
+            showResults();
+        });
+
+        resetMcqButton.addEventListener('click', resetAllSelections);
+
+        assessmentButton.addEventListener('click', showAssessment);
+
+        continueToPbqButton.addEventListener('click', () => {
+            if (pbqQuestions.length > 0) {
+                renderPBQs();
+                showScreen('pbqScreen');
+            } else {
+                quizFinished = true;
+                alert('No practice questions available. Quiz completed!');
+            }
+        });
+
+        finishQuizButton.addEventListener('click', () => {
+            quizFinished = true;
+            alert('Quiz completed! You can now retake the quiz or close this window.');
+            showScreen('startScreen');
+        });
+
+        retakeQuizButton.addEventListener('click', resetQuiz);
+
+
+        // Warn on page exit
+        window.addEventListener('beforeunload', function (e) {
+            if (quizStarted && !quizFinished) {
+                e.preventDefault();
+                e.returnValue = '';
+                return 'Are you sure you want to leave? Your quiz progress may be lost!';
+            }
+        });
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.quiz-section').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function renderMCQs() {
+            mcqContainer.innerHTML = '';
+
+            mcqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${question.id}`;
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = question.type === 'single' ? 'Single Choice' : 'Multiple Choice';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const selectionHint = document.createElement('div');
+                selectionHint.className = 'selection-hint';
+                selectionHint.textContent = `Select exactly ${question.selectCount} option${question.selectCount > 1 ? 's' : ''}`;
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(selectionHint);
+                questionCard.appendChild(questionText);
+
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+
+                question.options.forEach((option, optIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.onclick = () => handleAnswerSelection(question.id, optIndex, question.selectCount);
+
+                    const input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.id = `q${question.id}-opt${optIndex}`;
+                    input.style.pointerEvents = 'none';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `q${question.id}-opt${optIndex}`;
+                    label.textContent = option.text;
+                    label.style.pointerEvents = 'none';
+
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    optionsContainer.appendChild(optionDiv);
+                });
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(optionsContainer);
+                questionCard.appendChild(explanation);
+
+                mcqContainer.appendChild(questionCard);
+            });
+        }
+
+        function handleAnswerSelection(questionId, optionIndex, selectCount) {
+            if (!userAnswers[questionId]) {
+                userAnswers[questionId] = [];
+            }
+
+            const currentSelections = userAnswers[questionId];
+            const optionIndexInArray = currentSelections.indexOf(optionIndex);
+
+            if (optionIndexInArray > -1) {
+                // Deselect if already selected
+                currentSelections.splice(optionIndexInArray, 1);
+            } else {
+                // Select new option
+                if (selectCount === 1) {
+                    // For single selection, replace the selection
+                    userAnswers[questionId] = [optionIndex];
+                } else {
+                    // For multiple selection, add only if limit not reached
+                    if (currentSelections.length < selectCount) {
+                        currentSelections.push(optionIndex);
+                    } else {
+                        // Already at max, don't add
+                        return;
+                    }
+                }
+            }
+
+            // Update visual state
+            updateQuestionVisuals(questionId);
+            updateProgressBar();
+        }
+
+        function updateQuestionVisuals(questionId) {
+            const questionCard = document.getElementById(`question-${questionId}`);
+            const options = questionCard.querySelectorAll('.option');
+            const selectedIndices = userAnswers[questionId] || [];
+
+            options.forEach((optionDiv, idx) => {
+                const checkbox = optionDiv.querySelector('input[type="checkbox"]');
+                if (selectedIndices.includes(idx)) {
+                    optionDiv.classList.add('selected');
+                    checkbox.checked = true;
+                } else {
+                    optionDiv.classList.remove('selected');
+                    checkbox.checked = false;
+                }
+            });
+        }
+
+        function resetAllSelections() {
+            if (confirm('Are you sure you want to reset all your selections?')) {
+                userAnswers = {};
+                mcqQuestions.forEach(q => {
+                    updateQuestionVisuals(q.id);
+                });
+                updateProgressBar();
+            }
+        }
+
+        function updateProgressBar() {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+            const progress = (answeredCount / mcqQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function calculateResults() {
+            let correct = 0;
+            const detailedResults = [];
+
+            mcqQuestions.forEach(question => {
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                const isCorrect = userAnswer.length === correctIndices.length &&
+                    userAnswer.every(idx => correctIndices.includes(idx)) &&
+                    correctIndices.every(idx => userAnswer.includes(idx));
+
+                if (isCorrect) {
+                    correct++;
+                }
+
+                const userAnswerText = userAnswer.map(idx => question.options[idx].text).join(', ') || 'No answer';
+                const correctAnswerText = correctIndices.map(idx => question.options[idx].text).join(', ');
+
+                detailedResults.push({
+                    id: question.id,
+                    question: question.text,
+                    isCorrect,
+                    userAnswer: userAnswerText,
+                    correctAnswer: correctAnswerText
+                });
+            });
+
+            const total = mcqQuestions.length;
+            const incorrect = total - correct;
+            const percentage = total > 0 ? (correct / total) * 100 : 0;
+
+            return { total, correct, incorrect, percentage, detailedResults };
+        }
+
+        function showResults() {
+            const results = calculateResults();
+
+            totalMcqResult.textContent = results.total;
+            correctAnswersResult.textContent = results.correct;
+            incorrectAnswersResult.textContent = results.incorrect;
+            finalPercentage.textContent = `${results.percentage.toFixed(2)}%`;
+
+            if (results.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+
+            // Populate results table
+            resultsTableBody.innerHTML = '';
+            results.detailedResults.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${result.id}</strong></td>
+                    <td>${result.question}</td>
+                    <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                        <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                        ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                    </td>
+                    <td>${result.userAnswer}</td>
+                    <td>${result.correctAnswer}</td>
+                `;
+                resultsTableBody.appendChild(row);
+            });
+
+            showScreen('resultScreen');
+        }
+
+        function showAssessment() {
+            showScreen('mcqScreen');
+
+            mcqQuestions.forEach(question => {
+                const questionCard = document.getElementById(`question-${question.id}`);
+                const options = questionCard.querySelectorAll('.option');
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                options.forEach((optionDiv, idx) => {
+                    optionDiv.style.pointerEvents = 'none';
+
+                    if (correctIndices.includes(idx)) {
+                        optionDiv.classList.add('correct-answer');
+                    }
+
+                    if (userAnswer.includes(idx) && !correctIndices.includes(idx)) {
+                        optionDiv.classList.add('wrong-answer');
+                    }
+                });
+
+                const explanation = document.getElementById(`explanation-${question.id}`);
+                explanation.classList.add('show');
+            });
+
+            // Hide submit button but keep reset and continue buttons visible
+            submitMcqButton.style.display = 'none';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Retake Quiz';
+            resetMcqButton.classList.remove('warning-btn');
+            resetMcqButton.classList.add('secondary-btn');
+
+            // Add continue to PBQ button if not already present
+            let continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (!continueBtnInAssessment) {
+                continueBtnInAssessment = document.createElement('button');
+                continueBtnInAssessment.id = 'continueToPbqInAssessment';
+                continueBtnInAssessment.className = 'btn primary-btn';
+                continueBtnInAssessment.textContent = 'Continue to Practice Questions';
+                continueBtnInAssessment.onclick = () => {
+                    if (pbqQuestions.length > 0) {
+                        renderPBQs();
+                        showScreen('pbqScreen');
+                    } else {
+                        quizFinished = true;
+                        alert('No practice questions available. Quiz completed!');
+                    }
+                };
+
+                // Insert button in the button group
+                const buttonGroup = mcqScreen.querySelector('.button-group');
+                buttonGroup.appendChild(continueBtnInAssessment);
+            }
+            continueBtnInAssessment.style.display = 'inline-block';
+        }
+
+        function renderPBQs() {
+            pbqContainer.innerHTML = '';
+
+            if (pbqQuestions.length === 0) {
+                pbqContainer.innerHTML = '<p style="text-align: center; color: #6c757d;">No practice-based questions available.</p>';
+                return;
+            }
+
+            pbqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Practice Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = 'Practice Question';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                const textarea = document.createElement('textarea');
+                textarea.className = 'pbq-answer';
+                textarea.placeholder = 'Write your answer here...';
+                textarea.id = `pbq-${question.id}`;
+
+                const showAnswerBtn = document.createElement('button');
+                showAnswerBtn.className = 'btn secondary-btn';
+                showAnswerBtn.textContent = 'Show Answer';
+                showAnswerBtn.style.marginTop = '10px';
+                showAnswerBtn.onclick = () => togglePbqAnswer(question.id);
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `pbq-explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Answer:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(questionText);
+                questionCard.appendChild(textarea);
+                questionCard.appendChild(showAnswerBtn);
+                questionCard.appendChild(explanation);
+
+                pbqContainer.appendChild(questionCard);
+            });
+        }
+
+        function togglePbqAnswer(questionId) {
+            const explanation = document.getElementById(`pbq-explanation-${questionId}`);
+            explanation.classList.toggle('show');
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            quizStarted = false;
+            quizFinished = false;
+            progressBar.style.width = '0%';
+            submitMcqButton.style.display = 'inline-block';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Reset All Selections';
+            resetMcqButton.classList.add('warning-btn');
+            resetMcqButton.classList.remove('secondary-btn');
+
+            // Hide continue button in assessment if exists
+            const continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (continueBtnInAssessment) {
+                continueBtnInAssessment.style.display = 'none';
+            }
+
+            showScreen('startScreen');
+        }
+
+        // Event Listeners
+        startButton.addEventListener('click', () => {
+            quizStarted = true;
+            renderMCQs();
+            showScreen('mcqScreen');
+        });
+
+        submitMcqButton.addEventListener('click', () => {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+
+            if (answeredCount < mcqQuestions.length) {
+                if (!confirm('You have not answered all MCQs correctly (some may have incorrect number of selections). Do you want to submit anyway?')) {
+                    return;
+                }
+            }
+
+            showResults();
+        });
+
+        resetMcqButton.addEventListener('click', resetAllSelections);
+
+        assessmentButton.addEventListener('click', showAssessment);
+
+        continueToPbqButton.addEventListener('click', () => {
+            if (pbqQuestions.length > 0) {
+                renderPBQs();
+                showScreen('pbqScreen');
+            } else {
+                quizFinished = true;
+                alert('No practice questions available. Quiz completed!');
+            }
+        });
+
+        finishQuizButton.addEventListener('click', () => {
+            quizFinished = true;
+            alert('Quiz completed! You can now retake the quiz or close this window.');
+            showScreen('startScreen');
+        });
+
+        retakeQuizButton.addEventListener('click', resetQuiz);
+    </script>
+</body>
+
+</html>

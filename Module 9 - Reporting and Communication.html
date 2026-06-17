@@ -1,0 +1,1430 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Module 9 - Reporting and Communication
+    </title>
+    <style>
+      /* ── Fonts ── */
+      @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+
+      /* ── Reset & Base ── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #f5f4f0;
+        --surface: #ffffff;
+        --border: #d8d5cc;
+        --text: #0f0e0d;
+        --muted: #3a3835;
+        --accent: #c0392b;
+        --accent-lt: #fdf0ee;
+        --tip-bg: #fffbea;
+        --tip-border: #e6c84a;
+        --note-bg: #eef4ff;
+        --note-border: #4a7ce6;
+        --term-bg: #1a1917;
+        --term-text: #e8e6e0;
+        --term-green: #4ec94e;
+        --radius: 6px;
+        --max-w: 860px;
+        --font-body: "IBM Plex Sans", sans-serif;
+        --font-mono: "IBM Plex Mono", monospace;
+      }
+
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+      }
+
+      /* ── Layout ── */
+      .page-wrap {
+        max-width: var(--max-w);
+        margin: 0 auto;
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      /* ── Course Header ── */
+      .course-header {
+        border-bottom: 2px solid var(--text);
+        padding-bottom: 1.25rem;
+        margin-bottom: 2.5rem;
+      }
+      .course-header .label {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .course-header h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1.25;
+        margin-top: 0.35rem;
+      }
+
+      /* ── Section Headings ── */
+      h2 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        border-left: 4px solid var(--accent);
+        padding-left: 0.75rem;
+        margin: 2.5rem 0 1rem;
+        line-height: 1.3;
+      }
+      h3 {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--muted);
+        font-family: var(--font-mono);
+        margin: 2rem 0 0.6rem;
+        letter-spacing: 0.02em;
+      }
+
+      /* ── Body Text ── */
+      p {
+        margin-bottom: 0.9rem;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      em {
+        font-style: italic;
+      }
+      strong,
+      b {
+        font-weight: 700;
+      }
+      em strong,
+      strong em {
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      /* ── Lists ── */
+      ul,
+      ol {
+        padding-left: 1.5rem;
+        margin-bottom: 0.9rem;
+      }
+      li {
+        margin-bottom: 0.3rem;
+      }
+
+      /* ── Avatar + Figures ── */
+      .avatar-wrap {
+        display: flex;
+        justify-content: flex-start;
+        margin: 1.25rem 0;
+      }
+      .avatar-wrap img {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        background: var(--surface);
+      }
+
+      figure {
+        margin: 1.5rem 0;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      figure img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      figcaption {
+        font-size: 0.82rem;
+        font-family: var(--font-mono);
+        color: var(--muted);
+        padding: 0.5rem 0.75rem;
+        border-top: 1px solid var(--border);
+        background: var(--bg);
+      }
+
+      /* ── Callouts: TIP / NOTE ── */
+      .callout {
+        border-radius: var(--radius);
+        padding: 0.85rem 1rem;
+        margin: 1.25rem 0;
+        border-left: 4px solid;
+      }
+      .callout .callout-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 0.3rem;
+      }
+      .callout p {
+        margin-bottom: 0;
+        font-size: 0.93rem;
+      }
+      .callout p + p {
+        margin-top: 0.5rem;
+      }
+
+      .callout-tip {
+        background: var(--tip-bg);
+        border-color: var(--tip-border);
+      }
+      .callout-tip .callout-label {
+        color: #6b4f00;
+      }
+
+      .callout-note {
+        background: var(--note-bg);
+        border-color: var(--note-border);
+      }
+      .callout-note .callout-label {
+        color: #1a3a7a;
+      }
+
+      /* ── Terminal / CLI Block ── */
+      .terminal {
+        background: var(--term-bg);
+        color: var(--term-text);
+        font-family: var(--font-mono);
+        font-size: 0.87rem;
+        border-radius: var(--radius);
+        padding: 1rem 1.2rem;
+        margin: 1.25rem 0;
+        overflow-x: auto;
+        line-height: 1.6;
+      }
+      .terminal .prompt {
+        color: var(--term-green);
+        user-select: none;
+      }
+
+      /* ── Lab Card ── */
+      .lab-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin: 1.5rem 0;
+        overflow: hidden;
+      }
+      .lab-card-header {
+        background: var(--text);
+        color: #fff;
+        padding: 0.65rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .lab-card-header .lab-icon {
+        font-size: 1rem;
+      }
+      .lab-card-header .lab-title {
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .lab-card-body {
+        padding: 1rem;
+      }
+      .lab-card-body p {
+        font-size: 0.93rem;
+        margin-bottom: 0.5rem;
+      }
+      .lab-card-body ul {
+        font-size: 0.93rem;
+      }
+      .lab-btn {
+        display: inline-block;
+        margin-top: 0.75rem;
+        padding: 0.45rem 1.1rem;
+        background: var(--accent);
+        color: #fff;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        transition: opacity 0.15s;
+      }
+      .lab-btn:hover {
+        opacity: 0.85;
+        text-decoration: none;
+      }
+
+      /* ── Video Block ── */
+      .video-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+      .video-block p {
+        font-size: 0.88rem;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+        font-family: var(--font-mono);
+      }
+      .video-placeholder {
+        background: #111;
+        border-radius: 4px;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #888;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        gap: 0.4rem;
+      }
+      .video-placeholder .play-icon {
+        font-size: 2rem;
+        color: #555;
+      }
+      .transcript-link {
+        display: inline-block;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        font-family: var(--font-mono);
+        color: var(--muted);
+      }
+      .transcript-link:hover {
+        color: var(--accent);
+      }
+
+      /* ── Quiz / Skills Check ── */
+      .quiz-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.4rem;
+        margin: 1.5rem 0;
+      }
+      .quiz-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+      .quiz-question {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+      }
+      .quiz-options {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 1rem;
+      }
+      .quiz-options li {
+        margin-bottom: 0.4rem;
+      }
+      .quiz-options label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.93rem;
+        color: var(--text);
+        transition:
+          background 0.12s,
+          border-color 0.12s;
+      }
+      .quiz-options label:hover {
+        background: var(--bg);
+        border-color: var(--muted);
+      }
+      .quiz-options input[type="radio"],
+      .quiz-options input[type="checkbox"] {
+        margin-top: 0.25rem;
+        accent-color: var(--accent);
+        flex-shrink: 0;
+      }
+      .quiz-options label.correct {
+        background: #eafaf1;
+        border-color: #27ae60;
+        color: #1a5c35;
+      }
+      .quiz-options label.incorrect {
+        background: #fdf0ee;
+        border-color: var(--accent);
+        color: #7a1a10;
+      }
+      .quiz-submit {
+        display: inline-block;
+        padding: 0.42rem 1.1rem;
+        background: var(--text);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .quiz-submit:hover {
+        opacity: 0.8;
+      }
+      .quiz-feedback {
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        font-family: var(--font-mono);
+        display: none;
+      }
+      .quiz-feedback.correct {
+        color: #1a5c35;
+      }
+      .quiz-feedback.incorrect {
+        color: #7a1a10;
+      }
+
+      /* ── Practice Block ── */
+      .practice-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--text);
+        border-radius: var(--radius);
+        padding: 1rem 1.2rem;
+        margin: 1.5rem 0;
+      }
+      .practice-block .practice-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+      }
+      .practice-block .question {
+        font-weight: 600;
+        margin-bottom: 0.6rem;
+        color: var(--text);
+      }
+      .practice-block ul {
+        list-style: none;
+        padding-left: 0;
+      }
+      .practice-block ul li {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.93rem;
+        color: var(--text);
+      }
+      .practice-block ul li::before {
+        content: "▸  ";
+        font-family: var(--font-mono);
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      /* ── Divider ── */
+      hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 2rem 0;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 600px) {
+        h2 {
+          font-size: 1.1rem;
+        }
+        .avatar-wrap img {
+          width: 120px;
+          height: 120px;
+        }
+      }
+
+      /* -- Quiz -- */
+      /* ── Quiz Block ── */
+      .quiz-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.4rem;
+        margin: 1.5rem 0;
+      }
+
+      .quiz-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .quiz-label::before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      .quiz-question {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.9rem;
+        font-size: 0.97rem;
+        line-height: 1.5;
+      }
+      .quiz-question code {
+        font-family: var(--font-mono);
+        background: #ebe9e4;
+        padding: 0.1em 0.35em;
+        border-radius: 3px;
+        font-size: 0.88em;
+        color: var(--text);
+      }
+
+      .quiz-options {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      .quiz-options li label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        padding: 0.55rem 0.8rem;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.93rem;
+        color: var(--text);
+        transition:
+          background 0.12s,
+          border-color 0.12s;
+        user-select: none;
+      }
+      .quiz-options li label:hover {
+        background: var(--bg);
+        border-color: var(--muted);
+      }
+      .quiz-options input[type="radio"],
+      .quiz-options input[type="checkbox"] {
+        margin-top: 0.28rem;
+        accent-color: var(--accent);
+        flex-shrink: 0;
+        width: 15px;
+        height: 15px;
+      }
+
+      /* answer states */
+      .quiz-options li.correct label {
+        background: #eafaf1;
+        border-color: #27ae60;
+        color: #1a5c35;
+        font-weight: 600;
+      }
+      .quiz-options li.incorrect label {
+        background: #fdf0ee;
+        border-color: var(--accent);
+        color: #7a1a10;
+      }
+      .quiz-options li.correct label::after,
+      .quiz-options li.incorrect label::after {
+        content: attr(data-mark);
+        margin-left: auto;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+      }
+
+      /* disable interaction after submit */
+      .quiz-block.submitted .quiz-options li label {
+        cursor: default;
+        pointer-events: none;
+      }
+
+      .quiz-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .quiz-submit {
+        padding: 0.42rem 1.1rem;
+        background: var(--text);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .quiz-submit:hover {
+        opacity: 0.8;
+      }
+      .quiz-submit:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .quiz-reset {
+        padding: 0.42rem 1.1rem;
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+        display: none;
+      }
+      .quiz-reset:hover {
+        border-color: var(--muted);
+        color: var(--text);
+      }
+
+      .quiz-feedback {
+        font-size: 0.88rem;
+        font-family: var(--font-mono);
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        display: none;
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+      .quiz-feedback.show {
+        display: block;
+      }
+      .quiz-feedback.correct {
+        background: #eafaf1;
+        color: #1a5c35;
+        border: 1px solid #27ae60;
+      }
+      .quiz-feedback.incorrect {
+        background: #fdf0ee;
+        color: #7a1a10;
+        border: 1px solid var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+<div class="page-wrap">
+
+  <!-- ── Module 9 Header ── -->
+  <div class="course-header">
+    <span class="label">Cisco Ethical Hacking Course · Module 9</span>
+    <h1>Reporting and Communication</h1>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       9.0 Introduction
+  ══════════════════════════════════════════ -->
+  <h2>9.0 Introduction</h2>
+
+  <h3>9.0.1 Why Should I Take This Module?</h3>
+
+  <p>The testing is complete, and the results recorded. It is time to consult your notes and inform the customer of the results. It is important to understand that all the activities during the test lead to the report. Every result should be recorded along with the way the results were obtained. Note keeping and other types of pentesting documentation management are essential to having the data that we need to report on all the hard work we have done to the customer.</p>
+
+  <p>It is easy to get so into what you are doing that you forget to take notes or record results. I have done it myself. Then, when it is time to write the report, it can be very, very difficult to remember everything that we did and everything that we discovered. Not good.</p>
+
+  <p>There are new cloud-based tools that treat pentesting as a project. This means that project management tools have been integrated with pentesting tools. These tools provide a collaborative workspace, dashboarding, daily vulnerability tracking, and an integrated workspace in which all notes and testing logs are saved in one place. The software even generates reports from the compiled data.</p>
+
+  <p>Our report is our deliverable for what can be an expensive engagement with our client. We take pride in the quality of reports. The best way to get return business and to generate customer referrals is by delivering the most thorough and useful reports that we can.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-orange.png" alt="Course character illustration">
+  </div>
+
+  <p>Once you've successfully completed the testing phases of a penetration test, you still have the most important phase to look forward to. Whether you are performing a test for an internal team or you are a contracted penetration tester, providing a quality deliverable is very important. The deliverable for a penetration test is the final report. By providing a quality report, you enable your customer to act on the findings of the report and mitigate the issues found. This module starts by discussing post-engagement activities, such as cleanup of any tools or shells left on systems that were part of the test. This module also covers report writing best practices, including the common report elements as well as findings and recommendations. Finally, this module touches on report handling and communication best practices.</p>
+
+  <h3>9.0.2 What Will I Learn in This Module?</h3>
+
+  <p><strong>Module Title:</strong> Reporting and Communication</p>
+  <p><strong>Module Objective:</strong> Create a penetration testing report.</p>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/9.0.2-What-Will-I-Learn-in-This-Module-Table.png" alt="Table listing Module 9 topic titles and objectives">
+    <figcaption>Module 9 — Topic Titles and Objectives overview table.</figcaption>
+  </figure>
+
+  <!-- ══════════════════════════════════════════
+       9.1 Components of Written Reports
+  ══════════════════════════════════════════ -->
+  <h2>9.1 Components of Written Reports</h2>
+
+  <h3>9.1.1 Overview</h3>
+
+  <p>Reports are a kind of communication. Many of the things that we do when we talk to other people are relevant to writing a report. We make many decisions when we speak to other people. These decisions enable us to choose the words and ideas we use according to who we are speaking to. For example, when we are talking about something that we think the person doesn't know much about, we simplify our language and provide explanations to help them to understand. If we need to ask a question of someone who is working in a busy place, we quickly ask our question and move on after it is answered. We don't try to engage in a conversation. And if we are talking to someone who we greatly respect, we speak more formally, avoid slang, and use words that communicate politeness.</p>
+
+  <p>Writing a report is similar. We need to provide information for busy people, details for technical people, and use language that expresses respect for our customer. We should never be critical or talk down to our audience.</p>
+
+  <p>Writing a good report takes practice and thought. It is an art. Read ahead to learn some of the considerations that must be made when we create this product for our audience.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png" alt="Course character illustration">
+  </div>
+
+  <p>One of the most important aspects to keep in mind when writing a report is who your report audience is. If you write a report that only a highly technical audience (technical staff) can understand and deliver it to an audience that is not very technical, the report will not show its value, and your hard work will go unnoticed. A clearly written executive summary is important because it breaks down the technical findings into summary explanations and provides enough information that all technical levels can understand the results and see value in the deliverable. Of course, you still need to cover all the technical details in other sections of the report. You can see that it is important to consider not only who you are delivering the report to but also who they will be passing it along to. You may end up presenting your final report to the executive or senior management level (the <strong><em>C-suite</em></strong>). Typically, they will turn over the findings of the report to other teams, such as IT, information security, developers, or even third-party stakeholders to address the issues found. The technical sections of the report must provide enough information for those teams to be able to take action.</p>
+
+  <div class="callout callout-note">
+    <div class="callout-label">Note</div>
+    <p><em>C-suite</em> refers to upper or executive-level managers within a company. Common C-suite executives include the chief executive officer (CEO), chief financial officer (CFO), chief operating officer (COO), chief information officer (CIO), and chief security officer (CSO).</p>
+  </div>
+
+  <p>A pen tester typically uses various tools throughout the testing phases of a penetration test, and some of these tools have the capability to produce impressive reports in various formats. This is a good feature for a tool to have. However, just because a tool has this capability does not mean you should use it to export the findings and simply regurgitate those findings in your final report. There are almost always false positives or false negatives in the results of any tool. For this reason, you must carefully review the results of a tool's output and try to determine what the actual vulnerabilities mean to the target. You must take into consideration the business of the target to be able to determine the impact on the environment. From there you will be able to compile a plan for how the findings should be prioritized and addressed.</p>
+
+  <!-- ══════════════════════════════════════════
+       9.1.2 Report Contents
+  ══════════════════════════════════════════ -->
+  <h3>9.1.2 Report Contents</h3>
+
+  <p>There are many ways you can go about structuring the elements in a report. Most penetration testing consultants start with a template and customize it based on the type of test and the desired deliverable. Keep in mind that there are published standards that you can reference. This section takes a look at some examples of the elements that should be included in a penetration testing report and discusses the level of detail that should be provided for each of these elements.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>Take some time to look at the excellent examples of penetration testing reports available at <a href="https://github.com/The-Art-of-Hacking/art-of-hacking/tree/master/pen_testing_reports" target="_blank"><em>https://github.com/The-Art-of-Hacking/art-of-hacking/tree/master/pen_testing_reports</em></a>. These reports have been provided by various organizations for the purpose of sharing examples of penetration testing reports. A great way to use this resource is to browse through the sample reports and view the report formats. Take a look at how the reports are organized, including what is included in each of the sections. You can then build your own report format based on these examples and your specific needs.</p>
+  </div>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png" alt="Course character illustration">
+  </div>
+
+  <p>A penetration testing report typically contains the following sections (which are not listed in a particular order). Select each for more detail.</p>
+
+  <p><strong>Executive Summary</strong></p>
+  <p>A brief high-level summary describes the penetration test scope and major findings.</p>
+
+  <p><strong>Scope Details</strong></p>
+  <p>It is important to include a detailed definition of the scope of the network and systems tested as part of the engagement to distinguish between in-scope and out-of-scope systems or segments and identify critical systems that are in or out of scope and explain why they are included in the test as targets.</p>
+
+  <p><strong>Methodology</strong></p>
+  <p>A report should provide details on the methodologies used to complete the testing (for example, port scanning, Nmap). You should also include details about the attack narrative. For example, if the environment did not have active services, explain what testing was performed to verify restricted access. Document any issues encountered during testing (for example, interference encountered as a result of active protection systems blocking traffic).</p>
+
+  <p><strong>Findings</strong></p>
+  <p>A report should document technical details about whether or how the system under testing and related components may be exploited based on each vulnerability found. It is a good idea to use an industry-accepted risk ratings for each vulnerability, such as the Common Vulnerability Scoring System (CVSS). When it comes to reporting, it can be difficult to determine a relevant method of calculating metrics and measures of the findings uncovered in the testing phases. This information is very important in your presentation to management. You must be able to provide data to show the value in your effort. This is why you should always try to use an industry-standard method for calculating and documenting the risks of the vulnerabilities listed in your report. CVSS has been adopted by many tools, vendors, and organizations. Using an industry standard such as CVSS will increase the value of your report to your client. CVSS, which was developed and is maintained by FIRST.org, provides a method for calculating a score for the seriousness of a threat. The scores are rated from 0 to 10, with 10 being the most severe. CVSS uses three metric groups in determining scores.</p>
+
+  <p><strong>Remediation</strong></p>
+  <p>You should provide clear guidance on how to mitigate and remediate each vulnerability. This information will be very useful for the IT technical staff, software developers, and security analysts who are trying to protect the organization (often referred to as the "blue team").</p>
+
+  <p><strong>Conclusion</strong></p>
+  <p>The report must have a good summary of all the findings and recommendations.</p>
+
+  <p><strong>Appendix</strong></p>
+  <p>It is important to document any references and include a glossary of terms that the audience of the report may not be familiar with.</p>
+
+  <div class="callout callout-note">
+    <div class="callout-label">Note</div>
+    <p>Vulnerability scanners rely heavily on catalogs of known vulnerabilities. The two catalogs of known vulnerabilities you need to be familiar with as a security analyst are Common Vulnerabilities and Exposures (CVE), which is a list of publicly known vulnerabilities, each assigned an ID number, description, and reference, and Common Vulnerability Scoring System (CVSS), which provides a score from 0 to 10 that indicates the severity of a vulnerability.</p>
+  </div>
+
+  <p>The following list gives you an idea of what is included in the metrics groups used to determine the overall CVSS score of a vulnerability. Select each for more information.</p>
+
+  <p><strong>Base metric group</strong></p>
+  <p>Includes exploitability metrics (for example, attack vector, attack complexity, privileges required, user interaction) and impact metrics (for example, confidentiality impact, integrity impact, availability impact).</p>
+
+  <p><strong>Temporal metric group</strong></p>
+  <p>Includes exploit code maturity, remediation level, and report confidence.</p>
+
+  <p><strong>Environmental metric group</strong></p>
+  <p>Includes modified base metrics, confidentiality, integrity, and availability requirements. CVSS includes different metrics and measures that describe the impact of each vulnerability. This risk prioritization can help your customer understand the business impact (business impact analysis) of the vulnerabilities that you found during the penetration testing engagement. You can find full explanations of the CVSS metric groups as well as details on how to calculate scores by accessing the Common Vulnerability Scoring System User Guide at <a href="https://www.first.org/cvss/user-guide" target="_blank"><em>https://www.first.org/cvss/user-guide</em></a>.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>The Open Web Application Security Project (OWASP) publishes the Risk Rating Methodology to help with estimating the risk of a vulnerability as it pertains to a business. It is part of the OWASP Testing Guide, at <a href="https://owasp.org/www-project-web-security-testing-guide" target="_blank"><em>https://owasp.org/www-project-web-security-testing-guide</em></a>.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       9.1.3 Practice - Penetration Reporting
+  ══════════════════════════════════════════ -->
+  <h3>9.1.3 Practice — Penetration Reporting</h3>
+
+  <div class="quiz-block" id="quiz-9-1">
+    <div class="quiz-label">Skills Check</div>
+    <p class="quiz-question">You are working on your penetration test report. Your supervisor reads over the report and suggests that many of the vulnerabilities that you have found should be reported with their CVSS scores. What is the value of CVSS scores in a penetration test report?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-9-1" value="0"> The CVSS provides a standard industry-accepted system for rating the severity of vulnerabilities.</label></li>
+      <li data-index="1"><label><input type="radio" name="q-9-1" value="1"> The CVSS vulnerability severity ratings are open-source and license-free.</label></li>
+      <li data-index="2"><label><input type="radio" name="q-9-1" value="2"> The CVSS vulnerability severity ratings can be customized to meet the requirements of individual systems.</label></li>
+      <li data-index="3"><label><input type="radio" name="q-9-1" value="3"> The CVSS vulnerability severity ratings are proprietary and are updated regularly by the vendor.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit" onclick="submitQuiz('quiz-9-1', 0, 'CVSS is valuable in penetration test reports because it provides an industry-accepted, standardized method for rating the severity of vulnerabilities on a scale of 0 to 10, enabling consistent communication of risk to the client.')">Check Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-9-1')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <div class="quiz-block" id="quiz-9-2">
+    <div class="quiz-label">Skills Check</div>
+    <p class="quiz-question">The CVSS provides vulnerability ratings that are standard across all industries. Which CVSS metric group provides vulnerability ratings that are tailored to a specific organization's threat surface?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-9-2" value="0"> physical metric group</label></li>
+      <li data-index="1"><label><input type="radio" name="q-9-2" value="1"> temporal metric group</label></li>
+      <li data-index="2"><label><input type="radio" name="q-9-2" value="2"> base metric group</label></li>
+      <li data-index="3"><label><input type="radio" name="q-9-2" value="3"> environmental metric group</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit" onclick="submitQuiz('quiz-9-2', 3, 'The environmental metric group tailors CVSS scores to a specific organization\'s threat surface by incorporating modified base metrics and the organization\'s confidentiality, integrity, and availability requirements.')">Check Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-9-2')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       9.1.4 Storage Time for Report and Secure Distribution
+  ══════════════════════════════════════════ -->
+  <h3>9.1.4 Storage Time for Report and Secure Distribution</h3>
+
+  <p>The classification of a report's contents is driven by the organization that the penetration test has been performed on and its policies on classification. In some cases, the contents of a report are considered top secret. However, as a rule of thumb, you should always consider report contents as highly classified and distribute them on a need-to-know basis only. The classification of report contents also determines the method of delivery.</p>
+
+  <p>In general, there are two ways to distribute a report: as a hard copy or electronically. Many times, when you perform the readout of the findings from your report, you will be meeting with the stakeholders who requested the penetration test to be performed. This meeting will likely include various people from the organization, including IT, information security, and management. In most cases, they will want to have a hard copy in front of them as you walk through the readout of the findings. This is, of course, possible, but the process should be handled with care.</p>
+
+  <p>The following are some examples of how to control the distribution of reports:</p>
+
+  <ul>
+    <li>Produce only a <strong>limited number of copies</strong>.</li>
+    <li>Define the <strong>distribution list</strong> in the scope of work.</li>
+    <li>Label each copy with a <strong>specific ID</strong> or number that is tied to the person it is distributed to.</li>
+    <li>Label each copy with the <strong>name of the person</strong> it is distributed to.</li>
+    <li>Keep a <strong>log of each hard copy</strong>, including who it was distributed to and the date it was distributed. Table 9-2 shows an example of such a log.</li>
+    <li>Ensure that each copy is <strong>physically and formally delivered</strong> to the designated recipient.</li>
+    <li>If transferring a report over a network, ensure that the <strong>document is encrypted</strong> and the method of transport is encrypted.</li>
+    <li>Ensure that the handling and distribution of an electronic copy of a report are even more restrictive than for a hard copy:
+      <ul>
+        <li>Control distribution on a secure server that is owned by the department that initially requested the penetration test.</li>
+        <li>Provide only one copy directly to the client or requesting party.</li>
+        <li>Once the report is delivered to the requesting party, use a documented, secure method of deleting all collected information and any copy of the report from your machine.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <figure>
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Table-9-2-Example-Report-Distribution-Tracking-Log.png" alt="Table 9-2 - Example Report Distribution Tracking Log">
+    <figcaption>Table 9-2 — Example Report Distribution Tracking Log.</figcaption>
+  </figure>
+
+  <!-- ══════════════════════════════════════════
+       9.1.5 Practice - Control and Distribution of Reports
+  ══════════════════════════════════════════ -->
+  <h3>9.1.5 Practice — Control and Distribution of Reports</h3>
+
+  <div class="quiz-block" id="quiz-9-3">
+    <div class="quiz-label">Skills Check</div>
+    <p class="quiz-question">You are preparing the Pixel Paradise pentest report for distribution. Your project manager has given you a brief distribution list for the report with the names of the personnel at Pixel Paradise who should receive it. Your manager tells you to make one copy for each person on the list and to carefully destroy any extra copies. Why is the manager so concerned about the number of reports that are produced and the destruction of any extra copies?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-9-3" value="0"> To save project budget, it is up to the client to make the number of copies that they feel is appropriate.</label></li>
+      <li data-index="1"><label><input type="radio" name="q-9-3" value="1"> The report contents should be treated as highly classified and distributed on a need-to-know basis only.</label></li>
+      <li data-index="2"><label><input type="radio" name="q-9-3" value="2"> A limited number of reports reduces the environmental impact.</label></li>
+      <li data-index="3"><label><input type="radio" name="q-9-3" value="3"> Controlling the distribution of the report ensures that as many people read it as possible.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit" onclick="submitQuiz('quiz-9-3', 1, 'Penetration test report contents should always be treated as highly classified and distributed on a need-to-know basis only, as the report may contain sensitive details about exploitable vulnerabilities in the client\'s environment.')">Check Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-9-3')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       9.1.6 Note Taking
+  ══════════════════════════════════════════ -->
+  <h3>9.1.6 Note Taking</h3>
+
+  <p>This is a common question when it comes to data collection and report writing: Exactly when should I start putting together this information? A report is the final outcome of a penetration testing effort. The most accurate and comprehensive way to compile a report is to start collecting and organizing the results while you are still testing. In other words, you need to understand the process of ongoing documentation during testing. As you come across findings that need to be documented, take screenshots of the tools used, the steps, and the output. This will help you piece together exactly the scenario that triggered the finding and illustrate it for the end user. You should include these screenshots as part of the report because including visual proof is the best way for your audience to gain a full picture of and understand the findings. Sometimes it may even be necessary to create a video. In summary, taking screenshots, videos, and lots of notes will help you create a deliverable report.</p>
+
+  <p>When it comes to constructing a final penetration testing report, one of the biggest challenges is pulling together all the data and findings collected throughout the testing phases. This is especially true when the penetration test spans a long period of time. Longer test spans often require a lengthier sorting process and use of specialized tools, such as Dradis, to find the information you are looking to include in your report.</p>
+
+  <p>Dradis is a handy little tool that can ingest the results from many of the penetration testing tools you use and help you produce reports in formats such as CSV, HTML, and PDF. It is very flexible because it includes add-ons and allows you to create your own. If you find yourself in a situation where you need to import from a new tool that is not yet compatible, you can write your own add-on to accomplish this.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>There are two editions of the Dradis Framework. The Community Edition (CE) is an open-source version that is freely available under the GPLv2 license. The Professional Edition (PE) is a commercial product that includes additional features for managing projects as well as more powerful reporting capabilities. The Community Edition can be found at <a href="https://github.com/dradis/dradis-ce" target="_blank"><em>https://github.com/dradis/dradis-ce</em></a>. Information on the Professional Edition is available at <a href="https://dradisframework.com/" target="_blank"><em>https://dradisframework.com</em></a>.</p>
+  </div>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png" alt="Course character illustration">
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       9.1.7 Common Themes/Root Causes
+  ══════════════════════════════════════════ -->
+  <h3>9.1.7 Common Themes/Root Causes</h3>
+
+  <p>As you compile findings during your testing phases, you will be recording the output of tools that you run, all vulnerabilities found, and general observations of insecure systems resulting from failure to use best practices. By itself, such data is normally not very useful in understanding the impact or risk to the specific environment being tested.</p>
+
+  <p>Let's say you run an automated vulnerability scanner such as Nessus against a Linux server that you found accessible on the internal network. The vulnerability scanner might indicate that it has an FTP server running on port 21. The FTP server software that is running the target host is up to date, and there is no indication from the vulnerability scanner that this is an issue. However, as you continue to discover additional information about the environment you are testing, you determine that this Linux server is actually accessible from the Internet.</p>
+
+  <p>You then discover, based on conversations with the server owner, that this FTP server was supposed to be decommissioned many years ago. After looking at the logs of the FTP server, you find that employees are still using it to store and transfer sensitive information. This, of course, is a major concern that would not have been uncovered by just reading a vulnerability report. This specific example illustrates why it is so important to analyze the results of your testing and correlate them to the actual environment. It is the only way to really understand the risk, and this understanding should be carefully conveyed in your report. Most reports provide an indication of risk on a scale of high, medium, and low. A quality report provides an accurate rating based on the risk to the actual environment and a detailed root cause analysis for each vulnerability.</p>
+
+  <p>If you are a third-party penetration tester who has been hired to perform a test for a customer, the report is your final deliverable. It is also proof of the work you performed and the findings that came from the effort. It is similar to having a home inspection on a home you want to purchase: The inspector will likely spend hours around the house, checking in the attic, crawl space, and so on. At the end of the day, you will want to have a detailed report on the inspector's findings so that you can address any issues found. If the inspector were to provide you with an incomplete report or a report containing false findings, you would not feel that you had gotten your money's worth. You would also run into issues if you tried to address the issues with the seller of the house. Similarly, when you turn over a penetration testing report to a customer, the customer will begin addressing the findings in the report. The customer may begin deploying upgrades or purchasing new equipment based on your recommendations. If the customer finds that one of the reported findings was a false positive, this may cost the customer a lot of money and time, and the customer would likely not hire you back for a follow-up engagement – and that isn't necessarily a good thing.</p>
+
+  <p>Now consider the case of an internal penetration test. Let's say you are performing an application audit on an internally developed web application. You note in your report that there is an SQL injection flaw in one of the input fields of the application, but you do not validate the finding. Typically, you would turn over this report to management, who would then task the application developer with addressing the issue. Of course, the application developer would want to find a fix for this defect as soon as possible. He or she would likely commit time to researching and mitigating the issue. If after spending time and money on hunting down the cause of this flaw, it is determined to be a false positive, the application developer would come back to you as the tester for answers. If it turned out that you didn't validate the result, the application developer would not be happy – and you could be sure your management would hear about it.</p>
+
+  <p>Of course, these are just two scenarios that illustrate the importance of quality report writing. There can be other impacts as well, including compromised systems due to false negatives. However, we now move on to discussing what a quality report is and how to accomplish it.</p>
+
+  <!-- ══════════════════════════════════════════
+       9.1.8 Practice - Common Themes/Root Causes
+  ══════════════════════════════════════════ -->
+  <h3>9.1.8 Practice — Common Themes/Root Causes</h3>
+
+  <div class="quiz-block" id="quiz-9-4">
+    <div class="quiz-label">Skills Check</div>
+    <p class="quiz-question">In the Pixel Paradise engagement, you have found an undocumented server that is reachable from the internet. What's more, it appears that the enterprise firewall was altered to permit access to the server from outside. In order to determine the root cause of these vulnerabilities, and recommend mitigation, what should you do?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-9-4" value="0"> Test the system rigorously using the available software tools.</label></li>
+      <li data-index="1"><label><input type="radio" name="q-9-4" value="1"> Immediately report critical findings to the client.</label></li>
+      <li data-index="2"><label><input type="radio" name="q-9-4" value="2"> Test a number of different user credentials to determine which user caused the vulnerability.</label></li>
+      <li data-index="3"><label><input type="radio" name="q-9-4" value="3"> Conduct follow-up interviews with the staff responsible for the systems.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit" onclick="submitQuiz('quiz-9-4', 3, 'Conducting follow-up interviews with the staff responsible for the systems is the best way to determine root causes, as technical tools alone cannot uncover context such as who made a firewall change or why a server was left undocumented.')">Check Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-9-4')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       9.1.9 Lab - Explore PenTest Reports
+  ══════════════════════════════════════════ -->
+  <h3>9.1.9 Lab — Explore PenTest Reports</h3>
+
+  <p>Writing good pentest report is a complex task. Organizations frequently have their own report templates and archived copies of previously created reports. It is always a good idea to consult examples when you have doubts about the language, tone, and style that you should use when writing a final report.</p>
+
+  <p>If you are uncertain about what you are doing, ask for help! There is nothing wrong with seeking assistance, especially with something that you have little experience doing. In the long run, this will save time on review and edit cycles by creating a stronger first draft.</p>
+
+  <p>In this lab, you will practice some of the skills necessary for creating pentest reports.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-green.png" alt="Course character illustration">
+  </div>
+
+  <p>In this lab, you will complete the following objectives:</p>
+
+  <ul>
+    <li>Part 1: Review Publicly Available Penetration Testing Reports</li>
+    <li>Part 2: Develop Your Own Report Format</li>
+    <li>Part 3: Create your Pentesting Report</li>
+  </ul>
+
+  <div class="lab-card">
+    <div class="lab-card-header">
+      <span class="lab-icon">🧪</span>
+      <span class="lab-title">LAB — Explore PenTest Reports</span>
+    </div>
+    <div class="lab-card-body">
+      <p>In this lab, you will review publicly available penetration testing reports, develop your own report format, and create your own pentesting report.</p>
+      <a class="lab-btn" href="/Cisco_Ethical_Hacking_Course_Labs/lab-explore-pentest-reports.html">Open Lab →</a>
+    </div>
+  </div>
+
+  <h2>Please answer the following questions after you have completed the lab.</h2>
+
+  <div class="quiz-block" id="quiz-9-5">
+    <div class="quiz-label">Skills Check</div>
+    <p class="quiz-question">How can you improve the Protego sample pentest report for Pixel Paradise that is provided in the lab?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-9-5" value="0"> Include the final cost and invoice as an appendix to the report.</label></li>
+      <li data-index="1"><label><input type="radio" name="q-9-5" value="1"> Include the pentest notes and logs with the report.</label></li>
+      <li data-index="2"><label><input type="radio" name="q-9-5" value="2"> Provide CVSS or other means of rating the discovered vulnerabilities.</label></li>
+      <li data-index="3"><label><input type="radio" name="q-9-5" value="3"> Provide an HTML version to be posted on the Pixel Paradise website.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit" onclick="submitQuiz('quiz-9-5', 2, 'Providing CVSS or another industry-standard scoring method for each discovered vulnerability improves the report by giving the client a consistent, objective measure of risk severity for prioritizing remediation efforts.')">Check Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-9-5')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       9.2 Analyzing Findings and Recommending Remediation
+  ══════════════════════════════════════════ -->
+  <h2>9.2 Analyzing the Findings and Recommending the Appropriate Remediation Within a Report</h2>
+
+  <h3>9.2.1 Overview</h3>
+
+  <p>Most penetration tests require recommendations for remediation. It is not enough to just find issues. We also need to provide our expertise to help our clients address the issues that we find.</p>
+
+  <p>Our recommendations may be technical, but can also be organizational. Many issues can be addressed through changes in policies and procedures. Sometimes our clients need to staff new positions or enhance the skill sets of existing employees. For other issues, staff training can be an appropriate recommendation in order to enhance protections against social engineering attacks.</p>
+
+  <p>You should match each vulnerability that you find to recommendations for mitigation. It is also valuable to provide relative risk ratings to help the client prioritize the actions that they must take. At this point in the engagement, we consider ourselves to be in a helping relationship with our clients.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png" alt="Course character illustration">
+  </div>
+
+  <p>During a penetration testing engagement, you should analyze the findings and recommend the appropriate remediation within your report, including technical, administrative, operational, and physical controls.</p>
+
+  <!-- ══════════════════════════════════════════
+       9.2.2 Technical Controls
+  ══════════════════════════════════════════ -->
+  <h3>9.2.2 Technical Controls</h3>
+
+  <p><em><strong>Technical controls</strong></em> make use of technology to reduce vulnerabilities. The following are examples of technical controls that can be recommended as mitigations and remediation of the vulnerabilities found during a pen test. Select each technical control for more information.</p>
+
+  <p><strong>System hardening</strong></p>
+  <p>System hardening involves applying security best practices, patches, and other configurations to remediate or mitigate the vulnerabilities found in systems and applications. The system hardening process includes closing unnecessary open ports and services, removing unnecessary software, and disabling unused ports.</p>
+
+  <p><strong>User input sanitization and query parameterization</strong></p>
+  <p>In Module 6, "Exploiting Application-Based Vulnerabilities," you learned that SQL injection is best prevented through the use of parameterized queries. You also learned about several other input validation vulnerabilities. The use of input validation (sanitizing user input) best practices is recommended to mitigate and prevent vulnerabilities such as cross-site scripting, cross-site request forgery, SQL injection, command injection, XML external entities, and other vulnerabilities explained in Module 6. OWASP provides several cheat sheets and detailed guidance on how to prevent these vulnerabilities; see <a href="https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html" target="_blank"><em>https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html</em></a> and <a href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html" target="_blank"><em>https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html</em></a>.</p>
+
+  <p><strong>Multifactor authentication</strong></p>
+  <p>Multifactor authentication (MFA) is authentication that requires two or more factors. Multilayer authentication requires that two or more of the same type of factors be presented. Data classification, regulatory requirements, the impact of unauthorized access, and the likelihood of a threat being exercised should all be considered when you're deciding on the level of authentication required. The more factors, the more robust the authentication process. In response to password insecurity, many organizations have deployed multifactor authentication options to their users. With multifactor authentication, accounts are protected by something you know (password) and something you have (one-time verification code provided to you). Even gamers have been protecting their accounts using MFA for years.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>Let's take a look at this in practice: Jeannette inserts her bank card into an ATM and enters her PIN. What examples of multifactor authentication has she exhibited? An ATM provides a good example of MFA because it requires both "something you have" (your ATM card) and "something you know" (your PIN). Another possible factor in MFA is "something you are," which can be based on biometrics such as fingerprints, retinal patterns, and hand geometry. Yet another factor is "somewhere you are," such as authenticating to a specific network in a specific geographic area or boundary using geofencing or GPS.</p>
+  </div>
+
+  <p><strong>Password encryption</strong></p>
+  <p>You should always encrypt passwords, tokens, API credentials, and similar authentication data.</p>
+
+  <p><strong>Process-level remediation</strong></p>
+  <p>It is important to protect operating system (for example, Linux, Windows, iOS, Android) processes and make sure an attacker has not created or manipulated any processes in the underlying system.</p>
+
+  <p><strong>Patch management</strong></p>
+  <p>Patch management is the process of distributing, installing, and applying software updates. A patch management policy lists guidelines for proper management of vulnerabilities and includes phases such as testing, deploying, and documenting the security patches applied to your organization.</p>
+
+  <p><strong>Key rotation</strong></p>
+  <p>It is important to have and use a process for retiring an encryption key and replacing it by generating a new cryptographic key. Rotating keys at regular intervals allows you to reduce the attack surface and meet industry standards and compliance.</p>
+
+  <p><strong>Certificate management</strong></p>
+  <p>It is important to enroll, generate, manage, and revoke digital certificates in a secure manner.</p>
+
+  <p><strong>Secrets management solution</strong></p>
+  <p>You can take advantage of a number of tools and techniques to manage authentication credentials (secrets). These secrets include passwords, API keys, and tokens used in applications, services, and specialized systems. Employing a good secrets management solution enables you to eliminate hard-coded credentials, enforce password best practices (or eliminate passwords with other types of authentication), perform credential use monitoring, and extend secrets management to third parties in a secure manner. Examples of secrets management solutions offered by cloud providers include AWS Secrets Manager (<a href="https://aws.amazon.com/secrets-manager" target="_blank"><em>https://aws.amazon.com/secrets-manager</em></a>) and Google Cloud Secret Manager (<a href="https://cloud.google.com/secret-manager" target="_blank"><em>https://cloud.google.com/secret-manager</em></a>).</p>
+
+  <p><strong>Network segmentation</strong></p>
+  <p>Segmenting a network may involve using a combination of technologies such as firewalls, VLANs, access control lists in routers, and other techniques. For decades, servers were assigned subnets and VLANs. Sounds pretty simple, right? Well, it introduced a lot of complexities because application segmentation and policies were physically restricted to the boundaries of the VLAN within the same data center (or even in the campus). In virtual environments, the problem became bigger. Today applications can move around between servers to balance loads for performance or high availability upon failures. They can also move between different data centers and even different cloud environments.</p>
+
+  <p>Traditional segmentation based on VLANs constrains you to maintain policies related to which application needs to talk to which application (and who can access such applications) in centralized firewalls. This is ineffective because most traffic in data centers is now "east-west" traffic, and a lot of that traffic does not even hit the traditional firewall. In virtual environments, a lot of the traffic does not leave the physical server. You need to apply policies to restrict whether application A needs or does not need to talk to application B or which application should be able to talk to the database. These policies should not be bound by which VLAN or IP subnet the application belongs to and whether it is in the same rack or even in the same data center.</p>
+
+  <p>Network traffic should not make multiple trips back and forth between the applications and centralized firewalls to enforce policies between VMs. The ability to enforce network segmentation in those environments is called <em>microsegmentation</em>, and microsegmentation is at the VM level or between containers, regardless of a VLAN or a subnet. Microsegmentation solutions need to be application aware. This means that the segmentation process starts and ends with the application itself. Most microsegmentation environments apply a <em>zero-trust model</em>, which dictates that users cannot talk to applications and applications cannot talk to other applications unless a defined set of policies permits them to do so.</p>
+
+  <!-- ══════════════════════════════════════════
+       9.2.3 Administrative Controls
+  ══════════════════════════════════════════ -->
+  <h3>9.2.3 Administrative Controls</h3>
+
+  <p><em><strong>Administrative controls</strong></em> are policies, rules, or training that are designed and implemented to reduce risk and improve safety. The following are examples of administrative controls that may be recommended in your penetration testing report. Select each administrative control for more information.</p>
+
+  <p><strong>Role-based access control (RBAC)</strong></p>
+  <p>This type of control bases access permissions on the specific role or function. Administrators grant access rights and permissions to roles. Each user is then associated with a role. There is no provision for assigning rights to a user or group account. For example, say that you have two users: Hannah and Derek. Derek is associated with the role of Engineer and inherits all the permissions assigned to the Engineer role. Derek cannot be assigned any additional permissions. Hannah is associated with the role "Sales" and inherits all the permissions assigned to the Sales role and cannot access Engineer resources. Users can belong to multiple groups. RBAC enables you to control what users can do at both broad and granular levels.</p>
+
+  <p><strong>Secure software development life cycle</strong></p>
+  <p>The software development life cycle (SDLC) provides a structured and standardized process for all phases of any system development effort. The act of incorporating security best practices, policies, and technologies to find and remediate vulnerabilities during the SDLC is referred to as the secure software development life cycle (SSDLC). OWASP provides several best practices and guidance on implementing the SSDLC at <a href="https://owasp.org/www-project-integration-standards/writeups/owasp_in_sdlc" target="_blank"><em>https://owasp.org/www-project-integration-standards/writeups/owasp_in_sdlc</em></a>. In addition, the OWASP Software Assurance Maturity Model (SAMM) provides an effective and measurable way for all types of organizations to analyze and improve their software security posture. You can find more details about OWASP's SAMM at <a href="https://owaspsamm.org/" target="_blank"><em>https://owaspsamm.org</em></a>.</p>
+
+  <p><strong>Minimum password requirements</strong></p>
+  <p>Different organizations may have different password complexity requirements (for example, minimum length, the use of uppercase letters, lowercase letters, numeric, and special characters). At the end of the day, the best solution is to use multifactor authentication (as discussed earlier in this module) instead of just simple password authentication.</p>
+
+  <p><strong>Policies and procedures</strong></p>
+  <p>A cybersecurity policy is a directive that defines how the organization protects its information assets and information systems, ensures compliance with legal and regulatory requirements, and maintains an environment that supports the guiding principles. The objective of a cybersecurity policy and corresponding program is to protect the organization, its employees, its customers, and its vendors and partners from harm resulting from intentional or accidental damage, misuse, or disclosure of information, as well as to protect the integrity of the information and ensure the availability of information systems. Successful policies establish what must be done and why it must be done–but not how to do it. A good policy must be endorsed, relevant, realistic, attainable, adaptable, enforceable, and inclusive.</p>
+
+  <!-- ══════════════════════════════════════════
+       9.2.4 Operational Controls
+  ══════════════════════════════════════════ -->
+  <h3>9.2.4 Operational Controls</h3>
+
+  <p><em><strong>Operational controls</strong></em> focus on day-to-day operations and strategies. They are implemented by people instead of machines and ensure that management policies are followed during intermediate-level operations. The following are examples of operational controls that often allow organizations to improve their security operations. Select each operation control for more information.</p>
+
+  <p><strong>Job rotation</strong></p>
+  <p>Allowing employees to rotate from one team to another or from one role to a different one allows individuals to learn new skills and get more exposure to other security technologies and practices.</p>
+
+  <p><strong>Time-of-day restrictions</strong></p>
+  <p>You might want to restrict access to users based on the time of the day. For example, you may only allow certain users to access specific systems during working hours.</p>
+
+  <p><strong>Mandatory vacations</strong></p>
+  <p>Depending on your local labor laws, you may be able to mandate that your employees take vacations during specific times (for example, mandatory holiday shutdown periods).</p>
+
+  <p><strong>User training</strong></p>
+  <p>All employees, contractors, interns, and designated third parties must receive security training appropriate to their position throughout their tenure. The training must cover at least compliance requirements, company policies, and handling of standards. A user should have training and provide written acknowledgment of rights and responsibilities prior to being granted access to information and information systems. Organizations will reap significant benefits from training users throughout their tenure.</p>
+
+  <p>Security awareness programs, security training, and security education all serve to reinforce the message that security is important. Security awareness programs are designed to remind users of appropriate behaviors. Security education and training teach specific skills and are the basis for decision-making. The National Institute of Standards and Technology (NIST) published Special Publication 800-50, "Building an Information Technology Security Awareness and Training Program," which succinctly defines why security education and training are so important.</p>
+
+  <!-- ══════════════════════════════════════════
+       9.2.5 Physical Controls
+  ══════════════════════════════════════════ -->
+  <h3>9.2.5 Physical Controls</h3>
+
+  <p><em><strong>Physical controls</strong></em> use security measures to prevent or deter unauthorized access to sensitive locations or material. The following are examples of physical controls that can be recommended in your penetration testing report. Select each physical control for more information.</p>
+
+  <p><strong>Access control vestibule</strong></p>
+  <p>An access control vestibule (formerly known as a mantrap) is a space with typically two sets of interlocking doors, where one door must close before the second door opens.</p>
+
+  <p><strong>Biometric controls</strong></p>
+  <p>These controls include fingerprint scanning, retinal scanning, and face recognition, among others.</p>
+
+  <p><strong>Video surveillance</strong></p>
+  <p>Cameras may be used to record and monitor activities in the physical premises.</p>
+
+  <!-- ══════════════════════════════════════════
+       9.2.6 Practice - Recommended Controls
+  ══════════════════════════════════════════ -->
+  <h3>9.2.6 Practice — Recommended Controls</h3>
+
+  <div class="quiz-block" id="quiz-9-6">
+    <div class="quiz-label">Skills Check</div>
+    <p class="quiz-question">You are working on the recommendations sections of the Pixel Paradise report and considering the categories of security controls that should be recommended as mitigation. Which categories of controls should you consider? (Choose four.)</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="checkbox" name="q-9-6" value="0"> financial controls</label></li>
+      <li data-index="1"><label><input type="checkbox" name="q-9-6" value="1"> data retention controls</label></li>
+      <li data-index="2"><label><input type="checkbox" name="q-9-6" value="2"> operational controls</label></li>
+      <li data-index="3"><label><input type="checkbox" name="q-9-6" value="3"> technical controls</label></li>
+      <li data-index="4"><label><input type="checkbox" name="q-9-6" value="4"> physical controls</label></li>
+      <li data-index="5"><label><input type="checkbox" name="q-9-6" value="5"> role-based controls</label></li>
+      <li data-index="6"><label><input type="checkbox" name="q-9-6" value="6"> administrative controls</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit" onclick="submitMultiQuiz('quiz-9-6', [2,3,4,6], 'The four categories of controls recommended in a penetration testing report are technical, administrative, operational, and physical controls — as described throughout section 9.2.')">Check Answer</button>
+      <button class="quiz-reset" onclick="resetMultiQuiz('quiz-9-6')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       9.2.7 Lab - Recommend Remediation Based on Findings
+  ══════════════════════════════════════════ -->
+  <h3>9.2.7 Lab — Recommend Remediation Based on Findings</h3>
+
+  <p>As you know, some vulnerability scanners provide links to reference materials and CVSS ratings. Some even allow filtering of results based on CVSS ratings so that only vulnerabilities that exceed a stated severity threshold will be displayed.</p>
+
+  <p>It is important to provide vulnerability ratings to your customers in some form. You should try to be as objective as possible. Using a standard rating system such as CVSS helps with this, but sometimes the vulnerability values lack context. Some pentesting organizations use their own rating system that they can contextualize for the client depending on the nature of the business. However, if you do this, be sure to define the ratings and provide a rationale for the rating of individual vulnerabilities if greater clarity is required.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-green.png" alt="Course character illustration">
+  </div>
+
+  <p>In this lab, you will complete the following objectives:</p>
+
+  <ul>
+    <li>Identify and prioritize vulnerabilities found on the DVWA server.</li>
+    <li>Research and recommend mitigation strategies.</li>
+  </ul>
+
+  <div class="lab-card">
+    <div class="lab-card-header">
+      <span class="lab-icon">🧪</span>
+      <span class="lab-title">LAB — Recommend Remediation Based on Findings</span>
+    </div>
+    <div class="lab-card-body">
+      <p>In this lab, you will identify and prioritize vulnerabilities found on the DVWA server and research and recommend mitigation strategies.</p>
+      <a class="lab-btn" href="/Cisco_Ethical_Hacking_Course_Labs/lab-recommend-remediation.html">Open Lab →</a>
+    </div>
+  </div>
+
+  <h2>Please answer the following questions after you have completed the lab.</h2>
+
+  <div class="quiz-block" id="quiz-9-7">
+    <div class="quiz-label">Skills Check</div>
+    <p class="quiz-question">A vulnerability scan of the Pixel Paradise network discovered a <strong>Missing "HTTPOnly" Cookie Attribute (HTTP)</strong> vulnerability. What should you recommend be done to mitigate this vulnerability?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-9-7" value="0"> Tag cookies with the HttpOnly flag.</label></li>
+      <li data-index="1"><label><input type="radio" name="q-9-7" value="1"> Use encryption protocols to prevent manipulation by threat actors.</label></li>
+      <li data-index="2"><label><input type="radio" name="q-9-7" value="2"> Disable directory indexing.</label></li>
+      <li data-index="3"><label><input type="radio" name="q-9-7" value="3"> Update server software to a version in which this vulnerability has been mitigated.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit" onclick="submitQuiz('quiz-9-7', 0, 'The Missing HTTPOnly Cookie Attribute vulnerability is directly mitigated by tagging cookies with the HttpOnly flag, which prevents client-side scripts from accessing the cookie and reduces the risk of cross-site scripting attacks stealing session data.')">Check Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-9-7')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════
+       9.3 Communication During Penetration Testing
+  ══════════════════════════════════════════ -->
+  <h2>9.3 Explaining the Importance of Communication During the Penetration Testing Process</h2>
+
+  <h3>9.3.1 Overview</h3>
+
+  <p>No one works in a vacuum. Here at Protego, we are always aware that we are providing a service to our customers. Without them, we don't exist. What's more, because many of us have worked in various cybersecurity-related positions within other companies, we understand the challenges that organizations face as they work to defend themselves against what seems like an endless number of threats and threat actors.</p>
+
+  <p>We always want to keep in touch with our clients as we conduct our testing engagements. Some security personnel will likely be anxious that they could be accused of professional negligence because of the vulnerabilities that we find. Management is concerned about the time it takes to conduct a test and any costs that could occur if the vulnerabilities that we discover could require expensive software upgrades or system down time.</p>
+
+  <p>We think it is effective to schedule regular check-in meetings with our customers so that they know how the test is going. We also work to open less formal channels of communication with cybersecurity personnel in order to help them feel more comfortable with what we are doing and to find answers to questions that might come up during the test.</p>
+
+  <p>In a formal sense, our penetration testing agreements establish how we intend to communicate during the test, and with whom. We also establish who on the client team should be informed if we discover indicators of prior compromise. Finally, we list the stakeholders at the organization who should receive the final report and attend the closing presentation.</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png" alt="Course character illustration">
+  </div>
+
+  <p>The report is the final deliverable in a penetration test. It communicates all the activities performed during the test as well as the ultimate results in the form of findings and recommendations. The report is, however, not the only form of communication that you will have with a client during a penetration testing engagement. During the testing phases of the engagement, certain situations may arise in which you need to have a plan for communication and escalation.</p>
+
+  <p>In Module 2, "Planning and Scoping a Penetration Testing Assessment", you learned how to scope a penetration testing engagement properly. You may encounter a scope creep situation if there is poor change management in the penetration testing engagement. In addition, scope creep can surface through ineffective identification of the technical and nontechnical elements that will be required for the penetration test. Poor communication among stakeholders, including your client and your own team, can also contribute to scope creep.</p>
+
+  <p>It is extremely important that you understand the <em>communication path</em> and communication channels with your client. You should always have good open lines of communication with your client and the stakeholders that hired you, including the following:</p>
+
+  <ul>
+    <li><strong>Primary contact:</strong> This is the stakeholder who hired you or the main contact identified by the person who hired you.</li>
+    <li><strong>Technical contacts:</strong> You should document any IT staff or security analysts/engineers that you might need to contact for assistance during the testing.</li>
+    <li><strong>Emergency contacts:</strong> You should clearly document who should be contacted in case of an emergency.</li>
+  </ul>
+
+  <!-- ══════════════════════════════════════════
+       9.3.2 Communication Triggers
+  ══════════════════════════════════════════ -->
+  <h3>9.3.2 Communication Triggers</h3>
+
+  <p>It is important that you have <em>situational awareness</em> to properly communicate any significant findings to your client. The following are a few examples of communication triggers:</p>
+
+  <ul>
+    <li><strong>Critical findings:</strong> You should document (as early as in the pre-engagement phase) how critical findings should be communicated and when. Your client might require you to report any critical findings at the time of discovery instead of waiting to inform the client in your final report.</li>
+    <li><strong>Status reports:</strong> Your client may ask you to provide periodic status reports about how the testing is progressing.</li>
+    <li><strong>Indicators of prior compromise:</strong> During a penetration test, you may find that a real (malicious) attacker has likely already compromised the system. You should immediately communicate any indicators of prior compromise and not wait until you deliver the final report.</li>
+  </ul>
+
+  <!-- ══════════════════════════════════════════
+       9.3.3 Practice - Communication Triggers
+  ══════════════════════════════════════════ -->
+  <h3>9.3.3 Practice — Communication Triggers</h3>
+
+  <div class="quiz-block" id="quiz-9-8">
+    <div class="quiz-label">Skills Check</div>
+    <p class="quiz-question">You have gained access to a server filesystem during the exploitation phase of the Pixel Paradise penetration test. You notice a file that appears out of place. You exfiltrate the file and submit it to a malware sandbox for analysis. The sandbox service recognizes the file as a component of a known backdoor exploit. What should you do with this information?</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="radio" name="q-9-8" value="0"> Be sure to inform the client during the next periodic status report.</label></li>
+      <li data-index="1"><label><input type="radio" name="q-9-8" value="1"> Immediately report the finding to the client.</label></li>
+      <li data-index="2"><label><input type="radio" name="q-9-8" value="2"> Disclose the breach to the appropriate authorities.</label></li>
+      <li data-index="3"><label><input type="radio" name="q-9-8" value="3"> Emphasize the issue in the final pentest report.</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit" onclick="submitQuiz('quiz-9-8', 1, 'A confirmed indicator of prior compromise — such as a known backdoor component — is a communication trigger that requires immediate reporting to the client, rather than waiting for a periodic status update or the final report.')">Check Answer</button>
+      <button class="quiz-reset" onclick="resetQuiz('quiz-9-8')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       9.3.4 Reasons for Communication
+  ══════════════════════════════════════════ -->
+  <h3>9.3.4 Reasons for Communication</h3>
+
+  <p>You should know the proper ways to <em>deescalate</em> any situation you may encounter with a client. You should also try to <em>deconflict</em> any potentially redundant or irrelevant information from your report and communication with your client. Try to identify and avoid <em>false positives</em> in your report.</p>
+
+  <p>You should also report any <em>criminal activity</em> that you may have discovered. For example, you may find that one of the employees may be using corporate assets to attack another company, steal information, or perform some other illegal activity.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>The term <em>false positive</em> is a broad term that describes a situation in which a security device triggers an alarm but there is no malicious activity or actual attack taking place. In other words, false positives are "false alarms"; they are also called "benign triggers". False positives are problematic because by triggering unjustified alerts, they diminish the value and urgency of real alerts. Having too many false positives to investigate becomes an operational nightmare and is likely to cause you to overlook real security events. There are also <em>false negatives</em>, which are malicious activities that are not detected by a network security device. A <em>true positive</em> is a successful identification of a security attack or a malicious event. A <em>true negative</em> occurs when an intrusion detection device identifies an activity as acceptable behavior, and the activity is actually acceptable.</p>
+  </div>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png" alt="Course character illustration">
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       9.3.5 Goal Reprioritization and Presentation of Findings
+  ══════════════════════════════════════════ -->
+  <h3>9.3.5 Goal Reprioritization and Presentation of Findings</h3>
+
+  <p>Depending on the vulnerabilities and weaknesses that you find during a penetration testing engagement, your client may tweak or reprioritize the goal of the testing. Your client may prioritize some systems or applications that may not have been seen as critical. Similarly, your client might ask you to deprioritize some activities in order to focus on some goals that may now present a higher risk.</p>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Tip</div>
+    <p>The report is the final deliverable for a penetration test. It communicates all the activities performed during the test as well as the ultimate results in the form of findings and recommendations. The report is, however, not the only form of communication that you will have with a client during a penetration testing engagement. During the testing phases of the engagement, certain situations may arise in which you need to have a plan for communication and escalation.</p>
+  </div>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png" alt="Course character illustration">
+  </div>
+
+  <p>The findings and recommendations section is the meat of a penetration testing report. The information provided here is what will be used to move forward with remediation and mitigation of the issues found in the environment being tested. Whereas earlier sections of the report, such as the executive summary, are purposely not too technical, the findings and recommendations section should provide all the technical details necessary that teams like IT, information security, and development need to use the report to address the issues found in the testing phase.</p>
+
+  <p>Remember that you must keep in mind your audience. For instance, if you are compiling a report for a web application penetration test, your ultimate audience for this section will likely be the development engineers who are responsible for creating and maintaining the application being tested. You will therefore want to provide a sufficient amount of information for them to be able to re-create the issue and identify exactly where the code changes need to be applied. Let's say that during your testing, you found an SQL injection flaw. In the report, you then need to provide the actual HTTP request and response you used to uncover that flaw. You also need to provide proof that the flaw is not a false positive. Ideally, if you are able to exploit the SQL injection flaw, you should provide a screenshot showing the results of your exploitation. If this is sensitive information from an exploited database, you should redact the screenshot in a manner that is sufficient to limit the sensitivity. Your report should provide screenshots of the various findings and detailed descriptions of how they were identified.</p>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════
+       9.4 Post-Report Delivery Activities
+  ══════════════════════════════════════════ -->
+  <h2>9.4 Explaining Post-Report Delivery Activities</h2>
+
+  <h3>9.4.1 Overview</h3>
+
+  <p>Well, the Pixel Paradise test is almost over. They have accepted the final report and we delivered our presentation of findings to the stakeholders. They seem happy with the quality of the work we did, but not so happy about some of the findings. That's good, because it looks like they will accept our recommendations and make important improvements to their security posture.</p>
+
+  <p>The last thing that we need to do is restore their systems to the state that they were in before we started our tests. This is another reason why it is important to carefully document our procedures as we conduct the test. We need to be sure to restore their systems, remove any files or accounts that we created, and get rid of the testing software and simulated malware that we installed. In addition, we did exfiltrate one file. But that has already been destroyed. Once we have cleaned everything up, get ready for the next job. It will be a good one!</p>
+
+  <div class="avatar-wrap">
+    <img src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png" alt="Course character illustration">
+  </div>
+
+  <p>This section outlines several important activities that you must complete after delivering a penetration testing report to a client.</p>
+
+  <!-- ══════════════════════════════════════════
+       9.4.2 Post-Engagement Cleanup
+  ══════════════════════════════════════════ -->
+  <h3>9.4.2 Post-Engagement Cleanup</h3>
+
+  <p>Say that you have completed all the testing phases for a penetration test. What you do next is very important to the success of the engagement. Throughout your testing phases, you have likely used many different tools and techniques to gather information, discover vulnerabilities, and perhaps exploit the systems under test. These tools can and most likely will cause residual effects on the systems you have been testing.</p>
+
+  <p>Let's say, for instance, that you have completed a web application penetration test and used an automated web vulnerability scanner in your testing process. This type of tool is meant to discover issues such as input validation and SQL injection. To identify these types of flaws, the automated scanner needs to actually input information into the fields it is testing. The input can be fake data or even malicious scripts. As this information is being input, it will likely make its way into the database that is supporting the web application you are testing. When the testing is complete, that information needs to be cleaned from the database. The best option for this is usually to revert or restore the database to a previous state. This is why it is suggested to test against a staging environment when possible. This is just one example of a cleanup task that needs to be performed at the end of a penetration testing engagement.</p>
+
+  <p>Another common example of necessary cleanup is the result of any exploitation of client machines. Say that you are looking to gain shell access to a Windows system that you have found to be vulnerable to a buffer overflow vulnerability that leads to remote code execution. Of course, when you find that this machine is likely vulnerable, you are excited because you know that the Metasploit framework has a module that will allow you to easily exploit the vulnerability and give you a <em>root shell</em> on the system. You run the exploit, but you get an error message that it did not complete, and there may be cleanup necessary. Most of the time, the error message indicates which files you need to clean up. However, it may not, and if it doesn't, you need to take a look at the specific module code to determine what files you need to clean up. Many tools can leave behind residual files or data that you need to be sure to clean from the target systems after the testing phases of a penetration testing engagement are complete. It is also very important to have the client or system owner validate that your cleanup efforts are sufficient. This is not always easy to accomplish, but providing a comprehensive list of activities performed on any systems under test will help with this.</p>
+
+  <p>The following are some examples of the items you will want to be sure to clean from systems:</p>
+
+  <ul>
+    <li><strong>Tester-created credentials:</strong> Remove any user accounts that you created to maintain persistent access or for any other post-exploitation activity.</li>
+    <li><strong>Shells:</strong> Remove shells spawned on exploited systems.</li>
+    <li><strong>Tools:</strong> Remove any tools installed or run from the systems under test.</li>
+  </ul>
+
+  <!-- ══════════════════════════════════════════
+       9.4.3 Additional Post-Report Delivery Activities
+  ══════════════════════════════════════════ -->
+  <h3>9.4.3 Additional Post-Report Delivery Activities</h3>
+
+  <p>The following are additional important post-report delivery activities that you as a pen tester must follow. Select each for more information.</p>
+
+  <p><strong>Client acceptance</strong></p>
+  <p>You should have written documentation of your client's acceptance of your report and related deliverables.</p>
+
+  <p><strong>Lessons learned</strong></p>
+  <p>It is important to analyze and present any lessons learned during the penetration testing engagement.</p>
+
+  <p><strong>Follow-up actions/retest</strong></p>
+  <p>Your client may ask you to retest different applications or systems after you provide the report. You should follow up and take care of any action items in an agreed appropriate time frame.</p>
+
+  <p><strong>Attestation of findings</strong></p>
+  <p>You should provide clear acknowledgement proving that the assessment was performed and reporting your findings.</p>
+
+  <p><strong>Data destruction process</strong></p>
+  <p>You need to destroy any client sensitive data as agreed in the pre-engagement activities.</p>
+
+  <!-- ══════════════════════════════════════════
+       9.4.4 Practice - Post Report Delivery
+  ══════════════════════════════════════════ -->
+  <h3>9.4.4 Practice — Post Report Delivery</h3>
+
+  <div class="quiz-block" id="quiz-9-9">
+    <div class="quiz-label">Skills Check</div>
+    <p class="quiz-question">Our testing engagement with Pixel Paradise is coming to a close. They have signed-off on our final report and it is time to clean up. You are needed to help out. What activities will you be participating in? (Choose three.)</p>
+    <ul class="quiz-options">
+      <li data-index="0"><label><input type="checkbox" name="q-9-9" value="0"> removing the tools we installed or that we ran from the systems under test</label></li>
+      <li data-index="1"><label><input type="checkbox" name="q-9-9" value="1"> removing the user accounts that we created during the test</label></li>
+      <li data-index="2"><label><input type="checkbox" name="q-9-9" value="2"> destroying any client sensitive data uncovered and exfiltrated during testing</label></li>
+      <li data-index="3"><label><input type="checkbox" name="q-9-9" value="3"> removing all references to critical findings</label></li>
+      <li data-index="4"><label><input type="checkbox" name="q-9-9" value="4"> conducting follow-up interviews with the staff responsible for the vulnerable systems</label></li>
+      <li data-index="5"><label><input type="checkbox" name="q-9-9" value="5"> recommending physical security measures to prevent or deter unauthorized access to sensitive locations</label></li>
+    </ul>
+    <div class="quiz-actions">
+      <button class="quiz-submit" onclick="submitMultiQuiz('quiz-9-9', [0,1,2], 'Post-engagement cleanup activities include removing tools installed or run from tested systems, removing user accounts created during the test, and destroying any client sensitive data exfiltrated during testing — all documented as required cleanup tasks in section 9.4.2 and 9.4.3.')">Check Answer</button>
+      <button class="quiz-reset" onclick="resetMultiQuiz('quiz-9-9')">Try Again</button>
+      <div class="quiz-feedback"></div>
+    </div>
+  </div>
+
+</div>
+    <script>
+      function submitQuiz(quizId, correctIndex, explanation) {
+        const block = document.getElementById(quizId);
+        const selected = block.querySelector('input[type="radio"]:checked');
+
+        if (!selected) return; // nothing chosen yet
+
+        const chosenIndex = parseInt(selected.value);
+        const items = block.querySelectorAll(".quiz-options li");
+        const feedback = block.querySelector(".quiz-feedback");
+        const submitBtn = block.querySelector(".quiz-submit");
+        const resetBtn = block.querySelector(".quiz-reset");
+
+        // mark every option
+        items.forEach((li, i) => {
+          const lbl = li.querySelector("label");
+          if (i === correctIndex) {
+            li.classList.add("correct");
+            lbl.setAttribute("data-mark", "✓");
+          } else if (i === chosenIndex && chosenIndex !== correctIndex) {
+            li.classList.add("incorrect");
+            lbl.setAttribute("data-mark", "✗");
+          }
+        });
+
+        // show feedback
+        const isCorrect = chosenIndex === correctIndex;
+        feedback.className =
+          "quiz-feedback show " + (isCorrect ? "correct" : "incorrect");
+        feedback.innerHTML = isCorrect
+          ? "✓ Correct — " + explanation
+          : "✗ Incorrect — " + explanation;
+
+        // toggle buttons
+        submitBtn.disabled = true;
+        resetBtn.style.display = "inline-block";
+        block.classList.add("submitted");
+      }
+
+      function resetQuiz(quizId) {
+        const block = document.getElementById(quizId);
+        const items = block.querySelectorAll(".quiz-options li");
+        const feedback = block.querySelector(".quiz-feedback");
+        const submitBtn = block.querySelector(".quiz-submit");
+        const resetBtn = block.querySelector(".quiz-reset");
+
+        // clear all states
+        items.forEach((li) => {
+          li.classList.remove("correct", "incorrect");
+          const lbl = li.querySelector("label");
+          lbl.removeAttribute("data-mark");
+          const radio = li.querySelector('input[type="radio"]');
+          radio.checked = false;
+        });
+
+        feedback.className = "quiz-feedback";
+        feedback.innerHTML = "";
+        submitBtn.disabled = false;
+        resetBtn.style.display = "none";
+        block.classList.remove("submitted");
+      }
+    </script>
+  </body>
+</html>

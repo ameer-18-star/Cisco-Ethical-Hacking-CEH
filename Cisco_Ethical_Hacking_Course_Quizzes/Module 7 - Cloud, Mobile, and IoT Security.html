@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .quiz-section {
+            display: none;
+            padding: 40px;
+        }
+
+        .quiz-section.active {
+            display: block;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .rules-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .rules-card ol {
+            margin-left: 20px;
+        }
+
+        .rules-card li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .primary-btn {
+            background: #28a745;
+        }
+
+        .primary-btn:hover {
+            background: #218838;
+        }
+
+        .secondary-btn {
+            background: #6c757d;
+        }
+
+        .secondary-btn:hover {
+            background: #5a6268;
+        }
+
+        .warning-btn {
+            background: #dc3545;
+        }
+
+        .warning-btn:hover {
+            background: #c82333;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .question-type {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .selection-hint {
+            background: #fff3cd;
+            color: #856404;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            border: 1px solid #ffeaa7;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .options-container {
+            margin: 15px 0;
+        }
+
+        .option {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.correct-answer {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .option.wrong-answer {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .explanation {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #2196f3;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation strong {
+            color: #1976d2;
+        }
+
+        .pbq-answer {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .pbq-answer:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .result-card {
+            text-align: center;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-top: 4px solid #667eea;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .result-message {
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .result-message.pass {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .result-message.fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .results-table thead {
+            background: #667eea;
+            color: white;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .results-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+
+        .results-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-correct {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-incorrect {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .status-icon {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-section {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .results-table {
+                font-size: 0.9em;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="quiz-section active">
+            <h1>Welcome to the Quiz!</h1>
+            <p style="text-align: center; font-size: 1.2em; margin-bottom: 20px;">Test your knowledge with MCQs and Practice-Based Questions.</p>
+
+            <div class="rules-card">
+                <h2>Quiz Rules:</h2>
+                <ol>
+                    <li>Complete all MCQ questions first, then move to Practice-Based Questions.</li>
+                    <li>For multiple choice questions, select the exact number of options specified.</li>
+                    <li>Do not refresh or close the page during the quiz.</li>
+                    <li>Achieve <strong>75% or higher</strong> on MCQs to pass this module.</li>
+                    <li>PBQs are for practice only and won't affect your score.</li>
+                </ol>
+            </div>
+
+            <div style="text-align: center;">
+                <button id="startButton" class="btn">Start Quiz</button>
+            </div>
+        </div>
+
+        <!-- MCQ Screen -->
+        <div id="mcqScreen" class="quiz-section">
+            <h1>Multiple Choice Questions</h1>
+            <div class="progress-bar-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            
+            <div id="mcqContainer"></div>
+
+            <div class="button-group">
+                <button id="resetMcqButton" class="btn warning-btn">Reset All Selections</button>
+                <button id="submitMcqButton" class="btn primary-btn">Submit MCQs</button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="quiz-section">
+            <div class="result-card">
+                <h1>MCQ Results</h1>
+                
+                <div class="result-stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalMcqResult">0</div>
+                        <div class="stat-label">Total MCQs</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="correctAnswersResult">0</div>
+                        <div class="stat-label">Correct Answers</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="incorrectAnswersResult">0</div>
+                        <div class="stat-label">Incorrect Answers</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="finalPercentage">0%</div>
+                        <div class="stat-label">Score</div>
+                    </div>
+                </div>
+
+                <div class="result-message" id="resultMessage"></div>
+
+                <h2 style="margin-top: 40px; margin-bottom: 20px;">Detailed Results</h2>
+                <div style="overflow-x: auto;">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Question ID</th>
+                                <th>Question</th>
+                                <th>Status</th>
+                                <th>Your Answer</th>
+                                <th>Correct Answer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="button-group">
+                    <button id="assessmentButton" class="btn primary-btn">View Assessment</button>
+                    <button id="continueToPbqButton" class="btn secondary-btn">Continue to Practice Questions</button>
+                    <button id="retakeQuizButton" class="btn warning-btn">Retake Quiz</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PBQ Screen -->
+        <div id="pbqScreen" class="quiz-section">
+            <h1>Practice-Based Questions</h1>
+            <p style="text-align: center; margin-bottom: 30px; color: #6c757d;">These questions are for practice only and do not affect your score.</p>
+            
+            <div id="pbqContainer"></div>
+
+            <div class="button-group">
+                <button id="finishQuizButton" class="btn primary-btn">Finish Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Questions - Replace with your actual questions
+const questions = [
+  {
+    "id": "MCQ001",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which cloud service model is characterized by renting infrastructure and paying only for the virtual power and storage used?",
+    "options": [
+      { "text": "Software as a Service (SaaS)", "isCorrect": false },
+      { "text": "Platform as a Service (PaaS)", "isCorrect": false },
+      { "text": "Infrastructure as a Service (IaaS)", "isCorrect": true },
+      { "text": "Function as a Service (FaaS)", "isCorrect": false }
+    ],
+    "explanation": "IaaS is a model where you rent infrastructure and purchase virtual power to execute software, functioning much like a utility company."
+  },
+  {
+    "id": "MCQ002",
+    "type": "multiple",
+    "selectCount": 3,
+    "text": "According to NIST, which of the following are considered essential characteristics of cloud computing?",
+    "options": [
+      { "text": "On-demand self-service", "isCorrect": true },
+      { "text": "Rapid elasticity", "isCorrect": true },
+      { "text": "Broad network access", "isCorrect": true },
+      { "text": "Static resource allocation", "isCorrect": false },
+      { "text": "Manual infrastructure management", "isCorrect": false }
+    ],
+    "explanation": "NIST defines the essential characteristics as on-demand self-service, broad network access, resource pooling, rapid elasticity, and measured service."
+  },
+  {
+    "id": "MCQ003",
+    "type": "single",
+    "selectCount": 1,
+    "text": "What type of cloud is shared between several organizations?",
+    "options": [
+      { "text": "Public cloud", "isCorrect": false },
+      { "text": "Private cloud", "isCorrect": false },
+      { "text": "Community cloud", "isCorrect": true },
+      { "text": "Hybrid cloud", "isCorrect": false }
+    ],
+    "explanation": "A community cloud is specifically defined as being shared between several organizations."
+  },
+  {
+    "id": "MCQ004",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which term describes the act of bypassing digital rights management (DRM) on Apple iOS-based mobile devices?",
+    "options": [
+      { "text": "Rooting", "isCorrect": false },
+      { "text": "Jailbreaking", "isCorrect": true },
+      { "text": "Sideloading", "isCorrect": false },
+      { "text": "Sandboxing", "isCorrect": false }
+    ],
+    "explanation": "Jailbreaking is a form of privilege escalation used to bypass DRM on Apple iOS devices."
+  },
+  {
+    "id": "MCQ005",
+    "type": "multiple",
+    "selectCount": 2,
+    "text": "Which NIST Special Publications are specifically mentioned as resources for cloud definitions and architecture?",
+    "options": [
+      { "text": "SP 800-145", "isCorrect": true },
+      { "text": "SP 500-292", "isCorrect": true },
+      { "text": "SP 800-53", "isCorrect": false },
+      { "text": "SP 800-115", "isCorrect": false }
+    ],
+    "explanation": "NIST SP 800-145 provides the definition of cloud computing, while SP 500-292 covers cloud computing reference architecture."
+  },
+  {
+    "id": "MCQ006",
+    "type": "single",
+    "selectCount": 1,
+    "text": "What type of privilege escalation occurs when a standard user accesses functions reserved for an administrator?",
+    "options": [
+      { "text": "Horizontal Privilege Escalation", "isCorrect": false },
+      { "text": "Vertical Privilege Escalation", "isCorrect": true },
+      { "text": "Lateral Movement", "isCorrect": false },
+      { "text": "Cross-site Escalation", "isCorrect": false }
+    ],
+    "explanation": "Vertical privilege escalation, or privilege elevation, happens when a lower-privileged user accesses higher-privileged functions."
+  },
+  {
+    "id": "MCQ007",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which tool is used to decompile Android application package (APK) files?",
+    "options": [
+      { "text": "Drozer", "isCorrect": false },
+      { "text": "ApkX", "isCorrect": true },
+      { "text": "Frida", "isCorrect": false },
+      { "text": "Ettercap", "isCorrect": false }
+    ],
+    "explanation": "ApkX is the specific tool used to decompile APK files."
+  },
+  {
+    "id": "MCQ008",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which protocol is commonly used by IoT home devices and industrial equipment for short-range communication?",
+    "options": [
+      { "text": "Modbus", "isCorrect": false },
+      { "text": "Bluetooth Low Energy (BLE)", "isCorrect": true },
+      { "text": "Insteon", "isCorrect": false },
+      { "text": "Zigbee", "isCorrect": false }
+    ],
+    "explanation": "BLE is widely used across home, medical, industrial, and government IoT devices."
+  },
+  {
+    "id": "MCQ009",
+    "type": "multiple",
+    "selectCount": 2,
+    "text": "Which vulnerabilities can lead to side-channel attacks on physical hardware used by cloud providers?",
+    "options": [
+      { "text": "Spectre", "isCorrect": true },
+      { "text": "Meltdown", "isCorrect": true },
+      { "text": "EternalBlue", "isCorrect": false },
+      { "text": "Log4Shell", "isCorrect": false }
+    ],
+    "explanation": "Spectre and Meltdown are hardware vulnerabilities affecting CPUs that can lead to side-channel attacks."
+  },
+  {
+    "id": "MCQ010",
+    "type": "single",
+    "selectCount": 1,
+    "text": "What is the name of the threat detection engine for Kubernetes?",
+    "options": [
+      { "text": "Clair", "isCorrect": false },
+      { "text": "kube-bench", "isCorrect": false },
+      { "text": "Falco", "isCorrect": true },
+      { "text": "Grype", "isCorrect": false }
+    ],
+    "explanation": "Falco is a specific threat detection engine designed for Kubernetes environments."
+  },
+  {
+    "id": "MCQ011",
+    "type": "single",
+    "selectCount": 1,
+    "text": "In a PaaS model, what is the cloud consumer NOT responsible for?",
+    "options": [
+      { "text": "Applications", "isCorrect": false },
+      { "text": "The platform and SDLC phases", "isCorrect": true },
+      { "text": "Data storage logic", "isCorrect": false },
+      { "text": "User access roles", "isCorrect": false }
+    ],
+    "explanation": "PaaS provides everything except the applications, including the SDLC phases and APIs."
+  },
+  {
+    "id": "MCQ012",
+    "type": "multiple",
+    "selectCount": 3,
+    "text": "Which techniques are used to detect a cloud account takeover?",
+    "options": [
+      { "text": "Unusual login locations", "isCorrect": true },
+      { "text": "Abnormal file sharing and downloading", "isCorrect": true },
+      { "text": "Lateral phishing emails", "isCorrect": true },
+      { "text": "The use of encrypted APIs", "isCorrect": false },
+      { "text": "Measured resource pooling", "isCorrect": false }
+    ],
+    "explanation": "Detecting takeovers involves monitoring login locations, failed attempts, lateral phishing, malicious OAuth connections, and abnormal file sharing."
+  },
+  {
+    "id": "MCQ013",
+    "type": "single",
+    "selectCount": 1,
+    "text": "What is the primary function of the AWS Cloud Development Kit (CDK)?",
+    "options": [
+      { "text": "To decompile AWS binaries", "isCorrect": false },
+      { "text": "To define cloud application resources using programming languages", "isCorrect": true },
+      { "text": "To scan S3 buckets for malware", "isCorrect": false },
+      { "text": "To perform on-path attacks on EC2", "isCorrect": false }
+    ],
+    "explanation": "The AWS CDK is a framework that allows consumers to define resources using familiar programming languages."
+  },
+  {
+    "id": "MCQ014",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which attack type reveals the origin IP address behind a CDN to bypass DDoS mitigations?",
+    "options": [
+      { "text": "Malware Injection", "isCorrect": false },
+      { "text": "Side-Channel Attack", "isCorrect": false },
+      { "text": "Direct-to-origin (D2O) Attack", "isCorrect": true },
+      { "text": "Metadata service attack", "isCorrect": false }
+    ],
+    "explanation": "D2O attacks reveal the origin network behind a proxy or CDN to bypass security mitigations."
+  },
+  {
+    "id": "MCQ015",
+    "type": "multiple",
+    "selectCount": 2,
+    "text": "Which tools are specialized for scanning container images for vulnerabilities?",
+    "options": [
+      { "text": "Grype", "isCorrect": true },
+      { "text": "Clair", "isCorrect": true },
+      { "text": "Ettercap", "isCorrect": false },
+      { "text": "Postman", "isCorrect": false }
+    ],
+    "explanation": "Grype and Clair are specifically mentioned as open-source container vulnerability scanners."
+  },
+  {
+    "id": "MCQ016",
+    "type": "single",
+    "selectCount": 1,
+    "text": "What is the name of the first step menu item in the Social-Engineer Toolkit (SET) for credential harvesting?",
+    "options": [
+      { "text": "Website Attack Vectors", "isCorrect": false },
+      { "text": "Social-Engineering Attacks", "isCorrect": true },
+      { "text": "Third Party Modules", "isCorrect": false },
+      { "text": "QRCode Generator Attack", "isCorrect": false }
+    ],
+    "explanation": "Step 2 of using SET requires selecting '1) Social-Engineering Attacks'."
+  },
+  {
+    "id": "MCQ017",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which mobile app vulnerability allows an attacker to bypass digital certificate validation?",
+    "options": [
+      { "text": "Sandboxing", "isCorrect": false },
+      { "text": "Certificate Pinning bypass", "isCorrect": true },
+      { "text": "Reverse engineering", "isCorrect": false },
+      { "text": "Insecure storage", "isCorrect": false }
+    ],
+    "explanation": "Attackers use tools like SSL Kill Switch 2 to bypass certificate pinning, which is designed to prevent rogue certificate use."
+  },
+  {
+    "id": "MCQ018",
+    "type": "multiple",
+    "selectCount": 2,
+    "text": "What are the two components of an IPMI subsystem mentioned in the sources?",
+    "options": [
+      { "text": "Baseboard Management Controller (BMC)", "isCorrect": true },
+      { "text": "Satellite controllers", "isCorrect": true },
+      { "text": "Metadata Service Gateways", "isCorrect": false },
+      { "text": "Hyperjacking engines", "isCorrect": false }
+    ],
+    "explanation": "An IPMI subsystem consists of a BMC and satellite controllers connected via an IPMB."
+  },
+  {
+    "id": "MCQ019",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which vulnerability allows an attacker to leave their isolated virtual machine to access the hypervisor?",
+    "options": [
+      { "text": "Hyperjacking", "isCorrect": false },
+      { "text": "VM Escape", "isCorrect": true },
+      { "text": "Typosquatting", "isCorrect": false },
+      { "text": "Cloud Malware Injection", "isCorrect": false }
+    ],
+    "explanation": "VM escape vulnerabilities allow attackers to escape the VM and obtain access to the hypervisor or other VMs."
+  },
+  {
+    "id": "MCQ020",
+    "type": "multiple",
+    "selectCount": 3,
+    "text": "What are the three phases of establishing a Bluetooth Low Energy (BLE) connection?",
+    "options": [
+      { "text": "Pairing feature exchange", "isCorrect": true },
+      { "text": "Short-term key generation", "isCorrect": true },
+      { "text": "Transport-specific key distribution", "isCorrect": true },
+      { "text": "Broad network handshaking", "isCorrect": false },
+      { "text": "Metadata service authentication", "isCorrect": false }
+    ],
+    "explanation": "The three phases of BLE connection are pairing feature exchange, short-term key generation, and transport-specific key distribution."
+  },
+  {
+    "id": "MCQ021",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which tool uses the ClamAV engine to detect malware and backdoors in Docker images?",
+    "options": [
+      { "text": "Grype", "isCorrect": false },
+      { "text": "Dagda", "isCorrect": true },
+      { "text": "Clair", "isCorrect": false },
+      { "text": "kube-hunter", "isCorrect": false }
+    ],
+    "explanation": "Dagda uses the ClamAV antivirus engine to help detect Trojans, backdoors, and malware in containers."
+  },
+  {
+    "id": "MCQ022",
+    "type": "single",
+    "selectCount": 1,
+    "text": "In AWS, what specific URL returns the AccessKeyID and SecretAccessKey for a role if a metadata service attack is successful?",
+    "options": [
+      { "text": "https://x.x.x.x/latest/user-data", "isCorrect": false },
+      { "text": "https://x.x.x.x/latest/meta-data/iam/security-credentials/ROLE", "isCorrect": true },
+      { "text": "https://x.x.x.x/v1/auth/tokens", "isCorrect": false },
+      { "text": "https://x.x.x.x/latest/dynamic/instance-identity/", "isCorrect": false }
+    ],
+    "explanation": "Accessing the /iam/security-credentials/ path via the metadata service returns sensitive authentication values."
+  },
+  {
+    "id": "MCQ023",
+    "type": "multiple",
+    "selectCount": 2,
+    "text": "Which protocols are cited as being susceptible to input validation vulnerabilities in industrial IoT systems?",
+    "options": [
+      { "text": "Modbus", "isCorrect": true },
+      { "text": "Zigbee", "isCorrect": true },
+      { "text": "HTTPS", "isCorrect": false },
+      { "text": "SAML", "isCorrect": false }
+    ],
+    "explanation": "Input validation vulnerabilities in protocols like Modbus, S7 Communication, and Zigbee can lead to code execution."
+  },
+  {
+    "id": "MCQ024",
+    "type": "single",
+    "selectCount": 1,
+    "text": "What is 'Hyperjacking'?",
+    "options": [
+      { "text": "Gaining access to a cloud metadata service", "isCorrect": false },
+      { "text": "Gaining control over the hypervisor", "isCorrect": true },
+      { "text": "Executing malware in a Docker container", "isCorrect": false },
+      { "text": "Using a side-channel to steal keys", "isCorrect": false }
+    ],
+    "explanation": "Hyperjacking is a vulnerability that allows an attacker to control the hypervisor, often via a rogue or fake hypervisor."
+  },
+  {
+    "id": "MCQ025",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which tool is specifically mentioned as providing access to exploits for attacking Android platforms?",
+    "options": [
+      { "text": "needle", "isCorrect": false },
+      { "text": "Drozer", "isCorrect": true },
+      { "text": "Postman", "isCorrect": false },
+      { "text": "Bettercap", "isCorrect": false }
+    ],
+    "explanation": "Drozer is an Android testing platform that provides numerous exploits."
+  },
+  {
+    "id": "MCQ026",
+    "type": "multiple",
+    "selectCount": 2,
+    "text": "What two types of hypervisors exist in virtualization?",
+    "options": [
+      { "text": "Type 1 (Bare-metal)", "isCorrect": true },
+      { "text": "Type 2 (Hosted)", "isCorrect": true },
+      { "text": "Type 3 (Sandboxed)", "isCorrect": false },
+      { "text": "Type 4 (Cloud-native)", "isCorrect": false }
+    ],
+    "explanation": "Hypervisors are categorized as Type 1 (running directly on hardware) or Type 2 (running on an OS)."
+  },
+  {
+    "id": "MCQ027",
+    "type": "single",
+    "selectCount": 1,
+    "text": "What technique is used to create malicious containers with names similar to legitimate ones on Docker Hub?",
+    "options": [
+      { "text": "Jailbreaking", "isCorrect": false },
+      { "text": "Typosquatting", "isCorrect": true },
+      { "text": "Credential harvesting", "isCorrect": false },
+      { "text": "Hyperjacking", "isCorrect": false }
+    ],
+    "explanation": "Typosquatting leverages human error to trick users into downloading malicious containers or visiting fake sites."
+  },
+  {
+    "id": "MCQ028",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which open-source tool checks the security posture of Kubernetes clusters?",
+    "options": [
+      { "text": "kube-hunter", "isCorrect": true },
+      { "text": "kube-bench", "isCorrect": false },
+      { "text": "Clair", "isCorrect": false },
+      { "text": "MobSF", "isCorrect": false }
+    ],
+    "explanation": "While kube-bench performs assessments based on CIS benchmarks, kube-hunter is designed specifically to check the security posture of clusters."
+  },
+  {
+    "id": "MCQ029",
+    "type": "multiple",
+    "selectCount": 3,
+    "text": "What are three common security challenges in IoT environments?",
+    "options": [
+      { "text": "Insecure default credentials", "isCorrect": true },
+      { "text": "Lack of secure update mechanisms", "isCorrect": true },
+      { "text": "Limited compute resources preventing encryption", "isCorrect": true },
+      { "text": "Mandatory use of Type 1 hypervisors", "isCorrect": false },
+      { "text": "Universal standardization of protocols", "isCorrect": false }
+    ],
+    "explanation": "IoT challenges include fragile environments with limited resources, insecure defaults, and difficulty in updating firmware."
+  },
+  {
+    "id": "MCQ030",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which tool is used to analyze Bluetooth Low Energy (BLE) protocols with specialized antennas?",
+    "options": [
+      { "text": "Ubertooth One", "isCorrect": true },
+      { "text": "Wireshark", "isCorrect": false },
+      { "text": "Searchsploit", "isCorrect": false },
+      { "text": "Postman", "isCorrect": false }
+    ],
+    "explanation": "The Ubertooth One is specialized equipment for analyzing BLE protocols."
+  },
+  {
+    "id": "MCQ031",
+    "type": "single",
+    "selectCount": 1,
+    "text": "Which SET menu option is used to clone a website for a credential harvesting attack?",
+    "options": [
+      { "text": "1) Web Templates", "isCorrect": false },
+      { "text": "2) Site Cloner", "isCorrect": true },
+      { "text": "3) Custom Import", "isCorrect": false },
+      { "text": "99) Return to Webattack Menu", "isCorrect": false }
+    ],
+    "explanation": "The Site Cloner method allows SET to completely clone a website of the attacker's choosing."
+  },
+  {
+    "id": "MCQ032",
+    "type": "multiple",
+    "selectCount": 2,
+    "text": "Which mobile platforms use 'Sandboxes' as a mandatory access control mechanism?",
+    "options": [
+      { "text": "Android", "isCorrect": true },
+      { "text": "iOS", "isCorrect": true },
+      { "text": "Windows Server", "isCorrect": false },
+      { "text": "Ubuntu", "isCorrect": false }
+    ],
+    "explanation": "Both Android and iOS apps are isolated via sandbox environments to describe resource access."
+  },
+  {
+    "id": "MCQ033",
+    "type": "single",
+    "selectCount": 1,
+    "text": "In a SAML-based federation, what is the XML document sent by the identity provider called?",
+    "options": [
+      { "text": "JWT token", "isCorrect": false },
+      { "text": "SAML assertion", "isCorrect": true },
+      { "text": "OpenID connect claim", "isCorrect": false },
+      { "text": "OAuth secret", "isCorrect": false }
+    ],
+    "explanation": "A SAML assertion is the XML document containing user authorization sent to the service provider."
+  },
+  {
+    "id": "PBQ001",
+    "type": "pbq",
+    "text": "<b>Cloud Delivery Models:</b> Match the organizational requirement to the correct cloud model (IaaS, PaaS, or SaaS). <br><br>1. An organization needs a <b>complete packaged solution</b> accessed via a web portal.<br>2. An organization needs <b>virtual power</b> to execute their own software on virtual disks.<br>3. A developer needs <b>everything except applications</b>, including SDLC phase management.",
+    "explanation": "According to the sources: <br>1. Complete packaged solution = <b>SaaS</b>.<br>2. Virtual power/infrastructure rental = <b>IaaS</b>.<br>3. Platform minus applications with SDLC support = <b>PaaS</b>."
+  },
+  {
+    "id": "PBQ002",
+    "type": "pbq",
+    "text": "<b>SET Credential Harvester Steps:</b> Arrange the following Social-Engineer Toolkit (SET) menu choices in the correct order to launch a Twitter credential harvesting attack.<br><br>A. Website Attack Vectors<br>B. Social-Engineering Attacks<br>C. Select a template: 3. Twitter<br>D. Credential Harvester Attack Method<br>E. Web Templates",
+    "explanation": "The correct order based on Examples 7-1 through 7-6 is: <br>1. <b>B</b> (Social-Engineering Attacks).<br>2. <b>A</b> (Website Attack Vectors).<br>3. <b>D</b> (Credential Harvester Attack Method).<br>4. <b>E</b> (Web Templates).<br>5. <b>C</b> (Twitter template)."
+  },
+  {
+    "id": "PBQ003",
+    "type": "pbq",
+    "text": "<b>Mobile Tool Mapping:</b> Identify the primary purpose of the following tools: <b>MobSF</b>, <b>Drozer</b>, <b>Frida</b>, and <b>Objection</b>.",
+    "explanation": "Based on the tool descriptions: <br>- <b>MobSF:</b> Automated mobile app and malware analysis framework.<br>- <b>Drozer:</b> Android testing platform with exploits.<br>- <b>Frida:</b> Dynamic instrumentation toolkit for reverse engineers.<br>- <b>Objection:</b> Runtime exploration toolkit using Frida to bypass certificate pinning."
+  },
+  {
+    "id": "PBQ004",
+    "type": "pbq",
+    "text": "<b>BLE Connection Workflow:</b> List the three phases required to establish a Bluetooth Low Energy (BLE) connection.",
+    "explanation": "According to section 7.2.6, the three phases are: <br>1. <b>Pairing feature exchange</b>.<br>2. <b>Short-term key generation</b>.<br>3. <b>Transport-specific key distribution</b>."
+  },
+  {
+    "id": "PBQ005",
+    "type": "pbq",
+    "text": "<b>Virtualization Threats:</b> Define and contrast <b>VM Escape</b> and <b>Hyperjacking</b>.",
+    "explanation": "<b>VM Escape</b> is a vulnerability that allows an attacker to leave the isolated VM to access the hypervisor or other VMs. <br><b>Hyperjacking</b> is a more severe attack where the attacker gains control of the hypervisor itself, often by installing a rogue hypervisor."
+  }
+];
+        // Fisher-Yates shuffle algorithm for randomizing arrays
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Randomize questions and their options
+        function randomizeQuestions(questionsArray) {
+            return questionsArray.map(question => {
+                if (question.type !== 'pbq') {
+                    // Randomize options for MCQs
+                    return {
+                        ...question,
+                        options: shuffleArray(question.options)
+                    };
+                }
+                return question;
+            });
+        }
+
+        // Initialize randomized questions
+        let randomizedQuestions = randomizeQuestions(questions);
+        let mcqQuestions = shuffleArray(randomizedQuestions.filter(q => q.type !== 'pbq'));
+        let pbqQuestions = randomizedQuestions.filter(q => q.type === 'pbq');
+
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const mcqScreen = document.getElementById('mcqScreen');
+        const resultScreen = document.getElementById('resultScreen');
+        const pbqScreen = document.getElementById('pbqScreen');
+        const startButton = document.getElementById('startButton');
+        const mcqContainer = document.getElementById('mcqContainer');
+        const pbqContainer = document.getElementById('pbqContainer');
+        const submitMcqButton = document.getElementById('submitMcqButton');
+        const resetMcqButton = document.getElementById('resetMcqButton');
+        const progressBar = document.getElementById('progressBar');
+        const totalMcqResult = document.getElementById('totalMcqResult');
+        const correctAnswersResult = document.getElementById('correctAnswersResult');
+        const incorrectAnswersResult = document.getElementById('incorrectAnswersResult');
+        const finalPercentage = document.getElementById('finalPercentage');
+        const resultMessage = document.getElementById('resultMessage');
+        const resultsTableBody = document.getElementById('resultsTableBody');
+        const assessmentButton = document.getElementById('assessmentButton');
+        const continueToPbqButton = document.getElementById('continueToPbqButton');
+        const retakeQuizButton = document.getElementById('retakeQuizButton');
+        const finishQuizButton = document.getElementById('finishQuizButton');
+
+        // State
+        let userAnswers = {};
+        let quizStarted = false;
+        let quizFinished = false;
+        const STORAGE_KEY = 'quiz_app_results';
+
+        // Check if localStorage is available
+        function isLocalStorageAvailable() {
+            try {
+                const test = '__storage_test__';
+                localStorage.setItem(test, test);
+                localStorage.removeItem(test);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        const storageAvailable = isLocalStorageAvailable();
+
+        // Load saved results from localStorage
+        function loadSavedResults() {
+            if (!storageAvailable) return null;
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error('Error loading saved results:', e);
+            }
+            return null;
+        }
+
+        // Save results to localStorage
+        function saveResults(results) {
+            if (!storageAvailable) return;
+            try {
+                const dataToSave = {
+                    timestamp: new Date().toISOString(),
+                    ...results
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+            } catch (e) {
+                console.error('Error saving results:', e);
+            }
+        }
+
+        // Clear saved results
+        function clearSavedResults() {
+            if (!storageAvailable) return;
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (e) {
+                console.error('Error clearing results:', e);
+            }
+        }
+
+        // Check for saved results on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!storageAvailable) return;
+            const savedResults = loadSavedResults();
+            if (savedResults && savedResults.total) {
+                if (confirm('You have a previous quiz result. Would you like to view it?')) {
+                    displaySavedResults(savedResults);
+                }
+            }
+        });
+
+        function displaySavedResults(savedResults) {
+            totalMcqResult.textContent = savedResults.total;
+            correctAnswersResult.textContent = savedResults.correct;
+            incorrectAnswersResult.textContent = savedResults.incorrect;
+            finalPercentage.textContent = `${savedResults.percentage.toFixed(2)}%`;
+            
+            if (savedResults.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+            
+            // Show saved results in table
+            resultsTableBody.innerHTML = '';
+            if (savedResults.detailedResults) {
+                savedResults.detailedResults.forEach(result => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${result.id}</strong></td>
+                        <td>${result.question}</td>
+                        <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                            <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                            ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                        </td>
+                        <td>${result.userAnswer}</td>
+                        <td>${result.correctAnswer}</td>
+                    `;
+                    resultsTableBody.appendChild(row);
+                });
+            }
+            
+            const timestamp = new Date(savedResults.timestamp);
+            const timeString = timestamp.toLocaleString();
+            
+            const timestampNote = document.createElement('p');
+            timestampNote.style.textAlign = 'center';
+            timestampNote.style.color = '#6c757d';
+            timestampNote.style.marginTop = '20px';
+            timestampNote.textContent = `Results from: ${timeString}`;
+            
+            const existingNote = resultScreen.querySelector('.timestamp-note');
+            if (existingNote) {
+                existingNote.remove();
+            }
+            timestampNote.className = 'timestamp-note';
+            resultScreen.querySelector('.result-card').insertBefore(timestampNote, resultScreen.querySelector('.button-group'));
+            
+            showScreen('resultScreen');
+        }
+
+        // Disable F5 and Ctrl+W
+        document.addEventListener('keydown', function(e) {
+            // Disable F5 (refresh)
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                if (quizStarted && !quizFinished) {
+                    e.preventDefault();
+                    alert('Please complete the quiz before refreshing the page.');
+                    return false;
+                }
+            }
+            
+            // Disable Ctrl+W (close window/tab)
+            if (e.ctrlKey && e.key === 'w') {
+                if (quizStarted && !quizFinished) {
+                    e.preventDefault();
+                    alert('Please complete the MCQ section before closing the page.');
+                    return false;
+                }
+            }
+        });
+
+        // Warn on page exit
+        window.addEventListener('beforeunload', function (e) {
+            if (quizStarted && !quizFinished) {
+                e.preventDefault();
+                e.returnValue = '';
+                return 'Are you sure you want to leave? Your quiz progress may be lost!';
+            }
+        });
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.quiz-section').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function renderMCQs() {
+            mcqContainer.innerHTML = '';
+            
+            mcqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${question.id}`;
+                
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+                
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Question ${index + 1} (ID: ${question.id})`;
+                
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = question.type === 'single' ? 'Single Choice' : 'Multiple Choice';
+                
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+                
+                const selectionHint = document.createElement('div');
+                selectionHint.className = 'selection-hint';
+                selectionHint.textContent = `Select exactly ${question.selectCount} option${question.selectCount > 1 ? 's' : ''}`;
+                
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+                
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(selectionHint);
+                questionCard.appendChild(questionText);
+                
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+                
+                question.options.forEach((option, optIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.onclick = () => handleAnswerSelection(question.id, optIndex, question.selectCount);
+                    
+                    const input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.id = `q${question.id}-opt${optIndex}`;
+                    input.style.pointerEvents = 'none';
+                    
+                    const label = document.createElement('label');
+                    label.htmlFor = `q${question.id}-opt${optIndex}`;
+                    label.textContent = option.text;
+                    label.style.pointerEvents = 'none';
+                    
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    optionsContainer.appendChild(optionDiv);
+                });
+                
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+                
+                questionCard.appendChild(optionsContainer);
+                questionCard.appendChild(explanation);
+                
+                mcqContainer.appendChild(questionCard);
+            });
+        }
+
+        function handleAnswerSelection(questionId, optionIndex, selectCount) {
+            if (!userAnswers[questionId]) {
+                userAnswers[questionId] = [];
+            }
+            
+            const currentSelections = userAnswers[questionId];
+            const optionIndexInArray = currentSelections.indexOf(optionIndex);
+            
+            if (optionIndexInArray > -1) {
+                // Deselect if already selected
+                currentSelections.splice(optionIndexInArray, 1);
+            } else {
+                // Select new option
+                if (selectCount === 1) {
+                    // For single selection, replace the selection
+                    userAnswers[questionId] = [optionIndex];
+                } else {
+                    // For multiple selection, add only if limit not reached
+                    if (currentSelections.length < selectCount) {
+                        currentSelections.push(optionIndex);
+                    } else {
+                        // Already at max, don't add
+                        return;
+                    }
+                }
+            }
+            
+            // Update visual state
+            updateQuestionVisuals(questionId);
+            updateProgressBar();
+        }
+
+        function updateQuestionVisuals(questionId) {
+            const questionCard = document.getElementById(`question-${questionId}`);
+            const options = questionCard.querySelectorAll('.option');
+            const selectedIndices = userAnswers[questionId] || [];
+            
+            options.forEach((optionDiv, idx) => {
+                const checkbox = optionDiv.querySelector('input[type="checkbox"]');
+                if (selectedIndices.includes(idx)) {
+                    optionDiv.classList.add('selected');
+                    checkbox.checked = true;
+                } else {
+                    optionDiv.classList.remove('selected');
+                    checkbox.checked = false;
+                }
+            });
+        }
+
+        function resetAllSelections() {
+            if (confirm('Are you sure you want to reset all your selections?')) {
+                userAnswers = {};
+                mcqQuestions.forEach(q => {
+                    updateQuestionVisuals(q.id);
+                });
+                updateProgressBar();
+            }
+        }
+
+        function updateProgressBar() {
+            const answeredCount = mcqQuestions.filter(q => 
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+            const progress = (answeredCount / mcqQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function calculateResults() {
+            let correct = 0;
+            const detailedResults = [];
+            
+            mcqQuestions.forEach(question => {
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+                
+                const isCorrect = userAnswer.length === correctIndices.length &&
+                    userAnswer.every(idx => correctIndices.includes(idx)) &&
+                    correctIndices.every(idx => userAnswer.includes(idx));
+                
+                if (isCorrect) {
+                    correct++;
+                }
+                
+                const userAnswerText = userAnswer.map(idx => question.options[idx].text).join(', ') || 'No answer';
+                const correctAnswerText = correctIndices.map(idx => question.options[idx].text).join(', ');
+                
+                detailedResults.push({
+                    id: question.id,
+                    question: question.text,
+                    isCorrect,
+                    userAnswer: userAnswerText,
+                    correctAnswer: correctAnswerText
+                });
+            });
+            
+            const total = mcqQuestions.length;
+            const incorrect = total - correct;
+            const percentage = total > 0 ? (correct / total) * 100 : 0;
+            
+            return { total, correct, incorrect, percentage, detailedResults };
+        }
+
+        function showResults() {
+            const results = calculateResults();
+            
+            // Save results to localStorage
+            saveResults(results);
+            
+            totalMcqResult.textContent = results.total;
+            correctAnswersResult.textContent = results.correct;
+            incorrectAnswersResult.textContent = results.incorrect;
+            finalPercentage.textContent = `${results.percentage.toFixed(2)}%`;
+            
+            if (results.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+            
+            // Populate results table
+            resultsTableBody.innerHTML = '';
+            results.detailedResults.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${result.id}</strong></td>
+                    <td>${result.question}</td>
+                    <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                        <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                        ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                    </td>
+                    <td>${result.userAnswer}</td>
+                    <td>${result.correctAnswer}</td>
+                `;
+                resultsTableBody.appendChild(row);
+            });
+            
+            showScreen('resultScreen');
+        }
+
+        function showAssessment() {
+            showScreen('mcqScreen');
+            
+            mcqQuestions.forEach(question => {
+                const questionCard = document.getElementById(`question-${question.id}`);
+                const options = questionCard.querySelectorAll('.option');
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+                
+                options.forEach((optionDiv, idx) => {
+                    optionDiv.style.pointerEvents = 'none';
+                    
+                    if (correctIndices.includes(idx)) {
+                        optionDiv.classList.add('correct-answer');
+                    }
+                    
+                    if (userAnswer.includes(idx) && !correctIndices.includes(idx)) {
+                        optionDiv.classList.add('wrong-answer');
+                    }
+                });
+                
+                const explanation = document.getElementById(`explanation-${question.id}`);
+                explanation.classList.add('show');
+            });
+            
+            // Hide submit button but keep reset and continue buttons visible
+            submitMcqButton.style.display = 'none';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Retake Quiz';
+            resetMcqButton.classList.remove('warning-btn');
+            resetMcqButton.classList.add('secondary-btn');
+            
+            // Add continue to PBQ button if not already present
+            let continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (!continueBtnInAssessment) {
+                continueBtnInAssessment = document.createElement('button');
+                continueBtnInAssessment.id = 'continueToPbqInAssessment';
+                continueBtnInAssessment.className = 'btn primary-btn';
+                continueBtnInAssessment.textContent = 'Continue to Practice Questions';
+                continueBtnInAssessment.onclick = () => {
+                    if (pbqQuestions.length > 0) {
+                        renderPBQs();
+                        showScreen('pbqScreen');
+                    } else {
+                        quizFinished = true;
+                        alert('No practice questions available. Quiz completed!');
+                    }
+                };
+                
+                // Insert button in the button group
+                const buttonGroup = mcqScreen.querySelector('.button-group');
+                buttonGroup.appendChild(continueBtnInAssessment);
+            }
+            continueBtnInAssessment.style.display = 'inline-block';
+        }
+
+        function renderPBQs() {
+            pbqContainer.innerHTML = '';
+            
+            if (pbqQuestions.length === 0) {
+                pbqContainer.innerHTML = '<p style="text-align: center; color: #6c757d;">No practice-based questions available.</p>';
+                return;
+            }
+            
+            pbqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+                
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Practice Question ${index + 1} (ID: ${question.id})`;
+                
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = 'Practice Question';
+                
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+                
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+                
+                const textarea = document.createElement('textarea');
+                textarea.className = 'pbq-answer';
+                textarea.placeholder = 'Write your answer here...';
+                textarea.id = `pbq-${question.id}`;
+                
+                const showAnswerBtn = document.createElement('button');
+                showAnswerBtn.className = 'btn secondary-btn';
+                showAnswerBtn.textContent = 'Show Answer';
+                showAnswerBtn.style.marginTop = '10px';
+                showAnswerBtn.onclick = () => togglePbqAnswer(question.id);
+                
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `pbq-explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Answer:</strong> ${question.explanation}`;
+                
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(questionText);
+                questionCard.appendChild(textarea);
+                questionCard.appendChild(showAnswerBtn);
+                questionCard.appendChild(explanation);
+                
+                pbqContainer.appendChild(questionCard);
+            });
+        }
+
+        function togglePbqAnswer(questionId) {
+            const explanation = document.getElementById(`pbq-explanation-${questionId}`);
+            explanation.classList.toggle('show');
+        }
+
+        function resetQuiz() {
+            // Randomize questions and options again
+            randomizedQuestions = randomizeQuestions(questions);
+            mcqQuestions = shuffleArray(randomizedQuestions.filter(q => q.type !== 'pbq'));
+            pbqQuestions = randomizedQuestions.filter(q => q.type === 'pbq');
+            
+            userAnswers = {};
+            quizStarted = false;
+            quizFinished = false;
+            progressBar.style.width = '0%';
+            submitMcqButton.style.display = 'inline-block';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Reset All Selections';
+            resetMcqButton.classList.add('warning-btn');
+            resetMcqButton.classList.remove('secondary-btn');
+            
+            // Hide continue button in assessment if exists
+            const continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (continueBtnInAssessment) {
+                continueBtnInAssessment.style.display = 'none';
+            }
+            
+            // Clear saved results when retaking
+            clearSavedResults();
+            
+            showScreen('startScreen');
+        }
+
+        // Event Listeners
+        startButton.addEventListener('click', () => {
+            quizStarted = true;
+            renderMCQs();
+            showScreen('mcqScreen');
+        });
+
+        submitMcqButton.addEventListener('click', () => {
+            const answeredCount = mcqQuestions.filter(q => 
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+            
+            if (answeredCount < mcqQuestions.length) {
+                if (!confirm('You have not answered all MCQs correctly (some may have incorrect number of selections). Do you want to submit anyway?')) {
+                    return;
+                }
+            }
+            
+            showResults();
+        });
+
+        resetMcqButton.addEventListener('click', resetAllSelections);
+
+        assessmentButton.addEventListener('click', showAssessment);
+
+        continueToPbqButton.addEventListener('click', () => {
+            if (pbqQuestions.length > 0) {
+                renderPBQs();
+                showScreen('pbqScreen');
+            } else {
+                quizFinished = true;
+                alert('No practice questions available. Quiz completed!');
+            }
+        });
+
+        finishQuizButton.addEventListener('click', () => {
+            quizFinished = true;
+            alert('Quiz completed! You can now retake the quiz or close this window.');
+            showScreen('startScreen');
+        });
+
+        retakeQuizButton.addEventListener('click', resetQuiz);
+
+
+        // Warn on page exit
+        window.addEventListener('beforeunload', function (e) {
+            if (quizStarted && !quizFinished) {
+                e.preventDefault();
+                e.returnValue = '';
+                return 'Are you sure you want to leave? Your quiz progress may be lost!';
+            }
+        });
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.quiz-section').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function renderMCQs() {
+            mcqContainer.innerHTML = '';
+            
+            mcqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${question.id}`;
+                
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+                
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Question ${index + 1} (ID: ${question.id})`;
+                
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = question.type === 'single' ? 'Single Choice' : 'Multiple Choice';
+                
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+                
+                const selectionHint = document.createElement('div');
+                selectionHint.className = 'selection-hint';
+                selectionHint.textContent = `Select exactly ${question.selectCount} option${question.selectCount > 1 ? 's' : ''}`;
+                
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+                
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(selectionHint);
+                questionCard.appendChild(questionText);
+                
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+                
+                question.options.forEach((option, optIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.onclick = () => handleAnswerSelection(question.id, optIndex, question.selectCount);
+                    
+                    const input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.id = `q${question.id}-opt${optIndex}`;
+                    input.style.pointerEvents = 'none';
+                    
+                    const label = document.createElement('label');
+                    label.htmlFor = `q${question.id}-opt${optIndex}`;
+                    label.textContent = option.text;
+                    label.style.pointerEvents = 'none';
+                    
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    optionsContainer.appendChild(optionDiv);
+                });
+                
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+                
+                questionCard.appendChild(optionsContainer);
+                questionCard.appendChild(explanation);
+                
+                mcqContainer.appendChild(questionCard);
+            });
+        }
+
+        function handleAnswerSelection(questionId, optionIndex, selectCount) {
+            if (!userAnswers[questionId]) {
+                userAnswers[questionId] = [];
+            }
+            
+            const currentSelections = userAnswers[questionId];
+            const optionIndexInArray = currentSelections.indexOf(optionIndex);
+            
+            if (optionIndexInArray > -1) {
+                // Deselect if already selected
+                currentSelections.splice(optionIndexInArray, 1);
+            } else {
+                // Select new option
+                if (selectCount === 1) {
+                    // For single selection, replace the selection
+                    userAnswers[questionId] = [optionIndex];
+                } else {
+                    // For multiple selection, add only if limit not reached
+                    if (currentSelections.length < selectCount) {
+                        currentSelections.push(optionIndex);
+                    } else {
+                        // Already at max, don't add
+                        return;
+                    }
+                }
+            }
+            
+            // Update visual state
+            updateQuestionVisuals(questionId);
+            updateProgressBar();
+        }
+
+        function updateQuestionVisuals(questionId) {
+            const questionCard = document.getElementById(`question-${questionId}`);
+            const options = questionCard.querySelectorAll('.option');
+            const selectedIndices = userAnswers[questionId] || [];
+            
+            options.forEach((optionDiv, idx) => {
+                const checkbox = optionDiv.querySelector('input[type="checkbox"]');
+                if (selectedIndices.includes(idx)) {
+                    optionDiv.classList.add('selected');
+                    checkbox.checked = true;
+                } else {
+                    optionDiv.classList.remove('selected');
+                    checkbox.checked = false;
+                }
+            });
+        }
+
+        function resetAllSelections() {
+            if (confirm('Are you sure you want to reset all your selections?')) {
+                userAnswers = {};
+                mcqQuestions.forEach(q => {
+                    updateQuestionVisuals(q.id);
+                });
+                updateProgressBar();
+            }
+        }
+
+        function updateProgressBar() {
+            const answeredCount = mcqQuestions.filter(q => 
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+            const progress = (answeredCount / mcqQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function calculateResults() {
+            let correct = 0;
+            const detailedResults = [];
+            
+            mcqQuestions.forEach(question => {
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+                
+                const isCorrect = userAnswer.length === correctIndices.length &&
+                    userAnswer.every(idx => correctIndices.includes(idx)) &&
+                    correctIndices.every(idx => userAnswer.includes(idx));
+                
+                if (isCorrect) {
+                    correct++;
+                }
+                
+                const userAnswerText = userAnswer.map(idx => question.options[idx].text).join(', ') || 'No answer';
+                const correctAnswerText = correctIndices.map(idx => question.options[idx].text).join(', ');
+                
+                detailedResults.push({
+                    id: question.id,
+                    question: question.text,
+                    isCorrect,
+                    userAnswer: userAnswerText,
+                    correctAnswer: correctAnswerText
+                });
+            });
+            
+            const total = mcqQuestions.length;
+            const incorrect = total - correct;
+            const percentage = total > 0 ? (correct / total) * 100 : 0;
+            
+            return { total, correct, incorrect, percentage, detailedResults };
+        }
+
+        function showResults() {
+            const results = calculateResults();
+            
+            totalMcqResult.textContent = results.total;
+            correctAnswersResult.textContent = results.correct;
+            incorrectAnswersResult.textContent = results.incorrect;
+            finalPercentage.textContent = `${results.percentage.toFixed(2)}%`;
+            
+            if (results.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+            
+            // Populate results table
+            resultsTableBody.innerHTML = '';
+            results.detailedResults.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${result.id}</strong></td>
+                    <td>${result.question}</td>
+                    <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                        <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                        ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                    </td>
+                    <td>${result.userAnswer}</td>
+                    <td>${result.correctAnswer}</td>
+                `;
+                resultsTableBody.appendChild(row);
+            });
+            
+            showScreen('resultScreen');
+        }
+
+        function showAssessment() {
+            showScreen('mcqScreen');
+            
+            mcqQuestions.forEach(question => {
+                const questionCard = document.getElementById(`question-${question.id}`);
+                const options = questionCard.querySelectorAll('.option');
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+                
+                options.forEach((optionDiv, idx) => {
+                    optionDiv.style.pointerEvents = 'none';
+                    
+                    if (correctIndices.includes(idx)) {
+                        optionDiv.classList.add('correct-answer');
+                    }
+                    
+                    if (userAnswer.includes(idx) && !correctIndices.includes(idx)) {
+                        optionDiv.classList.add('wrong-answer');
+                    }
+                });
+                
+                const explanation = document.getElementById(`explanation-${question.id}`);
+                explanation.classList.add('show');
+            });
+            
+            // Hide submit button but keep reset and continue buttons visible
+            submitMcqButton.style.display = 'none';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Retake Quiz';
+            resetMcqButton.classList.remove('warning-btn');
+            resetMcqButton.classList.add('secondary-btn');
+            
+            // Add continue to PBQ button if not already present
+            let continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (!continueBtnInAssessment) {
+                continueBtnInAssessment = document.createElement('button');
+                continueBtnInAssessment.id = 'continueToPbqInAssessment';
+                continueBtnInAssessment.className = 'btn primary-btn';
+                continueBtnInAssessment.textContent = 'Continue to Practice Questions';
+                continueBtnInAssessment.onclick = () => {
+                    if (pbqQuestions.length > 0) {
+                        renderPBQs();
+                        showScreen('pbqScreen');
+                    } else {
+                        quizFinished = true;
+                        alert('No practice questions available. Quiz completed!');
+                    }
+                };
+                
+                // Insert button in the button group
+                const buttonGroup = mcqScreen.querySelector('.button-group');
+                buttonGroup.appendChild(continueBtnInAssessment);
+            }
+            continueBtnInAssessment.style.display = 'inline-block';
+        }
+
+        function renderPBQs() {
+            pbqContainer.innerHTML = '';
+            
+            if (pbqQuestions.length === 0) {
+                pbqContainer.innerHTML = '<p style="text-align: center; color: #6c757d;">No practice-based questions available.</p>';
+                return;
+            }
+            
+            pbqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+                
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Practice Question ${index + 1} (ID: ${question.id})`;
+                
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = 'Practice Question';
+                
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+                
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+                
+                const textarea = document.createElement('textarea');
+                textarea.className = 'pbq-answer';
+                textarea.placeholder = 'Write your answer here...';
+                textarea.id = `pbq-${question.id}`;
+                
+                const showAnswerBtn = document.createElement('button');
+                showAnswerBtn.className = 'btn secondary-btn';
+                showAnswerBtn.textContent = 'Show Answer';
+                showAnswerBtn.style.marginTop = '10px';
+                showAnswerBtn.onclick = () => togglePbqAnswer(question.id);
+                
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `pbq-explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Answer:</strong> ${question.explanation}`;
+                
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(questionText);
+                questionCard.appendChild(textarea);
+                questionCard.appendChild(showAnswerBtn);
+                questionCard.appendChild(explanation);
+                
+                pbqContainer.appendChild(questionCard);
+            });
+        }
+
+        function togglePbqAnswer(questionId) {
+            const explanation = document.getElementById(`pbq-explanation-${questionId}`);
+            explanation.classList.toggle('show');
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            quizStarted = false;
+            quizFinished = false;
+            progressBar.style.width = '0%';
+            submitMcqButton.style.display = 'inline-block';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Reset All Selections';
+            resetMcqButton.classList.add('warning-btn');
+            resetMcqButton.classList.remove('secondary-btn');
+            
+            // Hide continue button in assessment if exists
+            const continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (continueBtnInAssessment) {
+                continueBtnInAssessment.style.display = 'none';
+            }
+            
+            showScreen('startScreen');
+        }
+
+        // Event Listeners
+        startButton.addEventListener('click', () => {
+            quizStarted = true;
+            renderMCQs();
+            showScreen('mcqScreen');
+        });
+
+        submitMcqButton.addEventListener('click', () => {
+            const answeredCount = mcqQuestions.filter(q => 
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+            
+            if (answeredCount < mcqQuestions.length) {
+                if (!confirm('You have not answered all MCQs correctly (some may have incorrect number of selections). Do you want to submit anyway?')) {
+                    return;
+                }
+            }
+            
+            showResults();
+        });
+
+        resetMcqButton.addEventListener('click', resetAllSelections);
+
+        assessmentButton.addEventListener('click', showAssessment);
+
+        continueToPbqButton.addEventListener('click', () => {
+            if (pbqQuestions.length > 0) {
+                renderPBQs();
+                showScreen('pbqScreen');
+            } else {
+                quizFinished = true;
+                alert('No practice questions available. Quiz completed!');
+            }
+        });
+
+        finishQuizButton.addEventListener('click', () => {
+            quizFinished = true;
+            alert('Quiz completed! You can now retake the quiz or close this window.');
+            showScreen('startScreen');
+        });
+
+        retakeQuizButton.addEventListener('click', resetQuiz);
+    </script>
+</body>
+</html>

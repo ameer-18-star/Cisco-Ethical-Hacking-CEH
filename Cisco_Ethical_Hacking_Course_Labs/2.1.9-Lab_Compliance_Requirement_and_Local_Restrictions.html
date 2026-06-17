@@ -1,0 +1,2867 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    /* ── Fonts ── */
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+
+    /* ── Reset & Base ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --border: #d8d5cc;
+      --text: #0f0e0d;
+      --muted: #3a3835;
+      --accent: #c0392b;
+      --accent-lt: #fdf0ee;
+      --tip-bg: #fffbea;
+      --tip-border: #e6c84a;
+      --note-bg: #eef4ff;
+      --note-border: #4a7ce6;
+      --term-bg: #1a1917;
+      --term-text: #e8e6e0;
+      --term-green: #4ec94e;
+      --radius: 6px;
+      --max-w: 860px;
+      --font-body: "IBM Plex Sans", sans-serif;
+      --font-mono: "IBM Plex Mono", monospace;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      margin: 1rem;
+    }
+
+    /* ── Layout ── */
+    .page-wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* ── Lists ── */
+    ol,
+    ul {
+      padding-left: 1.5rem;
+      margin-bottom: 0.9rem;
+    }
+
+    li {
+      margin-bottom: 0.3rem;
+    }
+
+    li>ul,
+    ol>li {
+      margin-left: 0 !important;
+    }
+
+    /* ── Tables ── */
+    table {
+      margin-top: 1rem;
+      border: 1px solid var(--border);
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-body);
+      font-size: 0.93rem;
+    }
+
+    table>thead>tr>.openTableTextBox__table-header-data {
+      text-align: center;
+      font-size: 0.93rem;
+      font-family: var(--font-body);
+      font-weight: 700;
+      background: var(--note-bg);
+      padding: 0.5rem 0.75rem;
+      line-height: 1.5;
+    }
+
+    .openTableTextBox__answerText table>thead>tr>.openTableTextBox__table-header-data {
+      background: var(--accent-lt) !important;
+    }
+
+    td {
+      font-size: 0.93rem;
+      font-family: var(--font-body);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.75rem;
+      vertical-align: top;
+    }
+
+    table tbody tr th,
+    table thead tr th {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-weight: 700;
+      padding: 0.45rem 0.75rem;
+    }
+
+    .table-inner .table__widget table tr.TableHeading th,
+    .table-inner .table__widget table tr.TableHeading td,
+    .table-inner .table__widget table tr td.TableHeading,
+    .opentabletextbox-table thead tr.TableHeading th,
+    .opentabletextbox-table tbody tr.TableHeading td,
+    .opentabletextbox-table tbody tr td.TableHeading {
+      background: var(--bg);
+      text-align: center;
+      font-weight: 700;
+    }
+
+    /* ── Open Text Box ── */
+    .openTextBox__textArea-container {
+      margin: 0.6rem 0;
+      font-size: 0.93rem;
+      font-family: var(--font-body);
+      width: 50%;
+    }
+
+    textarea {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 0.93rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.5rem 0.75rem;
+      background: var(--surface);
+      color: var(--text);
+      resize: vertical;
+    }
+
+    .openTableTextBox__fieldset {
+      padding: 5px;
+    }
+
+    .answergray {
+      padding: 0.2rem;
+      background-color: var(--bg);
+    }
+
+    .openTableTextBox__widget>.answergray {
+      background-color: #fff !important;
+    }
+
+    .openTextBox__inner .openTextBox__widget .answergray.is-graphic-in-openTextBox {
+      background-color: transparent;
+    }
+
+    .openTextBox__inner .openTextBox__widget .answergray.is-graphic-in-openTextBox img {
+      margin-block: 1rem;
+      margin-left: initial;
+    }
+
+    .opentabletextbox-inner .opentabletextBox__widget .openTableTextBox__answerText.answergray {
+      background-color: transparent;
+    }
+
+    /* ── Widgets ── */
+    .openTableTextBox__widget {
+      margin: 0.6rem 0 0.6rem 1.5rem;
+    }
+
+    .openTextBox__widget {
+      margin-left: 1.5rem;
+    }
+
+    /* ── Show/Hide Answer Buttons ── */
+    .show-answer,
+    .hide-answer {
+      display: inline-block;
+      padding: 0.42rem 1.1rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      margin: 0.5rem 0;
+      transition: opacity 0.15s;
+    }
+
+    .show-answer:hover,
+    .hide-answer:hover {
+      opacity: 0.85;
+    }
+
+    .openTextBoxController__button-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .btn-text {
+      display: inline-block;
+      padding: 0.42rem 1.1rem;
+      background: var(--text);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-text:hover {
+      opacity: 0.8;
+    }
+
+    .u-display-none {
+      display: none;
+    }
+
+    /* ── Check Button ── */
+    .check__button {
+      display: inline-block;
+      padding: 0.42rem 1.1rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      min-width: 100px;
+      margin: 0.625rem 0;
+      transition: opacity 0.15s;
+    }
+
+    .check__button:hover {
+      opacity: 0.85;
+    }
+
+    .check__hidden {
+      display: none;
+    }
+
+    .check-inner .check__widget .check__solution .DevConfigGray {
+      background-color: var(--bg);
+      font-weight: 700;
+    }
+
+    .check-inner .check__widget .check__solution .DevConfigs {
+      margin: 0;
+      line-height: 1.6;
+      font-family: var(--font-mono);
+    }
+
+    .check__solution {
+      line-height: 1.7;
+    }
+
+    /* ── MCQ ── */
+    .mcq__inner .mcq__widget .mcq__widget-inner {
+      margin-block: 1rem;
+    }
+
+    .mcq__inner .mcq__widget .mcq__item {
+      display: flex;
+      gap: 0.2rem;
+    }
+
+    .mcq__inner .mcq__widget .mcq__item .mcq__item-label .mcq__item-text .screenReader-position-text {
+      display: none;
+    }
+
+    /* ── Headings ── */
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      border-left: 4px solid var(--accent);
+      padding-left: 0.75rem;
+      margin: 2.5rem 0 1rem;
+      line-height: 1.3;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      margin: 2rem 0 0.6rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Component Titles ── */
+    .component__title {
+      font-family: var(--font-body);
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .component__body {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    .block__title-inner,
+    .article__title-inner {
+      display: block;
+      font-size: 1.3rem;
+      font-weight: 700;
+      border-left: 4px solid var(--accent);
+      padding-left: 0.75rem;
+      margin: 2.5rem 0 1rem;
+      line-height: 1.3;
+    }
+
+    /* ── Body Text Indent Classes ── */
+    .component__content .component__body-inner .BodyTextL25Bold,
+    .component__content .component__body-inner .DnTbold,
+    .table-inner .table__widget table tr .DnTbold,
+    .openTextBox__inner .openTextBox__widget .DnTbold,
+    .openTextBox__inner .openTextBox__widget .BodyTextL25Bold {
+      font-weight: 700;
+    }
+
+    .component__content .component__body-inner .BodyTextL50 {
+      margin-inline-start: 1.875rem;
+    }
+
+    .component__content .component__body-inner .SubStepNum {
+      text-indent: -1.594rem;
+      margin-inline-start: 3.125rem;
+    }
+
+    .component__content .component__body-inner .SubStepAlpha,
+    .openTextBox__inner .openTextBox__widget .ReflectionQ {
+      text-indent: -1.594rem;
+      margin-inline-start: 1.875rem;
+    }
+
+    .component__content .component__body-inner .Bulletlevel1 {
+      text-indent: -1.188rem;
+      margin-inline-start: 3rem;
+    }
+
+    .component__content .component__body-inner .Bulletlevel2 {
+      text-indent: -1.188rem;
+      margin-inline-start: 4.5rem;
+    }
+
+    /* ── CMD / Terminal Styles ── */
+    .component__content .component__body-inner .CMD,
+    .component__content .component__body-inner .CMDOutput,
+    .component__content .component__body-inner .CMDOutput__table,
+    .openTextBox__inner .openTextBox__widget .CMD,
+    .openTextBox__inner .openTextBox__widget .CMDOutput {
+      font-family: var(--font-mono);
+      font-size: 0.87rem;
+      background: var(--term-bg);
+      color: var(--term-text);
+      border-radius: var(--radius);
+      padding: 0.2rem 0.5rem;
+      margin: 4px 0 4px 1.875rem;
+      display: block;
+      line-height: 1.6;
+    }
+
+    [dir="rtl"] .component__content .component__body-inner .CMDOutput__table span {
+      direction: ltr;
+      display: inline-block;
+    }
+
+    /* ── Command Output Table ── */
+    .command-output>.table-inner>.table-wrapper>.table-widget>table,
+    .command-output>.table-inner>.table-wrapper>.table-widget>table>tbody>tr>td,
+    .command-output>.table-inner>.table-wrapper>.table-widget>table>tbody>tr>th {
+      border: none !important;
+      text-align: right !important;
+      background: transparent;
+      font-family: var(--font-mono);
+    }
+
+    /* ── Simple Table ── */
+    .simple-table>.table-inner>.table-wrapper {
+      margin-left: 1.5rem;
+    }
+
+    /* ── Images ── */
+    img {
+      width: 30%;
+      height: auto;
+      margin-top: 1rem;
+      margin-left: 3rem;
+    }
+
+    /* ── Page Tracer ── */
+    .component__content .component__body-inner .pageTracer-h4-title-hide {
+      margin: 0;
+      font-size: 0;
+      color: var(--muted);
+      font-weight: normal;
+    }
+
+    /* ── Accessibility ── */
+    .accessibility-completion-indicator {
+      display: none;
+    }
+
+    .edit-comment,
+    .js-heading-inner {
+      display: none;
+    }
+
+    .openTextBox__postText,
+    .openTableTextBox__postText {
+      margin-top: 0.5rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      h2 {
+        font-size: 1.1rem;
+      }
+
+      img {
+        width: 60%;
+        margin-left: 1rem;
+      }
+
+      .openTextBox__textArea-container {
+        width: 100%;
+      }
+    }
+  </style>
+
+</head>
+
+<body><!---->
+  <div class="article 6446b299176c821e240c3ef3 remove-top-padding remove-padding-bottom ">
+    <div class="article__inner">
+      <div class=" no-adaptive-scroll">
+        <!--?lit$0447898837$-->
+        <div class="">
+          <base-view type="article" model="[object Object]" customclass="" lowercase_component="" is-touch="false"
+            fullscreen="true" device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+            orientation="landscape" themetype="article-base-theme"><!---->
+            <div class="article__header-wrapper remove-top-padding remove-padding-bottom ">
+              <div class="article__header ">
+                <div class="article__header-inner ">
+
+                  <!--?lit$0447898837$-->
+                  <div class=" article__title ">
+                    <!--?lit$0447898837$--><heading-view aria-hidden="true" id="6446b299176c821e240c3ef3-heading-view"
+                      headingtitle="Lab - Compliance Requirements and Local Restrictions"
+                      modelid="6446b299176c821e240c3ef3" is-touch="false" fullscreen="true" device="large"
+                      browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                      themetype="article-base-theme"><!---->
+                      <div class="js-heading is-incomplete">
+                        <div class="js-heading-inner" role="heading" id="article-heading" aria-level="2">
+                          <span class="aria-label"> <!--?lit$0447898837$-->Incomplete &nbsp;<!--?lit$0447898837$-->Lab -
+                            Compliance Requirements and Local Restrictions</span>
+                        </div>
+                      </div>
+                    </heading-view>
+                    <div tabindex="0" role="heading" class="article__title-inner " aria-level="2">
+                      <span class="accessibility-completion-indicator"><!--?lit$0447898837$-->Incomplete </span>
+                      <!--?lit$0447898837$-->Lab - Compliance Requirements and Local Restrictions
+                    </div>
+                  </div>
+                  <!--?lit$0447898837$-->
+                  <!--?lit$0447898837$-->
+                  <!--?lit$0447898837$-->
+                  <!--?lit$0447898837$-->
+                </div>
+              </div>
+            </div>
+
+          </base-view>
+          <div class="block__container " style="">
+            <!--?lit$0447898837$--><!---->
+            <block-view modelid="6446b299176c821e240c3ef7" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446b299176c821e240c3ef7"
+                class="6446b299176c821e240c3ef7 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446b299176c821e240c3ef7" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><text-view modelid="6446b29b176c821e240c3f0d"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="text-inner component__inner">
+                        <div class="component__header-container">
+                          <div data-socialgoodpulse-id="6446b29b176c821e240c3f0d"
+                            class="component text 6446b29b176c821e240c3f0d remove-top-padding remove-padding-bottom is-full   ">
+                            <base-view type="component" lowercase_component="text" model="[object Object]"
+                              customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                              os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                              themetype="article-base-theme"><!---->
+                              <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                <div class="component__header text__header">
+                                  <div class="component__header-inner text__header-inner">
+
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                    <div class="component__content">
+                                      <div tabindex="0" class="component__body text__body">
+                                        <div class="component__body-inner text__body-inner"><!--?lit$0447898837$-->
+                                          <h1>Objectives</h1>
+                                          <p>In this lab, you will complete the following objectives:</p>
+                                          <ul>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Research penetration testing
+                                              services provided by security consultants for compliance frameworks.</li>
+                                            <li><!--[if !supportLists]--><!--[endif]-->Conduct a Search of Penetration
+                                              Testing Companies.</li>
+                                          </ul>
+                                          <h1>Background / Scenario</h1>
+                                          <p>You are hired to perform a compliance-based assessment to verify and audit
+                                            the security posture of the organization and to ensure they are in
+                                            compliance with specific regulations.</p>
+                                          <h1>Required Resources</h1>
+                                          <ul>
+                                            <li>
+                                              <p>PC or mobile device with internet access</p>
+                                            </li>
+                                          </ul>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                  </div>
+                                </div>
+                              </div>
+
+                            </base-view>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- div><div class="component__inner"></div></div -->
+                    </text-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446b299176c821e240c3ef9" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446b299176c821e240c3ef9"
+                class="6446b299176c821e240c3ef9 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446b299176c821e240c3ef9" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><text-view modelid="6446b29b176c821e240c3f0f"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="text-inner component__inner">
+                        <div class="component__header-container">
+                          <div data-socialgoodpulse-id="6446b29b176c821e240c3f0f"
+                            class="component text 6446b29b176c821e240c3f0f remove-top-padding remove-padding-bottom is-full   ">
+                            <base-view type="component" lowercase_component="text" model="[object Object]"
+                              customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                              os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                              themetype="article-base-theme"><!---->
+                              <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                <div class="component__header text__header">
+                                  <div class="component__header-inner text__header-inner">
+
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                    <div class="component__content">
+                                      <div tabindex="0" class="component__body text__body">
+                                        <div class="component__body-inner text__body-inner"><!--?lit$0447898837$-->
+                                          <h1>Instructions</h1>
+                                          <h2 style="margin-left:0in"><!--[if !supportLists]--><span><span>Part 1:
+                                              </span></span><!--[endif]-->Conduct a Search of Pentesting Companies.</h2>
+                                          <p>Using your favorite search engine, conduct a search for consulting
+                                            companies that provide compliance and regulation penetration testing
+                                            services.</p>
+                                          <p>From your research, identify three consulting companies that provide
+                                            penetration testing services for compliance and regulations. Answer the
+                                            following questions for each company.</p>
+                                          <h3><!--[if !supportLists]--><span>Penetration Testing Consulting Company
+                                              #1</span></h3>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                  </div>
+                                </div>
+                              </div>
+
+                            </base-view>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- div><div class="component__inner"></div></div -->
+                    </text-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446b299176c821e240c3efc" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446b299176c821e240c3efc"
+                class="6446b299176c821e240c3efc block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446b299176c821e240c3efc" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446b29b176c821e240c3f12"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446b29b176c821e240c3f12"
+                            class="component opentextbox 6446b29b176c821e240c3f12 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446b29b176c821e240c3f12"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->What is the name of the company:
+                              </div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary but could include RAPID7, Cobalt.io, Fortra,
+                                ERMProtect, CyberGuard, or others.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446b299176c821e240c3efb" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446b299176c821e240c3efb"
+                class="6446b299176c821e240c3efb block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446b299176c821e240c3efb" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446b29b176c821e240c3f11"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446b29b176c821e240c3f11"
+                            class="component opentextbox 6446b29b176c821e240c3f11 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446b29b176c821e240c3f11"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->Web site: </div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446b42ea70da71fb1703da0" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446b42ea70da71fb1703da0"
+                class="6446b42ea70da71fb1703da0 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446b42ea70da71fb1703da0" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446b42ea70da71fb1703da1"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446b42ea70da71fb1703da1"
+                            class="component opentextbox 6446b42ea70da71fb1703da1 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446b42ea70da71fb1703da1"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->For what compliance domains does
+                                the company provide penetration testing services? List the domains and give a brief
+                                description of the focus of each.</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary by company but could include these and/or
+                                others:<br> PCI DSS - Payment Card Industry Data Security Standard (PCI DSS). This is an
+                                internationally recognized standard that applies to organizations that handle credit
+                                card data.<br> HIPAA – Health Insurance Portability and Accountability Act. This act
+                                protects information concerning a person’s health, healthcare, or payment for their
+                                healthcare.<br> GDPR – General Data Protection Regulation. A European regulation which
+                                stipulates what organizations can do with someone’s personal data and enhances how
+                                people can access data about them.<br> NYDFS Cybersecurity Regulation - New York
+                                Department of Financial Services Cybersecurity Regulation. This regulation requires New
+                                York insurance companies, banks, and financial services institutions to assess their
+                                cybersecurity risk profile.<br> FISMA - Federal Information Security Management Act.
+                                This act requires federal agencies to develop, document and implement agency-wide
+                                information security programs.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c120176c821e240c3f36" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c120176c821e240c3f36"
+                class="6446c120176c821e240c3f36 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c120176c821e240c3f36" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c121176c821e240c3f37"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c121176c821e240c3f37"
+                            class="component opentextbox 6446c121176c821e240c3f37 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c121176c821e240c3f37"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->What knowledge resources
+                                regarding compliance frameworks are available on the company web site?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answer will vary but could include resources such as:<br>
+                                Resource libraries, Blogs, Events and webinars, Fundamentals, Extensions library,
+                                Vulnerability and exploit databases.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c1dd176c821e240c3f39" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c1dd176c821e240c3f39"
+                class="6446c1dd176c821e240c3f39 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c1dd176c821e240c3f39" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c1dd176c821e240c3f3a"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c1dd176c821e240c3f3a"
+                            class="component opentextbox 6446c1dd176c821e240c3f3a remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c1dd176c821e240c3f3a"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->Who are the company’s major
+                                customers (List at least three)?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary but could include well-known names such as
+                                Dominos, Discovery, Ford, and Cengage.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c22f176c821e240c3f3c" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c22f176c821e240c3f3c"
+                class="6446c22f176c821e240c3f3c block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c22f176c821e240c3f3c" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c22f176c821e240c3f3d"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c22f176c821e240c3f3d"
+                            class="component opentextbox 6446c22f176c821e240c3f3d remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c22f176c821e240c3f3d"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->What awards or recognitions has
+                                the company received?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary but could include Wins at GRRCON, Wins at
+                                DEFCON, CREST penetration testing, Offensive Security Certifications, Hot Companies to
+                                Watch, Tech Culture Workplace Excellence and many others.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c2bf49262d2126c6d379" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c2bf49262d2126c6d379"
+                class="6446c2bf49262d2126c6d379 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c2bf49262d2126c6d379" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><text-view modelid="6446c2bf49262d2126c6d37a"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="text-inner component__inner">
+                        <div class="component__header-container">
+                          <div data-socialgoodpulse-id="6446c2bf49262d2126c6d37a"
+                            class="component text 6446c2bf49262d2126c6d37a remove-top-padding remove-padding-bottom is-full   ">
+                            <base-view type="component" lowercase_component="text" model="[object Object]"
+                              customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                              os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                              themetype="article-base-theme"><!---->
+                              <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                <div class="component__header text__header">
+                                  <div class="component__header-inner text__header-inner">
+
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                    <div class="component__content">
+                                      <div tabindex="0" class="component__body text__body">
+                                        <div class="component__body-inner text__body-inner"><!--?lit$0447898837$-->
+                                          <h3><span>Penetration Testing Consulting Company #2</span></h3>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                  </div>
+                                </div>
+                              </div>
+
+                            </base-view>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- div><div class="component__inner"></div></div -->
+                    </text-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c33b49262d2126c6d380" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c33b49262d2126c6d380"
+                class="6446c33b49262d2126c6d380 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c33b49262d2126c6d380" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c33b49262d2126c6d381"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c33b49262d2126c6d381"
+                            class="component opentextbox 6446c33b49262d2126c6d381 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c33b49262d2126c6d381"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->What is the name of the company:
+                              </div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c25a49262d2126c6d375" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c25a49262d2126c6d375"
+                class="6446c25a49262d2126c6d375 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c25a49262d2126c6d375" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c25a49262d2126c6d376"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c25a49262d2126c6d376"
+                            class="component opentextbox 6446c25a49262d2126c6d376 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c25a49262d2126c6d376"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->Web site: </div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c328176c821e240c3f42" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c328176c821e240c3f42"
+                class="6446c328176c821e240c3f42 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c328176c821e240c3f42" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c328176c821e240c3f43"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c328176c821e240c3f43"
+                            class="component opentextbox 6446c328176c821e240c3f43 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c328176c821e240c3f43"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->What compliance domains does the
+                                company provide penetration testing services for? List the domains and give a brief
+                                description of the focus of each.</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c3a149262d2126c6d383" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c3a149262d2126c6d383"
+                class="6446c3a149262d2126c6d383 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c3a149262d2126c6d383" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c3a149262d2126c6d384"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c3a149262d2126c6d384"
+                            class="component opentextbox 6446c3a149262d2126c6d384 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c3a149262d2126c6d384"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->What knowledge resources
+                                regarding compliance frameworks are available on the company web site?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c3c9176c821e240c3f45" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c3c9176c821e240c3f45"
+                class="6446c3c9176c821e240c3f45 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c3c9176c821e240c3f45" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c3c9176c821e240c3f46"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c3c9176c821e240c3f46"
+                            class="component opentextbox 6446c3c9176c821e240c3f46 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c3c9176c821e240c3f46"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->Who are the company’s major
+                                customers (List at least three)?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c3f7176c821e240c3f47" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c3f7176c821e240c3f47"
+                class="6446c3f7176c821e240c3f47 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c3f7176c821e240c3f47" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c3f7176c821e240c3f48"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c3f7176c821e240c3f48"
+                            class="component opentextbox 6446c3f7176c821e240c3f48 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c3f7176c821e240c3f48"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->What awards or recognitions has
+                                the company received?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c2e9176c821e240c3f3f" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c2e9176c821e240c3f3f"
+                class="6446c2e9176c821e240c3f3f block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c2e9176c821e240c3f3f" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><text-view modelid="6446c2e9176c821e240c3f40"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="text-inner component__inner">
+                        <div class="component__header-container">
+                          <div data-socialgoodpulse-id="6446c2e9176c821e240c3f40"
+                            class="component text 6446c2e9176c821e240c3f40 remove-top-padding remove-padding-bottom is-full   ">
+                            <base-view type="component" lowercase_component="text" model="[object Object]"
+                              customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                              os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                              themetype="article-base-theme"><!---->
+                              <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                <div class="component__header text__header">
+                                  <div class="component__header-inner text__header-inner">
+
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                    <div class="component__content">
+                                      <div tabindex="0" class="component__body text__body">
+                                        <div class="component__body-inner text__body-inner"><!--?lit$0447898837$-->
+                                          <h3><span>Penetration Testing Consulting Company #3</span></h3>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                  </div>
+                                </div>
+                              </div>
+
+                            </base-view>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- div><div class="component__inner"></div></div -->
+                    </text-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c4bb176c821e240c3f4f" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c4bb176c821e240c3f4f"
+                class="6446c4bb176c821e240c3f4f block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c4bb176c821e240c3f4f" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c4bb176c821e240c3f50"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c4bb176c821e240c3f50"
+                            class="component opentextbox 6446c4bb176c821e240c3f50 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c4bb176c821e240c3f50"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->What is the name of the company:
+                              </div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c4ab49262d2126c6d38b" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c4ab49262d2126c6d38b"
+                class="6446c4ab49262d2126c6d38b block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c4ab49262d2126c6d38b" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c4ab49262d2126c6d38c"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c4ab49262d2126c6d38c"
+                            class="component opentextbox 6446c4ab49262d2126c6d38c remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c4ab49262d2126c6d38c"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->Web site: </div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446e1e3176c821e240c3f80" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446e1e3176c821e240c3f80"
+                class="6446e1e3176c821e240c3f80 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446e1e3176c821e240c3f80" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446e1e3176c821e240c3f81"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446e1e3176c821e240c3f81"
+                            class="component opentextbox 6446e1e3176c821e240c3f81 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446e1e3176c821e240c3f81"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->What compliance domains does the
+                                company provide penetration testing services for? List the domains and give a brief
+                                description of the focus of each.</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c498176c821e240c3f4c" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c498176c821e240c3f4c"
+                class="6446c498176c821e240c3f4c block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c498176c821e240c3f4c" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c498176c821e240c3f4d"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c498176c821e240c3f4d"
+                            class="component opentextbox 6446c498176c821e240c3f4d remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c498176c821e240c3f4d"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->What knowledge resources
+                                regarding compliance frameworks are available on the company web site?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c47349262d2126c6d387" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c47349262d2126c6d387"
+                class="6446c47349262d2126c6d387 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c47349262d2126c6d387" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c47349262d2126c6d388"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c47349262d2126c6d388"
+                            class="component opentextbox 6446c47349262d2126c6d388 remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c47349262d2126c6d388"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->Who are the company’s major
+                                customers (List at least three)?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c45f176c821e240c3f4a" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c45f176c821e240c3f4a"
+                class="6446c45f176c821e240c3f4a block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c45f176c821e240c3f4a" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c45f176c821e240c3f4b"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c45f176c821e240c3f4b"
+                            class="component opentextbox 6446c45f176c821e240c3f4b remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c45f176c821e240c3f4b"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->What awards or recognitions has
+                                the company received?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers will vary.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="645c13f46b521b0d00a5f462" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="645c13f46b521b0d00a5f462"
+                class="645c13f46b521b0d00a5f462 block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="645c13f46b521b0d00a5f462" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><text-view modelid="645c13f46b521b0d00a5f463"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="text-inner component__inner">
+                        <div class="component__header-container">
+                          <div data-socialgoodpulse-id="645c13f46b521b0d00a5f463"
+                            class="component text 645c13f46b521b0d00a5f463 remove-top-padding remove-padding-bottom is-full   ">
+                            <base-view type="component" lowercase_component="text" model="[object Object]"
+                              customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                              os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                              themetype="article-base-theme"><!---->
+                              <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                <div class="component__header text__header">
+                                  <div class="component__header-inner text__header-inner">
+
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                    <div class="component__content">
+                                      <div tabindex="0" class="component__body text__body">
+                                        <div class="component__body-inner text__body-inner"><!--?lit$0447898837$-->
+                                          <h1><span>Reflection</span></h1>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--?lit$0447898837$-->
+                                    <!--?lit$0447898837$-->
+                                  </div>
+                                </div>
+                              </div>
+
+                            </base-view>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- div><div class="component__inner"></div></div -->
+                    </text-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!----><!---->
+            <block-view modelid="6446c30949262d2126c6d37d" is-touch="false" fullscreen="true" device="large"
+              browser="Chrome" os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+              themetype="article-base-theme" sgpulse-type="block" style="width: 4.16667%;"><!---->
+
+              <div data-socialgoodpulse-id="6446c30949262d2126c6d37d"
+                class="6446c30949262d2126c6d37d block remove-top-padding ">
+                <div class="block__inner">
+                  <base-view type="block" modelid="6446c30949262d2126c6d37d" model="[object Object]" customclass=""
+                    lowercase_component="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                    os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                    themetype="article-base-theme"><!---->
+                    <div class="block__header-wrapper remove-top-padding ">
+                      <div class="block__header ">
+                        <div class="block__header-inner ">
+
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                          <!--?lit$0447898837$-->
+                        </div>
+                      </div>
+                    </div>
+
+                  </base-view>
+                  <div class="component__container">
+                    <!--?lit$0447898837$--><!----><opentextbox-view modelid="6446c30949262d2126c6d37e"
+                      class="is-full remove-top-padding remove-padding-bottom" is-touch="false" fullscreen="true"
+                      device="large" browser="Chrome" os="windows" dir="ltr" location="page" theme="light"
+                      orientation="landscape" themetype="article-base-theme" sgpulse-type="component"><!---->
+                      <div class="component">
+                        <div class="component__inner openTextBox__inner">
+                          <div data-socialgoodpulse-id="6446c30949262d2126c6d37e"
+                            class="component opentextbox 6446c30949262d2126c6d37e remove-top-padding remove-padding-bottom is-full   ">
+                            <div class="component__header-container">
+                              <div data-socialgoodpulse-id="6446c30949262d2126c6d37e"
+                                class="opentabletextbox remove-top-padding remove-padding-bottom">
+                                <base-view type="component" lowercase_component="openTextBox" model="[object Object]"
+                                  customclass="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+                                  os="windows" dir="ltr" location="page" theme="light" orientation="landscape"
+                                  themetype="article-base-theme"><!---->
+                                  <div class="component__header-wrapper remove-top-padding remove-padding-bottom ">
+                                    <div class="component__header openTextBox__header">
+                                      <div class="component__header-inner openTextBox__header-inner">
+
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                        <!--?lit$0447898837$-->
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </base-view>
+                              </div>
+                            </div>
+                            <div class="component__widget openTextBox__widget question-container">
+                              <!--?lit$0447898837$-->
+                              <div class="openTextBox__preText"><!--?lit$0447898837$-->Do companies in your country need
+                                to follow compliance frameworks that are imposed by other countries? If so, what are the
+                                consequences for failing to meet the requirements of the frameworks and what are the
+                                penalties if there is a data breach?</div>
+
+                              <div class="openTextBox__textArea-container">
+                                <fieldset class="openTextBox__fieldset" tabindex="0">
+                                  <legend class="openTextBox__legend">
+                                    <!--?lit$0447898837$-->Answer Area
+                                  </legend>
+                                  <textarea class="openTextBox__textArea" rows="3" name="answerArea"
+                                    placeholder="Enter your answer here"
+                                    aria-label="Enter your answer here">&lt;!----&gt;&lt;!----&gt;</textarea>
+                                </fieldset>
+                              </div>
+                              <div tabindex="0" class="openTextBox__answerText answergray  hide">
+                                <!--?lit$0447898837$-->
+                                <!--?lit$0447898837$-->Answers may vary. If a company has customers who access their
+                                websites from other countries, that company must meet the local compliance requirements.
+                                Failure to do so, or losing data in a breach, can result in the company being banned
+                                from doing business in the country whose framework was violated. This is especially
+                                costly for companies that do business in the EU, since the GDPR has been adopted by all
+                                27 of the EU countries. In addition, another 17 countries have GDPR-like compliance
+                                frameworks that are shared among groups of nations.
+                              </div>
+
+                              <div class="btn__container">
+                                <button
+                                  class="btn-text openTextBox__showButton show-answer show"><!--?lit$0447898837$-->Show
+                                  Answer</button>
+                                <button
+                                  class="btn-text openTextBox__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide
+                                  Answer</button>
+                              </div>
+                              <!--?lit$0447898837$--><!--?-->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </opentextbox-view><!---->
+                  </div>
+                </div>
+              </div>
+            </block-view>
+            <!---->
+          </div>
+        </div>
+        <!--?lit$0447898837$-->
+      </div>
+    </div>
+  </div>
+  <sgpluse-opentextboxcontroller-view modelid="" is-touch="false" fullscreen="true" device="large" browser="Chrome"
+    os="windows" dir="ltr" location="page" theme="light" orientation="landscape" themetype="article-base-theme"><!---->
+    <div class="openTextBoxController__button-container">
+      <button tabindex="0"
+        class="btn-text showhidebtn openTextBoxController__showButton show-answer show"><!--?lit$0447898837$-->Show All
+        Answers</button>
+      <button tabindex="0"
+        class="btn-text showhidebtn openTextBoxController__hideButton hide-answer hide"><!--?lit$0447898837$-->Hide All
+        Answers</button>
+      <button class="btn-text resetbtn openTextBoxController__resetButton"><!--?lit$0447898837$-->Clear My
+        Responses</button>
+    </div>
+    <!--?lit$0447898837$-->
+    <hr>
+    <!--?lit$0447898837$-->
+    <div class="post-text" tabindex="0">
+      <!--?lit$0447898837$-->© 2017 - 2023 Cisco and/or its affiliates. All rights reserved. Cisco Public
+    </div>
+
+  </sgpluse-opentextboxcontroller-view>
+  <script></script>
+</body>
+<script>
+  window.addEventListener("load", function () {
+    console.log("loaded");
+    document.querySelectorAll(".answergray").forEach(function (ele) {
+      ele.classList.add("u-display-none");
+    });
+    document.querySelectorAll(".hide-answer").forEach(function (ele) {
+      ele.classList.add("u-display-none");
+    });
+    document.querySelectorAll(".show-answer").forEach(function (ele) {
+      ele.addEventListener("click", function (e) {
+        e.currentTarget.nextElementSibling.classList.remove("u-display-none");
+        e.currentTarget
+          .closest(".question-container")
+          .querySelectorAll(".answergray")
+          .forEach(function (ele) {
+            ele.classList.remove("u-display-none");
+          });
+        ele.classList.add("u-display-none");
+      });
+    });
+    document.querySelectorAll(".hide-answer").forEach(function (ele) {
+      ele.addEventListener("click", function (e) {
+        e.currentTarget.previousElementSibling.classList.remove("u-display-none");
+        e.currentTarget
+          .closest(".question-container")
+          .querySelectorAll(".answergray")
+          .forEach(function (ele) {
+            ele.classList.add("u-display-none");
+          });
+        ele.classList.add("u-display-none");
+      });
+    });
+    var event = new Event("click", {
+      bubbles: true,
+      cancelable: true,
+    });
+    document
+      .querySelectorAll(".openTextBoxController__showButton")
+      .forEach(function (ele) {
+        ele.addEventListener("click", function (e) {
+          e.currentTarget.nextElementSibling.classList.remove("u-display-none");
+          ele.classList.add("u-display-none");
+          document.querySelectorAll(".show-answer").forEach(function (ele) {
+            ele.dispatchEvent(event);
+          });
+        });
+      });
+
+    document
+      .querySelectorAll(".openTextBoxController__hideButton")
+      .forEach(function (ele) {
+        ele.addEventListener("click", function (e) {
+          e.currentTarget.previousElementSibling.classList.remove("u-display-none");
+          ele.classList.add("u-display-none");
+          document.querySelectorAll(".hide-answer").forEach(function (ele) {
+            ele.dispatchEvent(event);
+          });
+        });
+      });
+
+    document
+      .querySelectorAll(".openTextBoxController__resetButton")
+      .forEach(function (ele) {
+        ele.addEventListener("click", function (e) {
+          document.querySelectorAll("textArea").forEach(function (ele) {
+            ele.value = "";
+          });
+        });
+      });
+
+    document
+      .querySelectorAll('textarea')
+      .forEach(function (ele) {
+        ele.defaultValue = ele.defaultValue.replace(/<!--.*?-->/g, '');
+      })
+    let checkButtonLabel = "check_button_label_placeHolder";
+    let hideButtonLabel = "hide_button_label_placeHolder";
+    document.querySelectorAll(".check__button").forEach(function (ele) {
+      let answerBox = document.querySelector(".check__solution")
+      if (!answerBox.classList.contains("check__hidden")) {
+        answerBox.classList.add("check__hidden");
+        ele.innerText = checkButtonLabel;
+      }
+      ele.addEventListener("click", function (e) {
+        if (answerBox.classList.contains("check__hidden")) {
+          answerBox.classList.remove("check__hidden")
+          ele.innerText = hideButtonLabel;
+        } else {
+          answerBox.classList.add("check__hidden")
+          ele.innerText = checkButtonLabel;
+        }
+      })
+    })
+  });
+</script>
+
+</html>

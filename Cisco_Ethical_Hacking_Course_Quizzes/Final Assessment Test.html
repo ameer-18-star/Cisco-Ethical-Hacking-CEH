@@ -1,0 +1,2869 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .quiz-section {
+            display: none;
+            padding: 40px;
+        }
+
+        .quiz-section.active {
+            display: block;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .rules-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .rules-card ol {
+            margin-left: 20px;
+        }
+
+        .rules-card li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .primary-btn {
+            background: #28a745;
+        }
+
+        .primary-btn:hover {
+            background: #218838;
+        }
+
+        .secondary-btn {
+            background: #6c757d;
+        }
+
+        .secondary-btn:hover {
+            background: #5a6268;
+        }
+
+        .warning-btn {
+            background: #dc3545;
+        }
+
+        .warning-btn:hover {
+            background: #c82333;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .question-type {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .selection-hint {
+            background: #fff3cd;
+            color: #856404;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            border: 1px solid #ffeaa7;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .options-container {
+            margin: 15px 0;
+        }
+
+        .option {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.correct-answer {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .option.wrong-answer {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .explanation {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #2196f3;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation strong {
+            color: #1976d2;
+        }
+
+        .pbq-answer {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .pbq-answer:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .result-card {
+            text-align: center;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-top: 4px solid #667eea;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .result-message {
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .result-message.pass {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .result-message.fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .results-table thead {
+            background: #667eea;
+            color: white;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .results-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+
+        .results-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-correct {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-incorrect {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .status-icon {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-section {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .results-table {
+                font-size: 0.9em;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="quiz-container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="quiz-section active">
+            <h1>Welcome to the Quiz!</h1>
+            <p style="text-align: center; font-size: 1.2em; margin-bottom: 20px;">Test your knowledge with MCQs and
+                Practice-Based Questions.</p>
+
+            <div class="rules-card">
+                <h2>Quiz Rules:</h2>
+                <ol>
+                    <li>Complete all MCQ questions first, then move to Practice-Based Questions.</li>
+                    <li>For multiple choice questions, select the exact number of options specified.</li>
+                    <li>Do not refresh or close the page during the quiz.</li>
+                    <li>Achieve <strong>75% or higher</strong> on MCQs to pass this module.</li>
+                    <li>PBQs are for practice only and won't affect your score.</li>
+                </ol>
+            </div>
+
+            <div style="text-align: center;">
+                <button id="startButton" class="btn">Start Quiz</button>
+            </div>
+        </div>
+
+        <!-- MCQ Screen -->
+        <div id="mcqScreen" class="quiz-section">
+            <h1>Multiple Choice Questions</h1>
+            <div class="progress-bar-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+
+            <div id="mcqContainer"></div>
+
+            <div class="button-group">
+                <button id="resetMcqButton" class="btn warning-btn">Reset All Selections</button>
+                <button id="submitMcqButton" class="btn primary-btn">Submit MCQs</button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="quiz-section">
+            <div class="result-card">
+                <h1>MCQ Results</h1>
+
+                <div class="result-stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalMcqResult">0</div>
+                        <div class="stat-label">Total MCQs</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="correctAnswersResult">0</div>
+                        <div class="stat-label">Correct Answers</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="incorrectAnswersResult">0</div>
+                        <div class="stat-label">Incorrect Answers</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="finalPercentage">0%</div>
+                        <div class="stat-label">Score</div>
+                    </div>
+                </div>
+
+                <div class="result-message" id="resultMessage"></div>
+
+                <h2 style="margin-top: 40px; margin-bottom: 20px;">Detailed Results</h2>
+                <div style="overflow-x: auto;">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Question ID</th>
+                                <th>Question</th>
+                                <th>Status</th>
+                                <th>Your Answer</th>
+                                <th>Correct Answer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="button-group">
+                    <button id="assessmentButton" class="btn primary-btn">View Assessment</button>
+                    <button id="continueToPbqButton" class="btn secondary-btn">Continue to Practice Questions</button>
+                    <button id="retakeQuizButton" class="btn warning-btn">Retake Quiz</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PBQ Screen -->
+        <div id="pbqScreen" class="quiz-section">
+            <h1>Practice-Based Questions</h1>
+            <p style="text-align: center; margin-bottom: 30px; color: #6c757d;">These questions are for practice only
+                and do not affect your score.</p>
+
+            <div id="pbqContainer"></div>
+
+            <div class="button-group">
+                <button id="finishQuizButton" class="btn primary-btn">Finish Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Questions - Replace with your actual questions
+        const questions = [
+            {
+                "id": "MCQ001",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary difference between an ethical hacker and a non-ethical hacker?",
+                "options": [
+                    { "text": "The tools they use", "isCorrect": false },
+                    { "text": "Their level of technical skill", "isCorrect": false },
+                    { "text": "Malicious intent and permission to attack", "isCorrect": true },
+                    { "text": "The operating system they prefer", "isCorrect": false }
+                ],
+                "explanation": "The key factor in defining ethical versus non-ethical hacking is that the latter involves malicious intent, whereas ethical hackers have explicit permission to test the security posture."
+            },
+            {
+                "id": "MCQ002",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which threat actor is primarily motivated by furthering a belief or making a political point?",
+                "options": [
+                    { "text": "Organized Crime", "isCorrect": false },
+                    { "text": "Hacktivists", "isCorrect": true },
+                    { "text": "State-Sponsored Attackers", "isCorrect": false },
+                    { "text": "Script Kiddies", "isCorrect": false }
+                ],
+                "explanation": "Hacktivists are not motivated by money; they use cybercrime to further their beliefs or embarrass targets."
+            },
+            {
+                "id": "MCQ003",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which NIST Special Publication provides the standard definition of cloud computing?",
+                "options": [
+                    { "text": "SP 800-115", "isCorrect": false },
+                    { "text": "SP 800-53", "isCorrect": false },
+                    { "text": "SP 800-145", "isCorrect": true },
+                    { "text": "SP 500-292", "isCorrect": false }
+                ],
+                "explanation": "NIST Special Publication 800-145 provides the industry-standard definition for cloud computing."
+            },
+            {
+                "id": "MCQ004",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which regulation specifically aims to secure the processing of credit card payments?",
+                "options": [
+                    { "text": "HIPAA", "isCorrect": false },
+                    { "text": "GDPR", "isCorrect": false },
+                    { "text": "PCI DSS", "isCorrect": true },
+                    { "text": "FedRAMP", "isCorrect": false }
+                ],
+                "explanation": "The Payment Card Industry Data Security Standard (PCI DSS) regulation secures digital and credit card payments."
+            },
+            {
+                "id": "MCQ005",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What type of attack involves an unauthorized person tagging along with an authorized person WITHOUT their consent?",
+                "options": [
+                    { "text": "Piggybacking", "isCorrect": false },
+                    { "text": "Tailgating", "isCorrect": true },
+                    { "text": "Shoulder Surfing", "isCorrect": false },
+                    { "text": "Badge Cloning", "isCorrect": false }
+                ],
+                "explanation": "Tailgating is entry to a restricted area without the authorized person's consent, whereas piggybacking usually involves consent."
+            },
+            {
+                "id": "MCQ006",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which Nmap scan is also known as a 'half-open' scan?",
+                "options": [
+                    { "text": "TCP Connect Scan (-sT)", "isCorrect": false },
+                    { "text": "UDP Scan (-sU)", "isCorrect": false },
+                    { "text": "TCP SYN Scan (-sS)", "isCorrect": true },
+                    { "text": "FIN Scan (-sF)", "isCorrect": false }
+                ],
+                "explanation": "The Nmap SYN scan (-sS) is called a half-open scan because it does not open a full TCP connection."
+            },
+            {
+                "id": "MCQ007",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In SQL, which statement is used to retrieve data from a database?",
+                "options": [
+                    { "text": "UPDATE", "isCorrect": false },
+                    { "text": "INSERT INTO", "isCorrect": false },
+                    { "text": "SELECT", "isCorrect": true },
+                    { "text": "DROP", "isCorrect": false }
+                ],
+                "explanation": "The SELECT statement is the primary SQL command used to obtain data from a database."
+            },
+            {
+                "id": "MCQ008",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which cloud model allows you to rent virtual disks and power, similar to a utility company?",
+                "options": [
+                    { "text": "SaaS", "isCorrect": false },
+                    { "text": "PaaS", "isCorrect": false },
+                    { "text": "IaaS", "isCorrect": true },
+                    { "text": "FaaS", "isCorrect": false }
+                ],
+                "explanation": "Infrastructure as a Service (IaaS) is a model where you rent infrastructure and pay for what you use."
+            },
+            {
+                "id": "MCQ009",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary objective of a data exfiltration attack?",
+                "options": [
+                    { "text": "To crash the server", "isCorrect": false },
+                    { "text": "To move sensitive data outside the organization without permission", "isCorrect": true },
+                    { "text": "To encrypt files for ransom", "isCorrect": false },
+                    { "text": "To create new admin users", "isCorrect": false }
+                ],
+                "explanation": "Data exfiltration is the deliberate act of moving sensitive data out of an organization's perimeter unauthorized."
+            },
+            {
+                "id": "MCQ010",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool is known as the 'TCP/IP swiss army knife'?",
+                "options": [
+                    { "text": "Wireshark", "isCorrect": false },
+                    { "text": "Nmap", "isCorrect": false },
+                    { "text": "Netcat", "isCorrect": true },
+                    { "text": "Metasploit", "isCorrect": false }
+                ],
+                "explanation": "Netcat (nc) is religiously referred to as the TCP/IP swiss army knife due to its versatility."
+            },
+            {
+                "id": "MCQ011",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which of the following are essential characteristics of cloud computing according to NIST?",
+                "options": [
+                    { "text": "On-demand self-service", "isCorrect": true },
+                    { "text": "Resource pooling", "isCorrect": true },
+                    { "text": "Manual hardware management", "isCorrect": false },
+                    { "text": "Rapid elasticity", "isCorrect": true },
+                    { "text": "Fixed monthly pricing", "isCorrect": false }
+                ],
+                "explanation": "NIST essential characteristics include on-demand self-service, broad network access, resource pooling, rapid elasticity, and measured service."
+            },
+            {
+                "id": "MCQ012",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What does a 'whaling' attack specifically target?",
+                "options": [
+                    { "text": "Entry-level employees", "isCorrect": false },
+                    { "text": "Database administrators", "isCorrect": false },
+                    { "text": "High-profile business executives", "isCorrect": true },
+                    { "text": "Random internet users", "isCorrect": false }
+                ],
+                "explanation": "Whaling is a phishing attack targeted at high-profile executives like the CEO."
+            },
+            {
+                "id": "MCQ013",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which type of privilege escalation occurs when a normal user accesses the content of another normal user?",
+                "options": [
+                    { "text": "Vertical", "isCorrect": false },
+                    { "text": "Horizontal", "isCorrect": true },
+                    { "text": "Circular", "isCorrect": false },
+                    { "text": "Inverted", "isCorrect": false }
+                ],
+                "explanation": "Horizontal privilege escalation happens when a regular user accesses data or functions of another non-admin user."
+            },
+            {
+                "id": "MCQ014",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool is used to decompile Android application package (APK) files?",
+                "options": [
+                    { "text": "MobSF", "isCorrect": false },
+                    { "text": "ApkX", "isCorrect": true },
+                    { "text": "Postman", "isCorrect": false },
+                    { "text": "Drozer", "isCorrect": false }
+                ],
+                "explanation": "ApkX is specifically mentioned as a tool used to decompile APK files."
+            },
+            {
+                "id": "MCQ015",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary use of the tool 'theHarvester'?",
+                "options": [
+                    { "text": "Exploiting SQL injection", "isCorrect": false },
+                    { "text": "Cracking password hashes", "isCorrect": false },
+                    { "text": "Enumerating DNS information and subdomains", "isCorrect": true },
+                    { "text": "DDoS attacks", "isCorrect": false }
+                ],
+                "explanation": "theHarvester is used to enumerate DNS information and find subdomains using various data sources."
+            },
+            {
+                "id": "MCQ016",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which HTTP status code range is associated with client-side errors?",
+                "options": [
+                    { "text": "200s", "isCorrect": false },
+                    { "text": "300s", "isCorrect": false },
+                    { "text": "400s", "isCorrect": true },
+                    { "text": "500s", "isCorrect": false }
+                ],
+                "explanation": "Messages in the 400 range are related to client errors, such as 404 Not Found."
+            },
+            {
+                "id": "MCQ017",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which of the following are common types of Cross-Site Scripting (XSS)?",
+                "options": [
+                    { "text": "Reflected XSS", "isCorrect": true },
+                    { "text": "In-band XSS", "isCorrect": false },
+                    { "text": "Stored XSS", "isCorrect": true },
+                    { "text": "Out-of-band XSS", "isCorrect": false }
+                ],
+                "explanation": "The three main types of XSS are Reflected, Stored (Persistent), and DOM-based."
+            },
+            {
+                "id": "MCQ018",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the purpose of a 'canary' or 'beacon' in C2 communication?",
+                "options": [
+                    { "text": "To encrypt the hard drive", "isCorrect": false },
+                    { "text": "To maintain a timed 'heartbeat' with the attacker system", "isCorrect": true },
+                    { "text": "To bypass the firewall hardware", "isCorrect": false },
+                    { "text": "To delete system logs automatically", "isCorrect": false }
+                ],
+                "explanation": "C2 communication often involves maintaining a timed beacon or heartbeat to launch further instructions."
+            },
+            {
+                "id": "MCQ019",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool is best suited for performing an evil twin wireless attack?",
+                "options": [
+                    { "text": "WiGLE", "isCorrect": false },
+                    { "text": "mdk4", "isCorrect": false },
+                    { "text": "EAPHammer", "isCorrect": true },
+                    { "text": "Reaver", "isCorrect": false }
+                ],
+                "explanation": "EAPHammer is specifically designed to perform evil twin attacks on wireless networks."
+            },
+            {
+                "id": "MCQ020",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the maximum CVSS score indicating a highly critical vulnerability?",
+                "options": [
+                    { "text": "5", "isCorrect": false },
+                    { "text": "10", "isCorrect": true },
+                    { "text": "100", "isCorrect": false },
+                    { "text": "1", "isCorrect": false }
+                ],
+                "explanation": "CVSS scores are rated from 0 to 10, with 10 being the most severe."
+            },
+            {
+                "id": "MCQ021",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the purpose of the 'rules of engagement' (RoE) document?",
+                "options": [
+                    { "text": "To list all passwords found", "isCorrect": false },
+                    { "text": "To specify the conditions under which the pentest will be conducted", "isCorrect": true },
+                    { "text": "To provide a manual for using Nmap", "isCorrect": false },
+                    { "text": "To define the cloud service model", "isCorrect": false }
+                ],
+                "explanation": "The RoE document specifies the technical and procedural conditions for the engagement."
+            },
+            {
+                "id": "MCQ022",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which legal document ensures that the terms of an agreement are not renegotiated for every recurring job?",
+                "options": [
+                    { "text": "Statement of Work (SOW)", "isCorrect": false },
+                    { "text": "Non-Disclosure Agreement (NDA)", "isCorrect": false },
+                    { "text": "Master Service Agreement (MSA)", "isCorrect": true },
+                    { "text": "Service Level Agreement (SLA)", "isCorrect": false }
+                ],
+                "explanation": "MSAs are contracts used to negotiate common terms so they do not have to be renegotiated for every recurring test."
+            },
+            {
+                "id": "MCQ023",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which of the following are examples of passive reconnaissance tools?",
+                "options": [
+                    { "text": "Shodan", "isCorrect": true },
+                    { "text": "Nmap", "isCorrect": false },
+                    { "text": "Maltego", "isCorrect": true },
+                    { "text": "Enum4linux", "isCorrect": false }
+                ],
+                "explanation": "Shodan and Maltego are passive because they query databases or records without direct target interaction."
+            },
+            {
+                "id": "MCQ024",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which Nmap timing option is known as 'Aggressive'?",
+                "options": [
+                    { "text": "-T0", "isCorrect": false },
+                    { "text": "-T3", "isCorrect": false },
+                    { "text": "-T4", "isCorrect": true },
+                    { "text": "-T5", "isCorrect": false }
+                ],
+                "explanation": "-T4 is the aggressive timing template, assuming a fast and reliable network."
+            },
+            {
+                "id": "MCQ025",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In a 'watering hole' attack, what is the attacker's primary strategy?",
+                "options": [
+                    { "text": "Flooding the server with traffic", "isCorrect": false },
+                    { "text": "Profiling and compromising websites that the victim frequently visits", "isCorrect": true },
+                    { "text": "Brute-forcing the admin password", "isCorrect": false },
+                    { "text": "Using a drone to find WiFi", "isCorrect": false }
+                ],
+                "explanation": "A watering hole attack involves profiling and compromising sites that the target audience typically accesses."
+            },
+            {
+                "id": "MCQ026",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the function of the 'VRFY' command in SMTP?",
+                "options": [
+                    { "text": "To encrypt the email", "isCorrect": false },
+                    { "text": "To verify if a user's mailbox exists", "isCorrect": true },
+                    { "text": "To reset the connection", "isCorrect": false },
+                    { "text": "To send a large attachment", "isCorrect": false }
+                ],
+                "explanation": "VRFY is used to verify whether a specific user account exists on the SMTP server."
+            },
+            {
+                "id": "MCQ027",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which post-exploitation utility allows retrieving password hashes from a Windows system's memory?",
+                "options": [
+                    { "text": "Mimikatz", "isCorrect": true },
+                    { "text": "BloodHound", "isCorrect": false },
+                    { "text": "PsExec", "isCorrect": false },
+                    { "text": "Netcat", "isCorrect": false }
+                ],
+                "explanation": "Mimikatz is used to retrieve cleartext passwords and hashes from memory."
+            },
+            {
+                "id": "MCQ028",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary function of the 'Airmon-ng' tool?",
+                "options": [
+                    { "text": "To crack WPA passwords", "isCorrect": false },
+                    { "text": "To put a wireless adapter into monitor mode", "isCorrect": true },
+                    { "text": "To send deauthentication packets", "isCorrect": false },
+                    { "text": "To spoof a MAC address", "isCorrect": false }
+                ],
+                "explanation": "Airmon-ng is used to enable monitor mode on a wireless network interface."
+            },
+            {
+                "id": "MCQ029",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which vulnerability is also known as a 'UI redress' attack?",
+                "options": [
+                    { "text": "SQL Injection", "isCorrect": false },
+                    { "text": "Clickjacking", "isCorrect": true },
+                    { "text": "Directory Traversal", "isCorrect": false },
+                    { "text": "Session Hijacking", "isCorrect": false }
+                ],
+                "explanation": "Clickjacking attacks are often referred to as UI redress attacks."
+            },
+            {
+                "id": "MCQ030",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which cloud attack reveals the origin IP address behind a Content Delivery Network (CDN)?",
+                "options": [
+                    { "text": "Cloud Malware Injection", "isCorrect": false },
+                    { "text": "Metadata service attack", "isCorrect": false },
+                    { "text": "Direct-to-origin (D2O) attack", "isCorrect": true },
+                    { "text": "Side-channel attack", "isCorrect": false }
+                ],
+                "explanation": "In a D2O attack, threat actors reveal the origin network IP behind a CDN to bypass anti-DDoS mitigations."
+            },
+            {
+                "id": "MCQ031",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In a SAML-based federation, what is the XML document sent by the identity provider called?",
+                "options": [
+                    { "text": "JWT token", "isCorrect": false },
+                    { "text": "SAML assertion", "isCorrect": true },
+                    { "text": "OAuth secret", "isCorrect": false },
+                    { "text": "Cookie", "isCorrect": false }
+                ],
+                "explanation": "A SAML assertion is the XML document containing user authorization sent to the service provider."
+            },
+            {
+                "id": "MCQ032",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which tools can be used to perform an automated mobile application and malware analysis?",
+                "options": [
+                    { "text": "MobSF", "isCorrect": true },
+                    { "text": "Burp Suite", "isCorrect": false },
+                    { "text": "needle", "isCorrect": true },
+                    { "text": "Postman", "isCorrect": false }
+                ],
+                "explanation": "MobSF and needle are frameworks used specifically for mobile application analysis."
+            },
+            {
+                "id": "MCQ033",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool uses the ClamAV engine to detect malware in Docker images?",
+                "options": [
+                    { "text": "Grype", "isCorrect": false },
+                    { "text": "Clair", "isCorrect": false },
+                    { "text": "Dagda", "isCorrect": true },
+                    { "text": "Falco", "isCorrect": false }
+                ],
+                "explanation": "Dagda uses the ClamAV antivirus engine to detect vulnerabilities and malware in containers."
+            },
+            {
+                "id": "MCQ034",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary benefit of a 'reverse shell' compared to a 'bind shell'?",
+                "options": [
+                    { "text": "It is faster", "isCorrect": false },
+                    { "text": "It uses UDP instead of TCP", "isCorrect": false },
+                    { "text": "It can bypass inbound firewall blocks", "isCorrect": true },
+                    { "text": "It doesn't require a listener", "isCorrect": false }
+                ],
+                "explanation": "Reverse shells initiate connections outbound, which often bypasses inbound firewall restrictions."
+            },
+            {
+                "id": "MCQ035",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which Windows feature is exploited by Task Scheduler to bypass UAC?",
+                "options": [
+                    { "text": "It runs with the system's highest privileges", "isCorrect": true },
+                    { "text": "It uses a different TCP port", "isCorrect": false },
+                    { "text": "It requires no user interaction", "isCorrect": false },
+                    { "text": "It encrypts the task data", "isCorrect": false }
+                ],
+                "explanation": "Task Scheduler can bypass UAC because its security option runs with the system's highest privileges."
+            },
+            {
+                "id": "MCQ036",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What does a 'green arrow' signify in an Interactive Disassembler (IDA) graph view?",
+                "options": [
+                    { "text": "A conditional jump is not taken", "isCorrect": false },
+                    { "text": "A jump is taken", "isCorrect": true },
+                    { "text": "An unconditional jump", "isCorrect": false },
+                    { "text": "Program termination", "isCorrect": false }
+                ],
+                "explanation": "In IDA, a green arrow indicates that a jump is taken."
+            },
+            {
+                "id": "MCQ037",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which vulnerability is also known as a 'Time of Check to Time of Use' (TOCTOU) attack?",
+                "options": [
+                    { "text": "Race Condition", "isCorrect": true },
+                    { "text": "SQL Injection", "isCorrect": false },
+                    { "text": "Command Injection", "isCorrect": false },
+                    { "text": "Buffer Overflow", "isCorrect": false }
+                ],
+                "explanation": "Race conditions are referred to as Time of Check to Time of Use (TOCTOU) attacks."
+            },
+            {
+                "id": "MCQ038",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which API protocol exclusively uses XML?",
+                "options": [
+                    { "text": "REST", "isCorrect": false },
+                    { "text": "GraphQL", "isCorrect": false },
+                    { "text": "SOAP", "isCorrect": true },
+                    { "text": "JSON-RPC", "isCorrect": false }
+                ],
+                "explanation": "SOAP exclusively uses XML to provide API services."
+            },
+            {
+                "id": "MCQ039",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the recommended minimum length for a session ID to prevent brute-force attacks?",
+                "options": [
+                    { "text": "64 bits", "isCorrect": false },
+                    { "text": "128 bits", "isCorrect": true },
+                    { "text": "16 bits", "isCorrect": false },
+                    { "text": "256 bits", "isCorrect": false }
+                ],
+                "explanation": "A session ID must be at least 128 bits (16 bytes) long to be secure."
+            },
+            {
+                "id": "MCQ040",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool is designed to identify hidden relationships in Windows Active Directory using graph theory?",
+                "options": [
+                    { "text": "Empire", "isCorrect": false },
+                    { "text": "BloodHound", "isCorrect": true },
+                    { "text": "PowerSploit", "isCorrect": false },
+                    { "text": "Mimikatz", "isCorrect": false }
+                ],
+                "explanation": "BloodHound uses graph theory to reveal hidden relationships in AD environments."
+            },
+            {
+                "id": "MCQ041",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In a 'Known-Environment' test, what would the tester likely be provided with?",
+                "options": [
+                    { "text": "Only the domain name", "isCorrect": false },
+                    { "text": "Network diagrams and user credentials", "isCorrect": true },
+                    { "text": "No information at all", "isCorrect": false },
+                    { "text": "The CEO's home address", "isCorrect": false }
+                ],
+                "explanation": "In known-environment (white-box) testing, testers are provided with significant information like network diagrams and credentials."
+            },
+            {
+                "id": "MCQ042",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which metric in CVSS determines the impact on systems that DO NOT contain the vulnerable code?",
+                "options": [
+                    { "text": "Attack Complexity", "isCorrect": false },
+                    { "text": "Scope Change (S)", "isCorrect": true },
+                    { "text": "User Interaction", "isCorrect": false },
+                    { "text": "Privileges Required", "isCorrect": false }
+                ],
+                "explanation": "Scope Change (S) is used to convey impact on other systems that may be affected but don't contain the vulnerable code."
+            },
+            {
+                "id": "MCQ043",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which of the following are valid categories of the Google Hacking Database (GHDB)?",
+                "options": [
+                    { "text": "Files containing passwords", "isCorrect": true },
+                    { "text": "Vulnerable servers", "isCorrect": true },
+                    { "text": "Social media profiles", "isCorrect": false },
+                    { "text": "Sensitive directories", "isCorrect": true },
+                    { "text": "WPA handshakes", "isCorrect": false }
+                ],
+                "explanation": "GHDB categories include files containing passwords, vulnerable servers, and sensitive directories."
+            },
+            {
+                "id": "MCQ044",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'backporting' in the context of vulnerability analysis?",
+                "options": [
+                    { "text": "Using an older version of Nmap", "isCorrect": false },
+                    { "text": "A patched service reporting an older version number", "isCorrect": true },
+                    { "text": "Reverting a database to a previous state", "isCorrect": false },
+                    { "text": "Cracking a password using a custom wordlist", "isCorrect": false }
+                ],
+                "explanation": "Backporting occurs when operating systems like Red Hat report an older version of a service that has actually been patched."
+            },
+            {
+                "id": "MCQ045",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which attack exploits the trust a user has in their browser to send unauthorized commands?",
+                "options": [
+                    { "text": "XSS", "isCorrect": false },
+                    { "text": "CSRF", "isCorrect": true },
+                    { "text": "SQLi", "isCorrect": false },
+                    { "text": "HPP", "isCorrect": false }
+                ],
+                "explanation": "CSRF exploits the trust that an application has in a user's browser to execute unauthorized commands."
+            },
+            {
+                "id": "MCQ046",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary purpose of 'query throttling' during a vulnerability scan?",
+                "options": [
+                    { "text": "To find more open ports", "isCorrect": false },
+                    { "text": "To bypass the IDS", "isCorrect": false },
+                    { "text": "To reduce network congestion and the risk of crashing targets", "isCorrect": true },
+                    { "text": "To encrypt the scanner traffic", "isCorrect": false }
+                ],
+                "explanation": "Query throttling involves slowing traffic to accommodate bandwidth limitations and avoid crashing fragile systems."
+            },
+            {
+                "id": "MCQ047",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In post-exploitation, what is 'Living-off-the-land'?",
+                "options": [
+                    { "text": "Using only physical tools like lockpicks", "isCorrect": false },
+                    { "text": "Using legitimate system utilities for malicious tasks", "isCorrect": true },
+                    { "text": "Attacking systems while traveling", "isCorrect": false },
+                    { "text": "Installing custom malware binaries", "isCorrect": false }
+                ],
+                "explanation": "Living-off-the-land refers to using legitimate pre-installed tools (like PowerShell) for post-exploitation."
+            },
+            {
+                "id": "MCQ048",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which command installs the 'steghide' tool on a Debian-based system?",
+                "options": [
+                    { "text": "sudo yum install steghide", "isCorrect": false },
+                    { "text": "sudo apt install steghide", "isCorrect": true },
+                    { "text": "pip3 install steghide", "isCorrect": false },
+                    { "text": "sudo brew install steghide", "isCorrect": false }
+                ],
+                "explanation": "The correct command for Debian-based systems like Kali is sudo apt install steghide."
+            },
+            {
+                "id": "MCQ049",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which of the following are categories of SQL statements?",
+                "options": [
+                    { "text": "Data Definition Language (DDL)", "isCorrect": true },
+                    { "text": "Static Analysis Language (SAL)", "isCorrect": false },
+                    { "text": "Data Manipulation Language (DML)", "isCorrect": true },
+                    { "text": "Network Control Language (NCL)", "isCorrect": false }
+                ],
+                "explanation": "Common SQL categories include DDL and DML."
+            },
+            {
+                "id": "MCQ050",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What does a 'TRUE positive' result from a security device indicate?",
+                "options": [
+                    { "text": "A false alarm", "isCorrect": false },
+                    { "text": "A missed attack", "isCorrect": false },
+                    { "text": "Successful identification of a real attack", "isCorrect": true },
+                    { "text": "Acceptable behavior correctly identified", "isCorrect": false }
+                ],
+                "explanation": "A true positive is the successful identification of a real security attack or malicious event."
+            },
+            {
+                "id": "MCQ051",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which protocol is utilized by Apple Remote Desktop and VNC for communication?",
+                "options": [
+                    { "text": "SMB", "isCorrect": false },
+                    { "text": "RDP", "isCorrect": false },
+                    { "text": "Remote access protocols", "isCorrect": true },
+                    { "text": "DNS", "isCorrect": false }
+                ],
+                "explanation": "VNC and Apple Remote Desktop are categorized as remote access protocols for post-exploitation."
+            },
+            {
+                "id": "MCQ052",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What does the 'IEX' command in PowerShell stand for?",
+                "options": [
+                    { "text": "Identity Exchange", "isCorrect": false },
+                    { "text": "Invoke-Expression", "isCorrect": true },
+                    { "text": "Input Executable", "isCorrect": false },
+                    { "text": "Internal Execution", "isCorrect": false }
+                ],
+                "explanation": "IEX is the Invoke-Expression command, often used to download and execute strings directly."
+            },
+            {
+                "id": "MCQ053",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool is a single-page JavaScript application used to find AD attack paths?",
+                "options": [
+                    { "text": "PowerSploit", "isCorrect": false },
+                    { "text": "BloodHound", "isCorrect": true },
+                    { "text": "Responder", "isCorrect": false },
+                    { "text": "Mimikatz", "isCorrect": false }
+                ],
+                "explanation": "BloodHound is a JavaScript web application used to identify complex attack paths in Active Directory."
+            },
+            {
+                "id": "MCQ054",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which Sysinternals tool allows remote execution of command-line processes?",
+                "options": [
+                    { "text": "PsInfo", "isCorrect": false },
+                    { "text": "PsList", "isCorrect": false },
+                    { "text": "PsExec", "isCorrect": true },
+                    { "text": "PsKill", "isCorrect": false }
+                ],
+                "explanation": "PsExec is one of the most powerful Sysinternals tools used to remotely execute anything that runs on a command prompt."
+            },
+            {
+                "id": "MCQ055",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In a 'Double-Tagging' VLAN hopping attack, what happens to the outer tag?",
+                "options": [
+                    { "text": "It is encrypted", "isCorrect": false },
+                    { "text": "It is removed by the first switch", "isCorrect": true },
+                    { "text": "It is replaced with the victim's MAC address", "isCorrect": false },
+                    { "text": "It remains attached throughout the entire path", "isCorrect": false }
+                ],
+                "explanation": "Most switches remove only the outer 802.1Q tag, allowing the inner tag to reach the victim VLAN."
+            },
+            {
+                "id": "MCQ056",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary focus of 'Microsegmentation'?",
+                "options": [
+                    { "text": "Segmenting physical cables", "isCorrect": false },
+                    { "text": "Applying policies at the VM or container level", "isCorrect": true },
+                    { "text": "Splitting subnets into smaller chunks", "isCorrect": false },
+                    { "text": "Managing cloud budget", "isCorrect": false }
+                ],
+                "explanation": "Microsegmentation applies security policies at the VM level or between containers, regardless of VLAN."
+            },
+            {
+                "id": "MCQ057",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which technical control retire an encryption key and replaces it with a new one?",
+                "options": [
+                    { "text": "Key Rotation", "isCorrect": true },
+                    { "text": "Certificate Revocation", "isCorrect": false },
+                    { "text": "Password Reset", "isCorrect": false },
+                    { "text": "MAC Filtering", "isCorrect": false }
+                ],
+                "explanation": "Key rotation is the process of retiring an encryption key and replacing it at regular intervals."
+            },
+            {
+                "id": "MCQ058",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which administrative control incorporates security into every phase of system development?",
+                "options": [
+                    { "text": "SDLC", "isCorrect": false },
+                    { "text": "SSDLC", "isCorrect": true },
+                    { "text": "RBAC", "isCorrect": false },
+                    { "text": "SOW", "isCorrect": false }
+                ],
+                "explanation": "The Secure Software Development Life Cycle (SSDLC) incorporates security best practices into the development process."
+            },
+            {
+                "id": "MCQ059",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary role of a 'baseboard management controller' (BMC)?",
+                "options": [
+                    { "text": "To manage web server logins", "isCorrect": false },
+                    { "text": "To provide direct hardware access to a system's motherboard", "isCorrect": true },
+                    { "text": "To encrypt cloud backups", "isCorrect": false },
+                    { "text": "To monitor employee social media", "isCorrect": false }
+                ],
+                "explanation": "The BMC is a controller within the Intelligent Platform Management Interface (IPMI) with direct access to hardware."
+            },
+            {
+                "id": "MCQ060",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which of the following are operational controls?",
+                "options": [
+                    { "text": "Job Rotation", "isCorrect": true },
+                    { "text": "System Hardening", "isCorrect": false },
+                    { "text": "Mandatory Vacations", "isCorrect": true },
+                    { "text": "Multifactor Authentication", "isCorrect": false }
+                ],
+                "explanation": "Operational controls are implemented by people, such as job rotation and mandatory vacations."
+            },
+            {
+                "id": "MCQ061",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which Scapy function is used to navigate and display supported protocols?",
+                "options": [
+                    { "text": "ls()", "isCorrect": false },
+                    { "text": "send()", "isCorrect": false },
+                    { "text": "explore()", "isCorrect": true },
+                    { "text": "sniff()", "isCorrect": false }
+                ],
+                "explanation": "The explore() function in Scapy allows users to navigate layers and protocols."
+            },
+            {
+                "id": "MCQ062",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which Nmap NSE script attempts to pull a list of groups from a remote Windows machine?",
+                "options": [
+                    { "text": "smb-enum-users.nse", "isCorrect": false },
+                    { "text": "smb-enum-groups.nse", "isCorrect": true },
+                    { "text": "smb-enum-shares.nse", "isCorrect": false },
+                    { "text": "smb-os-discovery.nse", "isCorrect": false }
+                ],
+                "explanation": "The smb-enum-groups.nse script reveals groups and their members."
+            },
+            {
+                "id": "MCQ063",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What does a 'blue arrow' indicate in an Interactive Disassembler (IDA) graph?",
+                "options": [
+                    { "text": "Conditional jump taken", "isCorrect": false },
+                    { "text": "Conditional jump NOT taken", "isCorrect": false },
+                    { "text": "Unconditional jump", "isCorrect": true },
+                    { "text": "A program error", "isCorrect": false }
+                ],
+                "explanation": "In IDA graph view, a blue arrow represents an unconditional jump."
+            },
+            {
+                "id": "MCQ064",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool provides 'compile-time instrumentation' for fuzzing functional coverage?",
+                "options": [
+                    { "text": "Peach", "isCorrect": false },
+                    { "text": "American Fuzzy Lop (AFL)", "isCorrect": true },
+                    { "text": "Radamsa", "isCorrect": false },
+                    { "text": "Mutiny", "isCorrect": false }
+                ],
+                "explanation": "American Fuzzy Lop (AFL) uses genetic algorithms and compile-time instrumentation."
+            },
+            {
+                "id": "MCQ065",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which PowerShell command is used to download and execute a script directly in memory?",
+                "options": [
+                    { "text": "Get-Service", "isCorrect": false },
+                    { "text": "IEX (New-Object Net.WebClient).DownloadString", "isCorrect": true },
+                    { "text": "Set-ExecutionPolicy", "isCorrect": false },
+                    { "text": "cat /etc/passwd", "isCorrect": false }
+                ],
+                "explanation": "This specific IEX command loads a file from the Internet into memory without downloading to disk."
+            },
+            {
+                "id": "MCQ066",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which CVSS metric group assesses the vulnerability as it changes over time?",
+                "options": [
+                    { "text": "Base", "isCorrect": false },
+                    { "text": "Environmental", "isCorrect": false },
+                    { "text": "Temporal", "isCorrect": true },
+                    { "text": "Static", "isCorrect": false }
+                ],
+                "explanation": "The temporal metric group assesses characteristics that change over time, like remediation status."
+            },
+            {
+                "id": "MCQ067",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What are two key components of 'Information gathering' in PTES?",
+                "options": [
+                    { "text": "Threat Modeling", "isCorrect": false },
+                    { "text": "Vulnerability Analysis", "isCorrect": false },
+                    { "text": "Intelligence gathering", "isCorrect": true },
+                    { "text": "Pre-engagement interactions", "isCorrect": true }
+                ],
+                "explanation": "PTES phases include pre-engagement interactions and intelligence gathering."
+            },
+            {
+                "id": "MCQ068",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the specific registry key monitored to detect LLMNR poisoning attacks?",
+                "options": [
+                    { "text": "HKLM\\Software\\Policies\\Microsoft\\Windows NT\\DNSClient", "isCorrect": true },
+                    { "text": "HKLM\\System\\CurrentControlSet\\Services\\SMB", "isCorrect": false },
+                    { "text": "HKCU\\Network\\Persistent", "isCorrect": false },
+                    { "text": "HKLM\\Software\\Microsoft\\PowerShell", "isCorrect": false }
+                ],
+                "explanation": "Monitoring the EnableMulticast DWORD value in the DNSClient key detects LLMNR state changes."
+            },
+            {
+                "id": "MCQ069",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool is a Python-based remote administration tool that works across multiple platforms including Android?",
+                "options": [
+                    { "text": "Pupy", "isCorrect": true },
+                    { "text": "Responder", "isCorrect": false },
+                    { "text": "Metasploit", "isCorrect": false },
+                    { "text": "NBNSpoof", "isCorrect": false }
+                ],
+                "explanation": "Pupy is a Python-based post-exploitation tool working on Windows, Linux, macOS, and Android."
+            },
+            {
+                "id": "MCQ070",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which of the following are examples of 'technical constraints' in a pentest agreement?",
+                "options": [
+                    { "text": "Inability to launch SQLi on production databases", "isCorrect": true },
+                    { "text": "Limitation of skill sets", "isCorrect": true },
+                    { "text": "Systems categorized as out of scope", "isCorrect": true },
+                    { "text": "The color of the final report", "isCorrect": false },
+                    { "text": "Employee vacation schedules", "isCorrect": false }
+                ],
+                "explanation": "Technical constraints include operational limitations, skill set limits, and out-of-scope systems."
+            },
+            {
+                "id": "MCQ071",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In Scapy, how do you define a TCP SYN flag using the 'flags' parameter?",
+                "options": [
+                    { "text": "flags='SYN'", "isCorrect": false },
+                    { "text": "flags='S'", "isCorrect": true },
+                    { "text": "flags=2", "isCorrect": false },
+                    { "text": "flags='tcp_syn'", "isCorrect": false }
+                ],
+                "explanation": "In Scapy packet crafting, the TCP SYN flag is represented by 'S'."
+            },
+            {
+                "id": "MCQ072",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which command is used to initialize the Metasploit database in Kali Linux?",
+                "options": [
+                    { "text": "msfconsole -init", "isCorrect": false },
+                    { "text": "service postgresql init", "isCorrect": false },
+                    { "text": "msfdb init", "isCorrect": true },
+                    { "text": "init-msf-database", "isCorrect": false }
+                ],
+                "explanation": "The msfdb init command initializes the Metasploit database schema."
+            },
+            {
+                "id": "MCQ073",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In a 'Direct-to-origin' (D2O) attack, which layer is typically bypassed?",
+                "options": [
+                    { "text": "Layer 2 Switching", "isCorrect": false },
+                    { "text": "Anti-DDoS mitigations of a CDN", "isCorrect": true },
+                    { "text": "Physical security perimeter", "isCorrect": false },
+                    { "text": "Operating system kernel", "isCorrect": false }
+                ],
+                "explanation": "A D2O attack revels the IP behind a CDN/proxy to bypass DDoS mitigations."
+            },
+            {
+                "id": "MCQ074",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which three elements are required for Kerberos authentication?",
+                "options": [
+                    { "text": "Client", "isCorrect": true },
+                    { "text": "Server", "isCorrect": true },
+                    { "text": "Key Distribution Center (KDC)", "isCorrect": true },
+                    { "text": "Recursive DNS server", "isCorrect": false },
+                    { "text": "SNMP Agent", "isCorrect": false }
+                ],
+                "explanation": "Kerberos consists of a client, server, and a KDC."
+            },
+            {
+                "id": "MCQ075",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the purpose of the 'Padding Oracle on Downgraded Legacy Encryption' (POODLE) attack?",
+                "options": [
+                    { "text": "To steal WiFi passwords", "isCorrect": false },
+                    { "text": "To negotiate a lower version of TLS", "isCorrect": true },
+                    { "text": "To bypass physical locks", "isCorrect": false },
+                    { "text": "To crash the database", "isCorrect": false }
+                ],
+                "explanation": "POODLE is a downgrade attack that forces the negotiation of lower TLS versions."
+            },
+            {
+                "id": "MCQ076",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which cloud metadata service URL path returns IAM AccessKeyID and SecretAccessKey?",
+                "options": [
+                    { "text": "/latest/user-data", "isCorrect": false },
+                    { "text": "/latest/meta-data/iam/security-credentials/ROLE", "isCorrect": true },
+                    { "text": "/latest/config/keys", "isCorrect": false },
+                    { "text": "/latest/auth/tokens", "isCorrect": false }
+                ],
+                "explanation": "Accessing the security-credentials path with the role name returns temporary authentication values."
+            },
+            {
+                "id": "MCQ077",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What does a 'red arrow' indicate in an IDA Pro graph view?",
+                "options": [
+                    { "text": "An unconditional jump", "isCorrect": false },
+                    { "text": "A conditional jump is NOT taken", "isCorrect": true },
+                    { "text": "A program crash", "isCorrect": false },
+                    { "text": "A recursive call", "isCorrect": false }
+                ],
+                "explanation": "In IDA, a red arrow indicates a conditional jump was not taken."
+            },
+            {
+                "id": "MCQ078",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which protocols are susceptible to input validation vulnerabilities in IoT environments?",
+                "options": [
+                    { "text": "Modbus", "isCorrect": true },
+                    { "text": "Siemens S7comm", "isCorrect": true },
+                    { "text": "SSH-2", "isCorrect": false },
+                    { "text": "IPsec", "isCorrect": false }
+                ],
+                "explanation": "IoT protocols like Modbus and S7comm are often susceptible to input validation issues."
+            },
+            {
+                "id": "MCQ079",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which specific Scapy function is used to list available fields for a specific protocol (e.g., TCP)?",
+                "options": [
+                    { "text": "ls(TCP)", "isCorrect": true },
+                    { "text": "list(TCP)", "isCorrect": false },
+                    { "text": "fields(TCP)", "isCorrect": false },
+                    { "text": "show(TCP)", "isCorrect": false }
+                ],
+                "explanation": "The ls() function with a protocol name as an argument displays all available fields for that format."
+            },
+            {
+                "id": "MCQ080",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary indicator of a buffer overflow in a GDB debug session?",
+                "options": [
+                    { "text": "Program terminated with signal SIGINT", "isCorrect": false },
+                    { "text": "Program received signal SIGSEGV, Segmentation fault", "isCorrect": true },
+                    { "text": "Program received signal SIGTERM", "isCorrect": false },
+                    { "text": "Program received signal SIGSTOP", "isCorrect": false }
+                ],
+                "explanation": "A SIGSEGV segmentation fault in GDB typically indicates an attempt to access restricted memory, often via buffer overflow."
+            },
+            {
+                "id": "MCQ081",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which type of 'XSS' attack NEVER sends the payload to the server?",
+                "options": [
+                    { "text": "Reflected XSS", "isCorrect": false },
+                    { "text": "Stored XSS", "isCorrect": false },
+                    { "text": "DOM-based XSS", "isCorrect": true },
+                    { "text": "Out-of-band XSS", "isCorrect": false }
+                ],
+                "explanation": "In DOM-based XSS attacks, the payload is processed only by the web client (browser) and never sent to the server."
+            },
+            {
+                "id": "MCQ082",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which of the following are characteristics of 'WPA3' security?",
+                "options": [
+                    { "text": "Uses a 24-bit initialization vector", "isCorrect": false },
+                    { "text": "Introduces the 'dragonfly' handshake", "isCorrect": true },
+                    { "text": "Vulnerable to IV attacks", "isCorrect": false },
+                    { "text": "Addresses KRACK vulnerabilities", "isCorrect": true }
+                ],
+                "explanation": "WPA3 introduces the dragonfly handshake and addresses previous WPA2 KRACK vulnerabilities."
+            },
+            {
+                "id": "MCQ083",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In Python code analysis, what does 'dict = {'Name': 'Omar', 'Twitter': '@omar'}' represent?",
+                "options": [
+                    { "text": "A list", "isCorrect": false },
+                    { "text": "An array", "isCorrect": false },
+                    { "text": "A dictionary", "isCorrect": true },
+                    { "text": "A tree", "isCorrect": false }
+                ],
+                "explanation": "This syntax defines a dictionary using key/value pairs."
+            },
+            {
+                "id": "MCQ084",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool uses genetic algorithms to improve functional coverage during fuzz testing?",
+                "options": [
+                    { "text": "Peach", "isCorrect": false },
+                    { "text": "American Fuzzy Lop (AFL)", "isCorrect": true },
+                    { "text": "Radamsa", "isCorrect": false },
+                    { "text": "Mutiny", "isCorrect": false }
+                ],
+                "explanation": "AFL utilizes genetic algorithms and compile-time instrumentation to enhance test coverage."
+            },
+            {
+                "id": "MCQ085",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Hyperjacking'?",
+                "options": [
+                    { "text": "Gaining control over a cloud IAM", "isCorrect": false },
+                    { "text": "Gaining control over the hypervisor", "isCorrect": true },
+                    { "text": "A type of WiFi jamming", "isCorrect": false },
+                    { "text": "Stealing passwords from memory", "isCorrect": false }
+                ],
+                "explanation": "Hyperjacking is an attack that allows a threat actor to take control of the hypervisor, often via a rogue hypervisor."
+            },
+            {
+                "id": "MCQ086",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which of the following items should be removed during 'post-engagement cleanup'?",
+                "options": [
+                    { "text": "Tester-created credentials", "isCorrect": true },
+                    { "text": "Client production data", "isCorrect": false },
+                    { "text": "Shells spawned on systems", "isCorrect": true },
+                    { "text": "Tools installed on targets", "isCorrect": true },
+                    { "text": "The final signed contract", "isCorrect": false }
+                ],
+                "explanation": "Cleanup includes removing credentials, shells, and tools from target systems."
+            },
+            {
+                "id": "MCQ087",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool is a Python-based Scapy tool that supports packet generation and SSH tunneling over DNS?",
+                "options": [
+                    { "text": "dns2tcp", "isCorrect": false },
+                    { "text": "DNScapy", "isCorrect": true },
+                    { "text": "iodine", "isCorrect": false },
+                    { "text": "sods", "isCorrect": false }
+                ],
+                "explanation": "DNScapy is a Python Scapy tool that supports SSH tunneling over DNS."
+            },
+            {
+                "id": "MCQ088",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which specific signal indicates an 'Illegal Instruction' in a debugger session?",
+                "options": [
+                    { "text": "SIGSEGV", "isCorrect": false },
+                    { "text": "SIGILL", "isCorrect": true },
+                    { "text": "SIGINT", "isCorrect": false },
+                    { "text": "SIGSTOP", "isCorrect": false }
+                ],
+                "explanation": "SIGILL represents an illegal or restricted CPU instruction."
+            },
+            {
+                "id": "MCQ089",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Attestation of findings'?",
+                "options": [
+                    { "text": "A cleanup script", "isCorrect": false },
+                    { "text": "A document proving the assessment was performed and reporting results", "isCorrect": true },
+                    { "text": "A type of firewall rule", "isCorrect": false },
+                    { "text": "A cloud pricing model", "isCorrect": false }
+                ],
+                "explanation": "Attestation of findings is a clear acknowledgement proving that an assessment was performed."
+            },
+            {
+                "id": "MCQ090",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which of the following are examples of 'Technical Controls' for remediation?",
+                "options": [
+                    { "text": "Job Rotation", "isCorrect": false },
+                    { "text": "Key Rotation", "isCorrect": true },
+                    { "text": "System Hardening", "isCorrect": true },
+                    { "text": "Mandatory Vacations", "isCorrect": false }
+                ],
+                "explanation": "Technical controls include system hardening and key rotation."
+            },
+            {
+                "id": "MCQ091",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the outcome of the command 'PsExec -i -d -s regedit.exe'?",
+                "options": [
+                    { "text": "Launches registry editor with system privileges in interactive mode", "isCorrect": true },
+                    { "text": "Deletes the registry editor binary", "isCorrect": false },
+                    { "text": "Scans for registry vulnerabilities", "isCorrect": false },
+                    { "text": "Reboots the remote system", "isCorrect": false }
+                ],
+                "explanation": "The -s flag runs the process with system privileges, and -i makes it interactive."
+            },
+            {
+                "id": "MCQ092",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In a Ruby script, where are Metasploit post-exploitation scripts typically located?",
+                "options": [
+                    { "text": "/usr/bin", "isCorrect": false },
+                    { "text": "scripts/meterpreter", "isCorrect": true },
+                    { "text": "/etc/metasploit", "isCorrect": false },
+                    { "text": "/root/modules", "isCorrect": false }
+                ],
+                "explanation": "Meterpreter scripts are located in the scripts/meterpreter directory of the framework."
+            },
+            {
+                "id": "MCQ093",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "What are two ways to distribute a final pentest report securely?",
+                "options": [
+                    { "text": "Post it on a public web link", "isCorrect": false },
+                    { "text": "Hard copy with a distribution tracking log", "isCorrect": true },
+                    { "text": "Email it to the general help desk", "isCorrect": false },
+                    { "text": "Encrypted electronic document over an encrypted transport", "isCorrect": true }
+                ],
+                "explanation": "Reports should be distributed as hard copies with logs or encrypted electronically."
+            },
+            {
+                "id": "MCQ094",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which vulnerability is triggered by multiple HTTP parameters having the same name?",
+                "options": [
+                    { "text": "XSS", "isCorrect": false },
+                    { "text": "SQLi", "isCorrect": false },
+                    { "text": "HPP (HTTP Parameter Pollution)", "isCorrect": true },
+                    { "text": "Clickjacking", "isCorrect": false }
+                ],
+                "explanation": "HPP occurs when multiple parameters use the same name, potentially confusing the application logic."
+            },
+            {
+                "id": "MCQ095",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the significance of the 256-bit entropy requirement for session IDs?",
+                "options": [
+                    { "text": "It makes the ID shorter", "isCorrect": false },
+                    { "text": "It ensures the ID is unique and unpredictable", "isCorrect": true },
+                    { "text": "It allows the ID to be sent via UDP", "isCorrect": false },
+                    { "text": "It makes the ID compatible with old browsers", "isCorrect": false }
+                ],
+                "explanation": "High entropy session IDs are used to prevent attackers from predicting session tokens."
+            },
+            {
+                "id": "MCQ096",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool is a Linux program used to display disassembly of object files?",
+                "options": [
+                    { "text": "WinDbg", "isCorrect": false },
+                    { "text": "Objdump", "isCorrect": true },
+                    { "text": "OllyDbg", "isCorrect": false },
+                    { "text": "GDB", "isCorrect": false }
+                ],
+                "explanation": "Objdump is a Linux utility for disassembling binaries and checking object file information."
+            },
+            {
+                "id": "MCQ097",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which of the following are 'communication triggers' during a pentest?",
+                "options": [
+                    { "text": "Critical findings", "isCorrect": true },
+                    { "text": "Status reports", "isCorrect": true },
+                    { "text": "Finding a public Wi-Fi password", "isCorrect": false },
+                    { "text": "Indicators of prior compromise", "isCorrect": true },
+                    { "text": "A server reboot for maintenance", "isCorrect": false }
+                ],
+                "explanation": "Communication triggers include critical findings, periodic status reports, and signs of existing breaches."
+            },
+            {
+                "id": "MCQ098",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Subresource Integrity' (SRI)?",
+                "options": [
+                    { "text": "A way to encrypt entire databases", "isCorrect": false },
+                    { "text": "A security feature providing a hash for file fetching to verify integrity", "isCorrect": true },
+                    { "text": "A type of physical security fence", "isCorrect": false },
+                    { "text": "A cloud backup strategy", "isCorrect": false }
+                ],
+                "explanation": "SRI allows browsers to verify that files are delivered without tampering using a hash."
+            },
+            {
+                "id": "MCQ099",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What does a 'TRUE negative' mean in detection analysis?",
+                "options": [
+                    { "text": "An intrusion device misses an attack", "isCorrect": false },
+                    { "text": "Acceptable behavior correctly identified as acceptable", "isCorrect": true },
+                    { "text": "A false alarm", "isCorrect": false },
+                    { "text": "A successful identification of malware", "isCorrect": false }
+                ],
+                "explanation": "A true negative occurs when the device identifies activity as acceptable, and it actually is acceptable."
+            },
+            {
+                "id": "MCQ100",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which tool uses the 'SearchSploit' command to find exploits in the Exploit Database?",
+                "options": [
+                    { "text": "Nmap", "isCorrect": false },
+                    { "text": "Metasploit", "isCorrect": false },
+                    { "text": "Exploit-DB's CLI tool", "isCorrect": true },
+                    { "text": "Wireshark", "isCorrect": false }
+                ],
+                "explanation": "SearchSploit is the command-line interface for the Exploit Database."
+            },
+            {
+                "id": "PBQ001",
+                "type": "pbq",
+                "text": "<h3>Legal Agreement Matching</h3><p>Protego is entering a new contract with Pixel Paradise. Match the requirement below to the correct legal concept described in Module 2.</p><ul><li><b>1.</b> Specifying the activities to be performed, project timelines, and report delivery schedule.</li><li><b>2.</b> A contract used to negotiate work quickly without renegotiating common terms for every test.</li><li><b>3.</b> Minimum and maximum performance measures like quality and timeframe.</li></ul>",
+                "explanation": "<h4>Answer Checklist:</h4><ul><li><b>1. Statement of Work (SOW):</b> Specifies activities, timelines, and deliverables.</li><li><b>2. Master Service Agreement (MSA):</b> Used for recurring work to avoid renegotiating standard terms.</li><li><b>3. Service Level Agreement (SLA):</b> Documents expectations related to performance measures.</li></ul>"
+            },
+            {
+                "id": "PBQ002",
+                "type": "pbq",
+                "text": "<h3>Nmap Scan Identification</h3><p>You are performing active reconnaissance on the Pixel Paradise internal network. Identify the <b>Nmap Flags</b> that correspond to the following scenarios:</p><ul><li><b>A.</b> Perform a Host Discovery (Ping) scan only.</li><li><b>B.</b> Perform a TCP Connect scan (useful when the user doesn't have raw packet privileges).</li><li><b>C.</b> Perform a stealthy 'half-open' scan.</li><li><b>D.</b> Run the default set of NSE scripts for fingerprinting.</li></ul>",
+                "explanation": "<h4>Correct Nmap Syntax:</h4><ul><li><b>A:</b> <code>-sn</code> (formerly -sP).</li><li><b>B:</b> <code>-sT</code>.</li><li><b>C:</b> <code>-sS</code>.</li><li><b>D:</b> <code>-sC</code>.</li></ul>"
+            },
+            {
+                "id": "PBQ003",
+                "type": "pbq",
+                "text": "<h3>SQL Injection Analysis</h3><p>An analyst at Protego discovers a login form vulnerable to SQL injection. Break down why the following payload results in an <b>Authentication Bypass</b>:</p><p style='font-family:monospace;'>' OR '1'='1</p>",
+                "explanation": "<h4>Technical Analysis:</h4><ul><li>The <b>single quote (')</b> acts as a string terminator for the username field in the original SQL query.</li><li>The <b>OR</b> operator introduces a new condition to the <code>WHERE</code> clause.</li><li>The condition <b>'1'='1'</b> is a Boolean statement that is <b>always true</b>.</li><li>This forces the database to return a positive result, regardless of whether a valid username or password was provided, effectively bypassing the login check.</li></ul>"
+            },
+            {
+                "id": "PBQ004",
+                "type": "pbq",
+                "text": "<h3>Cloud Service Model Responsibilities</h3><p>Using the <b>Shared Responsibility Model</b> described in Module 7, identify who is responsible for the following components in an <b>Infrastructure as a Service (IaaS)</b> deployment:</p><ul><li><b>1.</b> Physical Data Center Security.</li><li><b>2.</b> Application Code and Data.</li><li><b>3.</b> Operating System in Virtual Machines.</li></ul>",
+                "explanation": "<h4>Responsibility Mapping:</h4><ul><li><b>1. Cloud Service Provider (CSP):</b> Responsible for physical infrastructure, hardware, and data centers.</li><li><b>2. Cloud Consumer (Client):</b> Responsible for the applications and data hosted on that infrastructure.</li><li><b>3. Cloud Consumer (Client):</b> In IaaS, the client manages the OS, middleware, and runtime environment.</li></ul>"
+            },
+            {
+                "id": "PBQ005",
+                "type": "pbq",
+                "text": "<h3>XSS Mitigation via Encoding</h3><p>Explain the concept of <b>HTML Entity Encoding</b> as a defense against Cross-Site Scripting. Provide the correct conversion for the following three characters:</p><ul><li><b>A.</b> Less-than sign (<b>&lt;</b>)</li><li><b>B.</b> Greater-than sign (<b>&gt;</b>)</li><li><b>C.</b> Double quote (<b>&quot;</b>)</li></ul>",
+                "explanation": "<h4>Remediation Guidance:</h4><p>HTML entity encoding converts untrusted input into a safe, display-only form. This prevents the browser from executing the characters as part of a script.</p><ul><li><b>A:</b> <code>&amp;lt;</code></li><li><b>B:</b> <code>&amp;gt;</code></li><li><b>C:</b> <code>&amp;quot;</code></li></ul>"
+            }
+        ];
+
+        // Fisher-Yates shuffle algorithm for randomizing arrays
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Randomize questions and their options
+        function randomizeQuestions(questionsArray) {
+            return questionsArray.map(question => {
+                if (question.type !== 'pbq') {
+                    // Randomize options for MCQs
+                    return {
+                        ...question,
+                        options: shuffleArray(question.options)
+                    };
+                }
+                return question;
+            });
+        }
+
+        // Initialize randomized questions
+        let randomizedQuestions = randomizeQuestions(questions);
+        let mcqQuestions = shuffleArray(randomizedQuestions.filter(q => q.type !== 'pbq'));
+        let pbqQuestions = randomizedQuestions.filter(q => q.type === 'pbq');
+
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const mcqScreen = document.getElementById('mcqScreen');
+        const resultScreen = document.getElementById('resultScreen');
+        const pbqScreen = document.getElementById('pbqScreen');
+        const startButton = document.getElementById('startButton');
+        const mcqContainer = document.getElementById('mcqContainer');
+        const pbqContainer = document.getElementById('pbqContainer');
+        const submitMcqButton = document.getElementById('submitMcqButton');
+        const resetMcqButton = document.getElementById('resetMcqButton');
+        const progressBar = document.getElementById('progressBar');
+        const totalMcqResult = document.getElementById('totalMcqResult');
+        const correctAnswersResult = document.getElementById('correctAnswersResult');
+        const incorrectAnswersResult = document.getElementById('incorrectAnswersResult');
+        const finalPercentage = document.getElementById('finalPercentage');
+        const resultMessage = document.getElementById('resultMessage');
+        const resultsTableBody = document.getElementById('resultsTableBody');
+        const assessmentButton = document.getElementById('assessmentButton');
+        const continueToPbqButton = document.getElementById('continueToPbqButton');
+        const retakeQuizButton = document.getElementById('retakeQuizButton');
+        const finishQuizButton = document.getElementById('finishQuizButton');
+
+        // State
+        let userAnswers = {};
+        let quizStarted = false;
+        let quizFinished = false;
+        const STORAGE_KEY = 'quiz_app_results';
+
+        // Check if localStorage is available
+        function isLocalStorageAvailable() {
+            try {
+                const test = '__storage_test__';
+                localStorage.setItem(test, test);
+                localStorage.removeItem(test);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        const storageAvailable = isLocalStorageAvailable();
+
+        // Load saved results from localStorage
+        function loadSavedResults() {
+            if (!storageAvailable) return null;
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error('Error loading saved results:', e);
+            }
+            return null;
+        }
+
+        // Save results to localStorage
+        function saveResults(results) {
+            if (!storageAvailable) return;
+            try {
+                const dataToSave = {
+                    timestamp: new Date().toISOString(),
+                    ...results
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+            } catch (e) {
+                console.error('Error saving results:', e);
+            }
+        }
+
+        // Clear saved results
+        function clearSavedResults() {
+            if (!storageAvailable) return;
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (e) {
+                console.error('Error clearing results:', e);
+            }
+        }
+
+        // Check for saved results on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!storageAvailable) return;
+            const savedResults = loadSavedResults();
+            if (savedResults && savedResults.total) {
+                if (confirm('You have a previous quiz result. Would you like to view it?')) {
+                    displaySavedResults(savedResults);
+                }
+            }
+        });
+
+        function displaySavedResults(savedResults) {
+            totalMcqResult.textContent = savedResults.total;
+            correctAnswersResult.textContent = savedResults.correct;
+            incorrectAnswersResult.textContent = savedResults.incorrect;
+            finalPercentage.textContent = `${savedResults.percentage.toFixed(2)}%`;
+
+            if (savedResults.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+
+            // Show saved results in table
+            resultsTableBody.innerHTML = '';
+            if (savedResults.detailedResults) {
+                savedResults.detailedResults.forEach(result => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${result.id}</strong></td>
+                        <td>${result.question}</td>
+                        <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                            <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                            ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                        </td>
+                        <td>${result.userAnswer}</td>
+                        <td>${result.correctAnswer}</td>
+                    `;
+                    resultsTableBody.appendChild(row);
+                });
+            }
+
+            const timestamp = new Date(savedResults.timestamp);
+            const timeString = timestamp.toLocaleString();
+
+            const timestampNote = document.createElement('p');
+            timestampNote.style.textAlign = 'center';
+            timestampNote.style.color = '#6c757d';
+            timestampNote.style.marginTop = '20px';
+            timestampNote.textContent = `Results from: ${timeString}`;
+
+            const existingNote = resultScreen.querySelector('.timestamp-note');
+            if (existingNote) {
+                existingNote.remove();
+            }
+            timestampNote.className = 'timestamp-note';
+            resultScreen.querySelector('.result-card').insertBefore(timestampNote, resultScreen.querySelector('.button-group'));
+
+            showScreen('resultScreen');
+        }
+
+        // Disable F5 and Ctrl+W
+        document.addEventListener('keydown', function (e) {
+            // Disable F5 (refresh)
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                if (quizStarted && !quizFinished) {
+                    e.preventDefault();
+                    alert('Please complete the quiz before refreshing the page.');
+                    return false;
+                }
+            }
+
+            // Disable Ctrl+W (close window/tab)
+            if (e.ctrlKey && e.key === 'w') {
+                if (quizStarted && !quizFinished) {
+                    e.preventDefault();
+                    alert('Please complete the MCQ section before closing the page.');
+                    return false;
+                }
+            }
+        });
+
+        // Warn on page exit
+        window.addEventListener('beforeunload', function (e) {
+            if (quizStarted && !quizFinished) {
+                e.preventDefault();
+                e.returnValue = '';
+                return 'Are you sure you want to leave? Your quiz progress may be lost!';
+            }
+        });
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.quiz-section').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function renderMCQs() {
+            mcqContainer.innerHTML = '';
+
+            mcqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${question.id}`;
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = question.type === 'single' ? 'Single Choice' : 'Multiple Choice';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const selectionHint = document.createElement('div');
+                selectionHint.className = 'selection-hint';
+                selectionHint.textContent = `Select exactly ${question.selectCount} option${question.selectCount > 1 ? 's' : ''}`;
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(selectionHint);
+                questionCard.appendChild(questionText);
+
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+
+                question.options.forEach((option, optIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.onclick = () => handleAnswerSelection(question.id, optIndex, question.selectCount);
+
+                    const input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.id = `q${question.id}-opt${optIndex}`;
+                    input.style.pointerEvents = 'none';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `q${question.id}-opt${optIndex}`;
+                    label.textContent = option.text;
+                    label.style.pointerEvents = 'none';
+
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    optionsContainer.appendChild(optionDiv);
+                });
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(optionsContainer);
+                questionCard.appendChild(explanation);
+
+                mcqContainer.appendChild(questionCard);
+            });
+        }
+
+        function handleAnswerSelection(questionId, optionIndex, selectCount) {
+            if (!userAnswers[questionId]) {
+                userAnswers[questionId] = [];
+            }
+
+            const currentSelections = userAnswers[questionId];
+            const optionIndexInArray = currentSelections.indexOf(optionIndex);
+
+            if (optionIndexInArray > -1) {
+                // Deselect if already selected
+                currentSelections.splice(optionIndexInArray, 1);
+            } else {
+                // Select new option
+                if (selectCount === 1) {
+                    // For single selection, replace the selection
+                    userAnswers[questionId] = [optionIndex];
+                } else {
+                    // For multiple selection, add only if limit not reached
+                    if (currentSelections.length < selectCount) {
+                        currentSelections.push(optionIndex);
+                    } else {
+                        // Already at max, don't add
+                        return;
+                    }
+                }
+            }
+
+            // Update visual state
+            updateQuestionVisuals(questionId);
+            updateProgressBar();
+        }
+
+        function updateQuestionVisuals(questionId) {
+            const questionCard = document.getElementById(`question-${questionId}`);
+            const options = questionCard.querySelectorAll('.option');
+            const selectedIndices = userAnswers[questionId] || [];
+
+            options.forEach((optionDiv, idx) => {
+                const checkbox = optionDiv.querySelector('input[type="checkbox"]');
+                if (selectedIndices.includes(idx)) {
+                    optionDiv.classList.add('selected');
+                    checkbox.checked = true;
+                } else {
+                    optionDiv.classList.remove('selected');
+                    checkbox.checked = false;
+                }
+            });
+        }
+
+        function resetAllSelections() {
+            if (confirm('Are you sure you want to reset all your selections?')) {
+                userAnswers = {};
+                mcqQuestions.forEach(q => {
+                    updateQuestionVisuals(q.id);
+                });
+                updateProgressBar();
+            }
+        }
+
+        function updateProgressBar() {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+            const progress = (answeredCount / mcqQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function calculateResults() {
+            let correct = 0;
+            const detailedResults = [];
+
+            mcqQuestions.forEach(question => {
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                const isCorrect = userAnswer.length === correctIndices.length &&
+                    userAnswer.every(idx => correctIndices.includes(idx)) &&
+                    correctIndices.every(idx => userAnswer.includes(idx));
+
+                if (isCorrect) {
+                    correct++;
+                }
+
+                const userAnswerText = userAnswer.map(idx => question.options[idx].text).join(', ') || 'No answer';
+                const correctAnswerText = correctIndices.map(idx => question.options[idx].text).join(', ');
+
+                detailedResults.push({
+                    id: question.id,
+                    question: question.text,
+                    isCorrect,
+                    userAnswer: userAnswerText,
+                    correctAnswer: correctAnswerText
+                });
+            });
+
+            const total = mcqQuestions.length;
+            const incorrect = total - correct;
+            const percentage = total > 0 ? (correct / total) * 100 : 0;
+
+            return { total, correct, incorrect, percentage, detailedResults };
+        }
+
+        function showResults() {
+            const results = calculateResults();
+
+            // Save results to localStorage
+            saveResults(results);
+
+            totalMcqResult.textContent = results.total;
+            correctAnswersResult.textContent = results.correct;
+            incorrectAnswersResult.textContent = results.incorrect;
+            finalPercentage.textContent = `${results.percentage.toFixed(2)}%`;
+
+            if (results.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+
+            // Populate results table
+            resultsTableBody.innerHTML = '';
+            results.detailedResults.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${result.id}</strong></td>
+                    <td>${result.question}</td>
+                    <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                        <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                        ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                    </td>
+                    <td>${result.userAnswer}</td>
+                    <td>${result.correctAnswer}</td>
+                `;
+                resultsTableBody.appendChild(row);
+            });
+
+            showScreen('resultScreen');
+        }
+
+        function showAssessment() {
+            showScreen('mcqScreen');
+
+            mcqQuestions.forEach(question => {
+                const questionCard = document.getElementById(`question-${question.id}`);
+                const options = questionCard.querySelectorAll('.option');
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                options.forEach((optionDiv, idx) => {
+                    optionDiv.style.pointerEvents = 'none';
+
+                    if (correctIndices.includes(idx)) {
+                        optionDiv.classList.add('correct-answer');
+                    }
+
+                    if (userAnswer.includes(idx) && !correctIndices.includes(idx)) {
+                        optionDiv.classList.add('wrong-answer');
+                    }
+                });
+
+                const explanation = document.getElementById(`explanation-${question.id}`);
+                explanation.classList.add('show');
+            });
+
+            // Hide submit button but keep reset and continue buttons visible
+            submitMcqButton.style.display = 'none';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Retake Quiz';
+            resetMcqButton.classList.remove('warning-btn');
+            resetMcqButton.classList.add('secondary-btn');
+
+            // Add continue to PBQ button if not already present
+            let continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (!continueBtnInAssessment) {
+                continueBtnInAssessment = document.createElement('button');
+                continueBtnInAssessment.id = 'continueToPbqInAssessment';
+                continueBtnInAssessment.className = 'btn primary-btn';
+                continueBtnInAssessment.textContent = 'Continue to Practice Questions';
+                continueBtnInAssessment.onclick = () => {
+                    if (pbqQuestions.length > 0) {
+                        renderPBQs();
+                        showScreen('pbqScreen');
+                    } else {
+                        quizFinished = true;
+                        alert('No practice questions available. Quiz completed!');
+                    }
+                };
+
+                // Insert button in the button group
+                const buttonGroup = mcqScreen.querySelector('.button-group');
+                buttonGroup.appendChild(continueBtnInAssessment);
+            }
+            continueBtnInAssessment.style.display = 'inline-block';
+        }
+
+        function renderPBQs() {
+            pbqContainer.innerHTML = '';
+
+            if (pbqQuestions.length === 0) {
+                pbqContainer.innerHTML = '<p style="text-align: center; color: #6c757d;">No practice-based questions available.</p>';
+                return;
+            }
+
+            pbqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Practice Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = 'Practice Question';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                const textarea = document.createElement('textarea');
+                textarea.className = 'pbq-answer';
+                textarea.placeholder = 'Write your answer here...';
+                textarea.id = `pbq-${question.id}`;
+
+                const showAnswerBtn = document.createElement('button');
+                showAnswerBtn.className = 'btn secondary-btn';
+                showAnswerBtn.textContent = 'Show Answer';
+                showAnswerBtn.style.marginTop = '10px';
+                showAnswerBtn.onclick = () => togglePbqAnswer(question.id);
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `pbq-explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Answer:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(questionText);
+                questionCard.appendChild(textarea);
+                questionCard.appendChild(showAnswerBtn);
+                questionCard.appendChild(explanation);
+
+                pbqContainer.appendChild(questionCard);
+            });
+        }
+
+        function togglePbqAnswer(questionId) {
+            const explanation = document.getElementById(`pbq-explanation-${questionId}`);
+            explanation.classList.toggle('show');
+        }
+
+        function resetQuiz() {
+            // Randomize questions and options again
+            randomizedQuestions = randomizeQuestions(questions);
+            mcqQuestions = shuffleArray(randomizedQuestions.filter(q => q.type !== 'pbq'));
+            pbqQuestions = randomizedQuestions.filter(q => q.type === 'pbq');
+
+            userAnswers = {};
+            quizStarted = false;
+            quizFinished = false;
+            progressBar.style.width = '0%';
+            submitMcqButton.style.display = 'inline-block';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Reset All Selections';
+            resetMcqButton.classList.add('warning-btn');
+            resetMcqButton.classList.remove('secondary-btn');
+
+            // Hide continue button in assessment if exists
+            const continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (continueBtnInAssessment) {
+                continueBtnInAssessment.style.display = 'none';
+            }
+
+            // Clear saved results when retaking
+            clearSavedResults();
+
+            showScreen('startScreen');
+        }
+
+        // Event Listeners
+        startButton.addEventListener('click', () => {
+            quizStarted = true;
+            renderMCQs();
+            showScreen('mcqScreen');
+        });
+
+        submitMcqButton.addEventListener('click', () => {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+
+            if (answeredCount < mcqQuestions.length) {
+                if (!confirm('You have not answered all MCQs correctly (some may have incorrect number of selections). Do you want to submit anyway?')) {
+                    return;
+                }
+            }
+
+            showResults();
+        });
+
+        resetMcqButton.addEventListener('click', resetAllSelections);
+
+        assessmentButton.addEventListener('click', showAssessment);
+
+        continueToPbqButton.addEventListener('click', () => {
+            if (pbqQuestions.length > 0) {
+                renderPBQs();
+                showScreen('pbqScreen');
+            } else {
+                quizFinished = true;
+                alert('No practice questions available. Quiz completed!');
+            }
+        });
+
+        finishQuizButton.addEventListener('click', () => {
+            quizFinished = true;
+            alert('Quiz completed! You can now retake the quiz or close this window.');
+            showScreen('startScreen');
+        });
+
+        retakeQuizButton.addEventListener('click', resetQuiz);
+
+
+        // Warn on page exit
+        window.addEventListener('beforeunload', function (e) {
+            if (quizStarted && !quizFinished) {
+                e.preventDefault();
+                e.returnValue = '';
+                return 'Are you sure you want to leave? Your quiz progress may be lost!';
+            }
+        });
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.quiz-section').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function renderMCQs() {
+            mcqContainer.innerHTML = '';
+
+            mcqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${question.id}`;
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = question.type === 'single' ? 'Single Choice' : 'Multiple Choice';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const selectionHint = document.createElement('div');
+                selectionHint.className = 'selection-hint';
+                selectionHint.textContent = `Select exactly ${question.selectCount} option${question.selectCount > 1 ? 's' : ''}`;
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(selectionHint);
+                questionCard.appendChild(questionText);
+
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+
+                question.options.forEach((option, optIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.onclick = () => handleAnswerSelection(question.id, optIndex, question.selectCount);
+
+                    const input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.id = `q${question.id}-opt${optIndex}`;
+                    input.style.pointerEvents = 'none';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `q${question.id}-opt${optIndex}`;
+                    label.textContent = option.text;
+                    label.style.pointerEvents = 'none';
+
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    optionsContainer.appendChild(optionDiv);
+                });
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(optionsContainer);
+                questionCard.appendChild(explanation);
+
+                mcqContainer.appendChild(questionCard);
+            });
+        }
+
+        function handleAnswerSelection(questionId, optionIndex, selectCount) {
+            if (!userAnswers[questionId]) {
+                userAnswers[questionId] = [];
+            }
+
+            const currentSelections = userAnswers[questionId];
+            const optionIndexInArray = currentSelections.indexOf(optionIndex);
+
+            if (optionIndexInArray > -1) {
+                // Deselect if already selected
+                currentSelections.splice(optionIndexInArray, 1);
+            } else {
+                // Select new option
+                if (selectCount === 1) {
+                    // For single selection, replace the selection
+                    userAnswers[questionId] = [optionIndex];
+                } else {
+                    // For multiple selection, add only if limit not reached
+                    if (currentSelections.length < selectCount) {
+                        currentSelections.push(optionIndex);
+                    } else {
+                        // Already at max, don't add
+                        return;
+                    }
+                }
+            }
+
+            // Update visual state
+            updateQuestionVisuals(questionId);
+            updateProgressBar();
+        }
+
+        function updateQuestionVisuals(questionId) {
+            const questionCard = document.getElementById(`question-${questionId}`);
+            const options = questionCard.querySelectorAll('.option');
+            const selectedIndices = userAnswers[questionId] || [];
+
+            options.forEach((optionDiv, idx) => {
+                const checkbox = optionDiv.querySelector('input[type="checkbox"]');
+                if (selectedIndices.includes(idx)) {
+                    optionDiv.classList.add('selected');
+                    checkbox.checked = true;
+                } else {
+                    optionDiv.classList.remove('selected');
+                    checkbox.checked = false;
+                }
+            });
+        }
+
+        function resetAllSelections() {
+            if (confirm('Are you sure you want to reset all your selections?')) {
+                userAnswers = {};
+                mcqQuestions.forEach(q => {
+                    updateQuestionVisuals(q.id);
+                });
+                updateProgressBar();
+            }
+        }
+
+        function updateProgressBar() {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+            const progress = (answeredCount / mcqQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function calculateResults() {
+            let correct = 0;
+            const detailedResults = [];
+
+            mcqQuestions.forEach(question => {
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                const isCorrect = userAnswer.length === correctIndices.length &&
+                    userAnswer.every(idx => correctIndices.includes(idx)) &&
+                    correctIndices.every(idx => userAnswer.includes(idx));
+
+                if (isCorrect) {
+                    correct++;
+                }
+
+                const userAnswerText = userAnswer.map(idx => question.options[idx].text).join(', ') || 'No answer';
+                const correctAnswerText = correctIndices.map(idx => question.options[idx].text).join(', ');
+
+                detailedResults.push({
+                    id: question.id,
+                    question: question.text,
+                    isCorrect,
+                    userAnswer: userAnswerText,
+                    correctAnswer: correctAnswerText
+                });
+            });
+
+            const total = mcqQuestions.length;
+            const incorrect = total - correct;
+            const percentage = total > 0 ? (correct / total) * 100 : 0;
+
+            return { total, correct, incorrect, percentage, detailedResults };
+        }
+
+        function showResults() {
+            const results = calculateResults();
+
+            totalMcqResult.textContent = results.total;
+            correctAnswersResult.textContent = results.correct;
+            incorrectAnswersResult.textContent = results.incorrect;
+            finalPercentage.textContent = `${results.percentage.toFixed(2)}%`;
+
+            if (results.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+
+            // Populate results table
+            resultsTableBody.innerHTML = '';
+            results.detailedResults.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${result.id}</strong></td>
+                    <td>${result.question}</td>
+                    <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                        <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                        ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                    </td>
+                    <td>${result.userAnswer}</td>
+                    <td>${result.correctAnswer}</td>
+                `;
+                resultsTableBody.appendChild(row);
+            });
+
+            showScreen('resultScreen');
+        }
+
+        function showAssessment() {
+            showScreen('mcqScreen');
+
+            mcqQuestions.forEach(question => {
+                const questionCard = document.getElementById(`question-${question.id}`);
+                const options = questionCard.querySelectorAll('.option');
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                options.forEach((optionDiv, idx) => {
+                    optionDiv.style.pointerEvents = 'none';
+
+                    if (correctIndices.includes(idx)) {
+                        optionDiv.classList.add('correct-answer');
+                    }
+
+                    if (userAnswer.includes(idx) && !correctIndices.includes(idx)) {
+                        optionDiv.classList.add('wrong-answer');
+                    }
+                });
+
+                const explanation = document.getElementById(`explanation-${question.id}`);
+                explanation.classList.add('show');
+            });
+
+            // Hide submit button but keep reset and continue buttons visible
+            submitMcqButton.style.display = 'none';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Retake Quiz';
+            resetMcqButton.classList.remove('warning-btn');
+            resetMcqButton.classList.add('secondary-btn');
+
+            // Add continue to PBQ button if not already present
+            let continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (!continueBtnInAssessment) {
+                continueBtnInAssessment = document.createElement('button');
+                continueBtnInAssessment.id = 'continueToPbqInAssessment';
+                continueBtnInAssessment.className = 'btn primary-btn';
+                continueBtnInAssessment.textContent = 'Continue to Practice Questions';
+                continueBtnInAssessment.onclick = () => {
+                    if (pbqQuestions.length > 0) {
+                        renderPBQs();
+                        showScreen('pbqScreen');
+                    } else {
+                        quizFinished = true;
+                        alert('No practice questions available. Quiz completed!');
+                    }
+                };
+
+                // Insert button in the button group
+                const buttonGroup = mcqScreen.querySelector('.button-group');
+                buttonGroup.appendChild(continueBtnInAssessment);
+            }
+            continueBtnInAssessment.style.display = 'inline-block';
+        }
+
+        function renderPBQs() {
+            pbqContainer.innerHTML = '';
+
+            if (pbqQuestions.length === 0) {
+                pbqContainer.innerHTML = '<p style="text-align: center; color: #6c757d;">No practice-based questions available.</p>';
+                return;
+            }
+
+            pbqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Practice Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = 'Practice Question';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                const textarea = document.createElement('textarea');
+                textarea.className = 'pbq-answer';
+                textarea.placeholder = 'Write your answer here...';
+                textarea.id = `pbq-${question.id}`;
+
+                const showAnswerBtn = document.createElement('button');
+                showAnswerBtn.className = 'btn secondary-btn';
+                showAnswerBtn.textContent = 'Show Answer';
+                showAnswerBtn.style.marginTop = '10px';
+                showAnswerBtn.onclick = () => togglePbqAnswer(question.id);
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `pbq-explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Answer:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(questionText);
+                questionCard.appendChild(textarea);
+                questionCard.appendChild(showAnswerBtn);
+                questionCard.appendChild(explanation);
+
+                pbqContainer.appendChild(questionCard);
+            });
+        }
+
+        function togglePbqAnswer(questionId) {
+            const explanation = document.getElementById(`pbq-explanation-${questionId}`);
+            explanation.classList.toggle('show');
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            quizStarted = false;
+            quizFinished = false;
+            progressBar.style.width = '0%';
+            submitMcqButton.style.display = 'inline-block';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Reset All Selections';
+            resetMcqButton.classList.add('warning-btn');
+            resetMcqButton.classList.remove('secondary-btn');
+
+            // Hide continue button in assessment if exists
+            const continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (continueBtnInAssessment) {
+                continueBtnInAssessment.style.display = 'none';
+            }
+
+            showScreen('startScreen');
+        }
+
+        // Event Listeners
+        startButton.addEventListener('click', () => {
+            quizStarted = true;
+            renderMCQs();
+            showScreen('mcqScreen');
+        });
+
+        submitMcqButton.addEventListener('click', () => {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+
+            if (answeredCount < mcqQuestions.length) {
+                if (!confirm('You have not answered all MCQs correctly (some may have incorrect number of selections). Do you want to submit anyway?')) {
+                    return;
+                }
+            }
+
+            showResults();
+        });
+
+        resetMcqButton.addEventListener('click', resetAllSelections);
+
+        assessmentButton.addEventListener('click', showAssessment);
+
+        continueToPbqButton.addEventListener('click', () => {
+            if (pbqQuestions.length > 0) {
+                renderPBQs();
+                showScreen('pbqScreen');
+            } else {
+                quizFinished = true;
+                alert('No practice questions available. Quiz completed!');
+            }
+        });
+
+        finishQuizButton.addEventListener('click', () => {
+            quizFinished = true;
+            alert('Quiz completed! You can now retake the quiz or close this window.');
+            showScreen('startScreen');
+        });
+
+        retakeQuizButton.addEventListener('click', resetQuiz);
+    </script>
+</body>
+
+</html>

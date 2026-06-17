@@ -1,0 +1,2185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Module 1 – Introduction to Ethical Hacking and Penetration Testing
+    </title>
+    <style>
+      /* ── Fonts ── */
+      @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+
+      /* ── Reset & Base ── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #f5f4f0;
+        --surface: #ffffff;
+        --border: #d8d5cc;
+        --text: #0f0e0d;
+        --muted: #3a3835;
+        --accent: #c0392b;
+        --accent-lt: #fdf0ee;
+        --tip-bg: #fffbea;
+        --tip-border: #e6c84a;
+        --note-bg: #eef4ff;
+        --note-border: #4a7ce6;
+        --term-bg: #1a1917;
+        --term-text: #e8e6e0;
+        --term-green: #4ec94e;
+        --radius: 6px;
+        --max-w: 860px;
+        --font-body: "IBM Plex Sans", sans-serif;
+        --font-mono: "IBM Plex Mono", monospace;
+      }
+
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+      }
+
+      /* ── Layout ── */
+      .page-wrap {
+        max-width: var(--max-w);
+        margin: 0 auto;
+        padding: 2rem 1.5rem 4rem;
+      }
+
+      /* ── Course Header ── */
+      .course-header {
+        border-bottom: 2px solid var(--text);
+        padding-bottom: 1.25rem;
+        margin-bottom: 2.5rem;
+      }
+      .course-header .label {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .course-header h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1.25;
+        margin-top: 0.35rem;
+      }
+
+      /* ── Section Headings ── */
+      h2 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        border-left: 4px solid var(--accent);
+        padding-left: 0.75rem;
+        margin: 2.5rem 0 1rem;
+        line-height: 1.3;
+      }
+      h3 {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--muted);
+        font-family: var(--font-mono);
+        margin: 2rem 0 0.6rem;
+        letter-spacing: 0.02em;
+      }
+
+      /* ── Body Text ── */
+      p {
+        margin-bottom: 0.9rem;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      em {
+        font-style: italic;
+      }
+      strong,
+      b {
+        font-weight: 700;
+      }
+      em strong,
+      strong em {
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      /* ── Lists ── */
+      ul,
+      ol {
+        padding-left: 1.5rem;
+        margin-bottom: 0.9rem;
+      }
+      li {
+        margin-bottom: 0.3rem;
+      }
+
+      /* ── Avatar + Figures ── */
+      .avatar-wrap {
+        display: flex;
+        justify-content: flex-start;
+        margin: 1.25rem 0;
+      }
+      .avatar-wrap img {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        background: var(--surface);
+      }
+
+      figure {
+        margin: 1.5rem 0;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      figure img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      figcaption {
+        font-size: 0.82rem;
+        font-family: var(--font-mono);
+        color: var(--muted);
+        padding: 0.5rem 0.75rem;
+        border-top: 1px solid var(--border);
+        background: var(--bg);
+      }
+
+      /* ── Callouts: TIP / NOTE ── */
+      .callout {
+        border-radius: var(--radius);
+        padding: 0.85rem 1rem;
+        margin: 1.25rem 0;
+        border-left: 4px solid;
+      }
+      .callout .callout-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 0.3rem;
+      }
+      .callout p {
+        margin-bottom: 0;
+        font-size: 0.93rem;
+      }
+      .callout p + p {
+        margin-top: 0.5rem;
+      }
+
+      .callout-tip {
+        background: var(--tip-bg);
+        border-color: var(--tip-border);
+      }
+      .callout-tip .callout-label {
+        color: #6b4f00;
+      }
+
+      .callout-note {
+        background: var(--note-bg);
+        border-color: var(--note-border);
+      }
+      .callout-note .callout-label {
+        color: #1a3a7a;
+      }
+
+      /* ── Terminal / CLI Block ── */
+      .terminal {
+        background: var(--term-bg);
+        color: var(--term-text);
+        font-family: var(--font-mono);
+        font-size: 0.87rem;
+        border-radius: var(--radius);
+        padding: 1rem 1.2rem;
+        margin: 1.25rem 0;
+        overflow-x: auto;
+        line-height: 1.6;
+      }
+      .terminal .prompt {
+        color: var(--term-green);
+        user-select: none;
+      }
+
+      /* ── Lab Card ── */
+      .lab-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin: 1.5rem 0;
+        overflow: hidden;
+      }
+      .lab-card-header {
+        background: var(--text);
+        color: #fff;
+        padding: 0.65rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .lab-card-header .lab-icon {
+        font-size: 1rem;
+      }
+      .lab-card-header .lab-title {
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+      .lab-card-body {
+        padding: 1rem;
+      }
+      .lab-card-body p {
+        font-size: 0.93rem;
+        margin-bottom: 0.5rem;
+      }
+      .lab-card-body ul {
+        font-size: 0.93rem;
+      }
+      .lab-btn {
+        display: inline-block;
+        margin-top: 0.75rem;
+        padding: 0.45rem 1.1rem;
+        background: var(--accent);
+        color: #fff;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        transition: opacity 0.15s;
+      }
+      .lab-btn:hover {
+        opacity: 0.85;
+        text-decoration: none;
+      }
+
+      /* ── Video Block ── */
+      .video-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+      .video-block p {
+        font-size: 0.88rem;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+        font-family: var(--font-mono);
+      }
+      .video-placeholder {
+        background: #111;
+        border-radius: 4px;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #888;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        gap: 0.4rem;
+      }
+      .video-placeholder .play-icon {
+        font-size: 2rem;
+        color: #555;
+      }
+      .transcript-link {
+        display: inline-block;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        font-family: var(--font-mono);
+        color: var(--muted);
+      }
+      .transcript-link:hover {
+        color: var(--accent);
+      }
+
+      /* ── Quiz / Skills Check ── */
+      .quiz-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.4rem;
+        margin: 1.5rem 0;
+      }
+      .quiz-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+      .quiz-question {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+      }
+      .quiz-options {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 1rem;
+      }
+      .quiz-options li {
+        margin-bottom: 0.4rem;
+      }
+      .quiz-options label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.93rem;
+        color: var(--text);
+        transition:
+          background 0.12s,
+          border-color 0.12s;
+      }
+      .quiz-options label:hover {
+        background: var(--bg);
+        border-color: var(--muted);
+      }
+      .quiz-options input[type="radio"],
+      .quiz-options input[type="checkbox"] {
+        margin-top: 0.25rem;
+        accent-color: var(--accent);
+        flex-shrink: 0;
+      }
+      .quiz-options label.correct {
+        background: #eafaf1;
+        border-color: #27ae60;
+        color: #1a5c35;
+      }
+      .quiz-options label.incorrect {
+        background: #fdf0ee;
+        border-color: var(--accent);
+        color: #7a1a10;
+      }
+      .quiz-submit {
+        display: inline-block;
+        padding: 0.42rem 1.1rem;
+        background: var(--text);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .quiz-submit:hover {
+        opacity: 0.8;
+      }
+      .quiz-feedback {
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        font-family: var(--font-mono);
+        display: none;
+      }
+      .quiz-feedback.correct {
+        color: #1a5c35;
+      }
+      .quiz-feedback.incorrect {
+        color: #7a1a10;
+      }
+
+      /* ── Practice Block ── */
+      .practice-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--text);
+        border-radius: var(--radius);
+        padding: 1rem 1.2rem;
+        margin: 1.5rem 0;
+      }
+      .practice-block .practice-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+      }
+      .practice-block .question {
+        font-weight: 600;
+        margin-bottom: 0.6rem;
+        color: var(--text);
+      }
+      .practice-block ul {
+        list-style: none;
+        padding-left: 0;
+      }
+      .practice-block ul li {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.93rem;
+        color: var(--text);
+      }
+      .practice-block ul li::before {
+        content: "▸  ";
+        font-family: var(--font-mono);
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      /* ── Divider ── */
+      hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 2rem 0;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 600px) {
+        h2 {
+          font-size: 1.1rem;
+        }
+        .avatar-wrap img {
+          width: 120px;
+          height: 120px;
+        }
+      }
+
+      /* -- Quiz -- */
+      /* ── Quiz Block ── */
+      .quiz-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.4rem;
+        margin: 1.5rem 0;
+      }
+
+      .quiz-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .quiz-label::before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      .quiz-question {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.9rem;
+        font-size: 0.97rem;
+        line-height: 1.5;
+      }
+      .quiz-question code {
+        font-family: var(--font-mono);
+        background: #ebe9e4;
+        padding: 0.1em 0.35em;
+        border-radius: 3px;
+        font-size: 0.88em;
+        color: var(--text);
+      }
+
+      .quiz-options {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      .quiz-options li label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        padding: 0.55rem 0.8rem;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.93rem;
+        color: var(--text);
+        transition:
+          background 0.12s,
+          border-color 0.12s;
+        user-select: none;
+      }
+      .quiz-options li label:hover {
+        background: var(--bg);
+        border-color: var(--muted);
+      }
+      .quiz-options input[type="radio"],
+      .quiz-options input[type="checkbox"] {
+        margin-top: 0.28rem;
+        accent-color: var(--accent);
+        flex-shrink: 0;
+        width: 15px;
+        height: 15px;
+      }
+
+      /* answer states */
+      .quiz-options li.correct label {
+        background: #eafaf1;
+        border-color: #27ae60;
+        color: #1a5c35;
+        font-weight: 600;
+      }
+      .quiz-options li.incorrect label {
+        background: #fdf0ee;
+        border-color: var(--accent);
+        color: #7a1a10;
+      }
+      .quiz-options li.correct label::after,
+      .quiz-options li.incorrect label::after {
+        content: attr(data-mark);
+        margin-left: auto;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+      }
+
+      /* disable interaction after submit */
+      .quiz-block.submitted .quiz-options li label {
+        cursor: default;
+        pointer-events: none;
+      }
+
+      .quiz-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .quiz-submit {
+        padding: 0.42rem 1.1rem;
+        background: var(--text);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .quiz-submit:hover {
+        opacity: 0.8;
+      }
+      .quiz-submit:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .quiz-reset {
+        padding: 0.42rem 1.1rem;
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+        display: none;
+      }
+      .quiz-reset:hover {
+        border-color: var(--muted);
+        color: var(--text);
+      }
+
+      .quiz-feedback {
+        font-size: 0.88rem;
+        font-family: var(--font-mono);
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        display: none;
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+      .quiz-feedback.show {
+        display: block;
+      }
+      .quiz-feedback.correct {
+        background: #eafaf1;
+        color: #1a5c35;
+        border: 1px solid #27ae60;
+      }
+      .quiz-feedback.incorrect {
+        background: #fdf0ee;
+        color: #7a1a10;
+        border: 1px solid var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrap">
+      <!-- ══ Course Header ══ -->
+      <header class="course-header">
+        <div class="label">Cisco Ethical Hacking Course · Module 1</div>
+        <h1>Introduction to Ethical Hacking and Penetration Testing</h1>
+      </header>
+
+      <!-- ══════════════════════════════════════════
+       1.0  Introduction
+  ══════════════════════════════════════════ -->
+      <h2>1.0 Introduction</h2>
+
+      <h3>1.0.1 Why Should I Take This Module?</h3>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-orange.png"
+          alt="Mentor avatar – Alex"
+        />
+      </div>
+
+      <p>
+        Welcome to Protego! My name is Alex. I will be your mentor for your
+        first 90 days here. Our recruiter was very impressed with your
+        enthusiasm and desire to enter the cybersecurity profession.
+      </p>
+      <p>
+        We'll be working together to get you ready for your role as an
+        entry-level penetration tester. We'll be talking about ways that you can
+        prepare for participating in our customer engagements and I have a
+        number of activities for you to complete that will quickly enhance your
+        skills.
+      </p>
+      <p>
+        We will talk about some important big ideas in penetration testing and
+        then get your practice lab environment up and running.
+      </p>
+      <p>
+        I know you will enjoy working at Protego, and I look forward to working
+        with you as you grow in your career with us.
+      </p>
+      <p>
+        Before we jump into how to perform penetration testing, you first need
+        to understand some core concepts about the "art of hacking" that will
+        help you understand the other concepts discussed throughout this course.
+        For example, you need to understand the difference between
+        <em>ethical hacking</em> and <em>unethical hacking</em>. The tools and
+        techniques used in this field change rapidly, so understanding the most
+        current threats and attacker motivations is also important. Some
+        consider penetration testing an art; however, this art needs to start
+        out with a methodology if it is to be effective. Furthermore, you need
+        to spend some time understanding the different types of testing and the
+        industry methods used. Finally, this is a hands-on concept, and you need
+        to know how to get your hands dirty by properly building a lab
+        environment for testing.
+      </p>
+
+      <h3>1.0.2 What Will I Learn in This Module?</h3>
+
+      <p>
+        <strong>Module Title:</strong> Introduction to Ethical Hacking and
+        Penetration Testing
+      </p>
+      <p>
+        <strong>Module Objective:</strong> Explain the importance of
+        methodological ethical hacking and penetration testing.
+      </p>
+
+      <table
+        style="
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 0.9rem;
+          font-size: 0.93rem;
+        "
+      >
+        <thead>
+          <tr style="background: var(--text); color: #fff">
+            <th
+              style="
+                padding: 0.5rem 0.75rem;
+                text-align: left;
+                border: 1px solid var(--border);
+              "
+            >
+              Topic Title
+            </th>
+            <th
+              style="
+                padding: 0.5rem 0.75rem;
+                text-align: left;
+                border: 1px solid var(--border);
+              "
+            >
+              Topic Objective
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              style="padding: 0.5rem 0.75rem; border: 1px solid var(--border)"
+            >
+              Understanding Ethical Hacking and Penetration Testing
+            </td>
+            <td
+              style="padding: 0.5rem 0.75rem; border: 1px solid var(--border)"
+            >
+              Explain the importance of ethical hacking and penetration testing.
+            </td>
+          </tr>
+          <tr style="background: var(--bg)">
+            <td
+              style="padding: 0.5rem 0.75rem; border: 1px solid var(--border)"
+            >
+              Exploring Penetration Testing Methodologies
+            </td>
+            <td
+              style="padding: 0.5rem 0.75rem; border: 1px solid var(--border)"
+            >
+              Explain different types of penetration testing methodologies and
+              frameworks.
+            </td>
+          </tr>
+          <tr>
+            <td
+              style="padding: 0.5rem 0.75rem; border: 1px solid var(--border)"
+            >
+              Building Your Own Lab
+            </td>
+            <td
+              style="padding: 0.5rem 0.75rem; border: 1px solid var(--border)"
+            >
+              Configure a virtual machine for your penetration testing learning
+              experience.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr />
+
+      <!-- ══════════════════════════════════════════
+       1.1  Understanding Ethical Hacking and Penetration Testing
+  ══════════════════════════════════════════ -->
+      <h2>1.1 Understanding Ethical Hacking and Penetration Testing</h2>
+
+      <h3>1.1.1 Overview</h3>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png"
+          alt="Mentor avatar – blue"
+        />
+      </div>
+
+      <p>
+        Alex here! We will be meeting periodically over the next few weeks so
+        you can get oriented to working at Protego and also build your skills
+        and knowledge as we increase your involvement in our customer
+        engagements.
+      </p>
+      <p>
+        At the very heart of what we do is our purpose. You need to understand
+        why we do what we do and who our enemies are. Once you have a strong
+        foundation here, we can move on to understanding how we accomplish our
+        purpose.
+      </p>
+      <p>
+        As a refresher, the term
+        <em><strong>ethical hacker</strong></em> describes a person who acts as
+        an attacker and evaluates the security posture of a computer network for
+        the purpose of minimizing risk. The NIST Computer Security Resource
+        Center (CSRC) defines a <em>hacker</em> as an "unauthorized user who
+        attempts to or gains access to an information system." Now, we all know
+        that the term <em>hacker</em> has been used in many different ways and
+        has many different definitions. Most people in a computer technology
+        field would consider themselves hackers based on the simple fact that
+        they like to tinker. This is obviously not a malicious thing. So, the
+        key factor here in defining ethical versus nonethical hacking is that
+        the latter involves malicious intent. The
+        <em>permission to attack</em> or permission to test is crucial and what
+        will keep you out of trouble! This permission to attack is often
+        referred to as "the scope" of the test (what you are allowed and not
+        allowed to test). More on this later in this module.
+      </p>
+      <p>
+        A security researcher looking for vulnerabilities in products,
+        applications, or web services is considered an ethical hacker if he or
+        she responsibly discloses those vulnerabilities to the vendors or owners
+        of the targeted research. However, the same type of "research" performed
+        by someone who then uses the same
+        <em><strong>vulnerability</strong></em> to gain unauthorized access to a
+        target network/system would be considered a nonethical hacker. We could
+        even go so far as to say that someone who finds a vulnerability and
+        discloses it publicly without working with a vendor is considered a
+        nonethical hacker – because this could lead to the compromise of
+        networks/systems by others who use this information in a malicious way.
+      </p>
+      <p>
+        The truth is that as an ethical hacker, you use the same tools to find
+        vulnerabilities and exploit targets as do nonethical hackers. However,
+        as an ethical hacker, you would typically report your findings to the
+        vendor or customer you are helping to make the network more secure. You
+        would also try to avoid performing any tests or exploits that might be
+        destructive in nature.
+      </p>
+      <p>
+        An ethical hacker's goal is to analyze the security posture of a
+        network's or system's infrastructure in an effort to identify and
+        possibly exploit any security weaknesses found and then determine if a
+        compromise is possible. This process is called
+        <em>security <strong>penetration testing</strong></em> or
+        <em>ethical hacking</em>.
+      </p>
+
+      <div class="callout callout-tip">
+        <div class="callout-label">Tip</div>
+        <p>
+          Hacking is NOT a Crime (<a
+            href="https://www.hackingisnotacrime.org/"
+            target="_blank"
+            ><em>hackingisnotacrime.org</em></a
+          >) is a nonprofit organization that attempts to raise awareness about
+          the pejorative use of the term <em>hacker</em>. Historically,
+          <em>hackers</em> have been portrayed as evil or illegal. Luckily, a
+          lot of people already know that hackers are curious individuals who
+          want to understand how things work and how to make them more secure.
+        </p>
+      </div>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png"
+          alt="Mentor avatar – purple"
+        />
+      </div>
+
+      <h3>1.1.2 Why Do We Need to Do Penetration Testing?</h3>
+
+      <p>
+        So, why do we need penetration testing? Well, first of all, as someone
+        who is responsible for securing and defending a network/system, you want
+        to find any possible paths of compromise before the bad guys do. For
+        years we have developed and implemented many different defensive
+        techniques (for instance, antivirus, firewalls, intrusion prevention
+        systems [IPSs], anti-malware). We have deployed defense-in-depth as a
+        method to secure and defend our networks. But how do we know if those
+        defenses really work and whether they are enough to keep out the bad
+        guys? How valuable is the data that we are protecting, and are we
+        protecting the right things? These are some of the questions that should
+        be answered by a penetration test. If you build a fence around your yard
+        with the intent of keeping your dog from getting out, maybe it only
+        needs to be 4 feet tall. However, if your concern is not the dog getting
+        out but an intruder getting in, then you need a different fence – one
+        that would need to be much taller than 4 feet. Depending on what you are
+        protecting, you might also want razor wire on the top of the fence to
+        deter the bad guys even more. When it comes to information security, we
+        need to do the same type of assessments on our networks and systems. We
+        need to determine what it is we are protecting and whether our defenses
+        can hold up to the threats that are imposed on them. This is where
+        penetration testing comes in. Simply implementing a firewall, an IPS,
+        anti-malware, a VPN, a web application firewall (WAF), and other modern
+        security defenses isn't enough. You also need to test their validity.
+        And you need to do this on a regular basis. As you know, networks and
+        systems change constantly. This means the attack surface can change as
+        well, and when it does, you need to consider reevaluating the security
+        posture by way of a penetration test.
+      </p>
+
+      <!-- ── Lab 1.1.3 ── -->
+      <h3>1.1.3 Lab – Researching PenTesting Careers</h3>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-green.png"
+          alt="Mentor avatar – green"
+        />
+      </div>
+
+      <p>
+        I think it is important for you to understand the employment landscape
+        and the different roles and responsibilities that cybersecurity
+        professions include. A good general reference to explore for
+        descriptions of different job roles is The National Initiative for
+        Cybersecurity Careers and Studies (NICCS)
+        <a
+          href="https://niccs.cisa.gov/workforce-development/cyber-career-pathways-tool"
+          target="_blank"
+          >Cyber Career Pathways Tool</a
+        >. It offers a visual way to discover and compare different job roles in
+        our profession.
+      </p>
+      <p>
+        In this activity, you discover and compare ethical hacking jobs that are
+        listed on various job boards. Don't worry, we are not trying to get rid
+        of you! We just want you to understand where you fit in to the big
+        picture in our profession. I think that you will find that we are
+        treating you very well, and rest assured that you have a lot of room to
+        grow with us.
+      </p>
+
+      <div class="lab-card">
+        <div class="lab-card-header">
+          <span class="lab-icon">🧪</span>
+          <span class="lab-title">Lab – Researching PenTesting Careers</span>
+        </div>
+        <div class="lab-card-body">
+          <p>In this lab, you will complete the following objectives:</p>
+          <ul>
+            <li>Conduct a Penetration Tester Job Search</li>
+            <li>Analyze Penetration Tester Job Requirements</li>
+            <li>Discover Resources to Further Your Career</li>
+          </ul>
+          <a
+            class="lab-btn"
+            href="Cisco_Ethical_Hacking_Course_Labs/1.1.3-Lab_Researching_PenTesting_Careers.html"
+            target="_blank"
+            >Open Lab ↗</a
+          >
+        </div>
+      </div>
+
+      <!-- ── Quiz: 1 ── -->
+      <div class="quiz-block" id="quiz-job-boards">
+        <div class="quiz-label">Skills Check</div>
+        <p class="quiz-question">
+          Which three internet job boards allow filtering job postings by
+          seniority or experience level? (Choose three.)
+        </p>
+        <ul class="quiz-options">
+          <li data-index="0">
+            <label>
+              <input type="checkbox" name="q-job" value="0" />
+              glassdoor.com
+            </label>
+          </li>
+          <li data-index="1">
+            <label>
+              <input type="checkbox" name="q-job" value="1" />
+              indeed.com
+            </label>
+          </li>
+          <li data-index="2">
+            <label>
+              <input type="checkbox" name="q-job" value="2" />
+              linkedin.com jobs
+            </label>
+          </li>
+          <li data-index="3">
+            <label>
+              <input type="checkbox" name="q-job" value="3" />
+              monster.com
+            </label>
+          </li>
+        </ul>
+        <div class="quiz-actions">
+          <button
+            class="quiz-submit"
+            onclick="
+              submitMultiQuiz(
+                'quiz-job-boards',
+                [0, 1, 2],
+                'Glassdoor, Indeed, and LinkedIn Jobs all support filtering by experience or seniority level. Monster.com does not offer that filter.',
+              )
+            "
+          >
+            Check Answer
+          </button>
+          <button
+            class="quiz-reset"
+            onclick="resetMultiQuiz('quiz-job-boards')"
+          >
+            Try Again
+          </button>
+          <div class="quiz-feedback"></div>
+        </div>
+      </div>
+
+      <h3>1.1.4 Threat Actors</h3>
+
+      <p>
+        Before you can understand how an ethical hacker or penetration tester
+        can mimic a <em><strong>threat actor</strong></em> (or malicious
+        attacker), you need to understand the different types of threat actors.
+        The following are the most common types of malicious attackers we see
+        today.
+      </p>
+
+      <p><strong>Organized Crime</strong></p>
+      <p>
+        Several years ago, the cybercrime industry took over the number-one
+        spot, previously held by the drug trade, for the most profitable illegal
+        industry. As you can imagine, it has attracted a new type of
+        cybercriminal. Just as it did back in the days of Prohibition, organized
+        crime goes where the money is. Organized crime consists of very
+        well-funded and motivated groups that will typically use any and all of
+        the latest attack techniques. Whether that is ransomware or data theft,
+        if it can be monetized, organized crime will use it.
+      </p>
+
+      <p><strong>Hacktivists</strong></p>
+      <p>
+        This type of threat actor is not motivated by money. Hacktivists are
+        looking to make a point or to further their beliefs, using cybercrime as
+        their method of attack. These types of attacks are often carried out by
+        stealing sensitive data and then revealing it to the public for the
+        purpose of embarrassing or financially affecting a target.
+      </p>
+
+      <p><strong>State-Sponsored Attackers</strong></p>
+      <p>
+        Cyber war and cyber espionage are two terms that fit into this category.
+        Many governments around the world today use cyber attacks to steal
+        information from their opponents and cause disruption. Many believe that
+        the next Pearl Harbor will occur in cyberspace. That's one of the
+        reasons the United States declared cyberspace to be one of the
+        operational domains that U.S. forces would be trained to defend.
+      </p>
+
+      <p><strong>Insider Threats</strong></p>
+      <p>
+        An insider threat is a threat that comes from inside an organization.
+        The motivations of these types of actors are normally different from
+        those of many of the other common threat actors. Insider threats are
+        often normal employees who are tricked into divulging sensitive
+        information or mistakenly clicking on links that allow attackers to gain
+        access to their computers. However, they could also be malicious
+        insiders who are possibly motivated by revenge or money.
+      </p>
+
+      <hr />
+
+      <!-- ══════════════════════════════════════════
+       1.2  Exploring Penetration Testing Methodologies
+  ══════════════════════════════════════════ -->
+      <h2>1.2 Exploring Penetration Testing Methodologies</h2>
+
+      <h3>1.2.1 Overview</h3>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png"
+          alt="Mentor avatar – blue"
+        />
+      </div>
+
+      <p>
+        There is more to penetration testing than hacking away at a customer's
+        network. A haphazard approach will result in haphazard results. It is
+        important to follow well-known methods and standards in order to
+        approach pentesting engagements in an organized, systematic way.
+      </p>
+      <p>
+        You should understand the major documented methodologies and standards
+        so that you can create strategies that draw on their strengths.
+        Documenting your approach with the methodologies and standards that you
+        used also provides accountability for our company and helps make our
+        results defensible in case issues arise with our customers.
+      </p>
+      <p>
+        The process of completing a penetration test varies based on many
+        factors. The tools and techniques used to assess the security posture of
+        a network or system also vary. The networks and systems being evaluated
+        are often highly complex. Because of this, it is very easy when
+        performing a penetration test to go off scope. This is where testing
+        methodologies come in.
+      </p>
+
+      <h3>
+        1.2.2 Why Do We Need to Follow a Methodology for Penetration Testing?
+      </h3>
+
+      <p>
+        As just mentioned, scope creep is one reason for utilizing a specific
+        methodology; however, there are many other reasons. For instance, when
+        performing a penetration test for a customer, you must show that the
+        methods you plan to use for testing are tried and true. By utilizing a
+        known methodology, you are able to provide documentation of a
+        specialized procedure that has been used by many people.
+      </p>
+
+      <h3>1.2.3 Environmental Considerations</h3>
+
+      <p>
+        There are, of course, a number of different types of penetration tests.
+        Often they are combined in the overall scope of a penetration test;
+        however, they can also be performed as individual tests as well.
+      </p>
+      <p>
+        The following is a list of some of the most common environmental
+        considerations for the types of penetration tests today:
+      </p>
+
+      <p><strong>Network Infrastructure Tests</strong></p>
+      <p>
+        Testing of the network infrastructure can mean a few things. For the
+        purposes of this course, we say it is focused on evaluating the security
+        posture of the actual network infrastructure and how it is able to help
+        defend against attacks. This often includes the switches, routers,
+        firewalls, and supporting resources, such as authentication,
+        authorization, and accounting (AAA) servers and IPSs. A penetration test
+        on wireless infrastructure may sometimes be included in the scope of a
+        network infrastructure test. However, additional types of tests beyond a
+        wired network assessment would be performed. For instance, a wireless
+        security tester would attempt to break into a network via the wireless
+        network either by bypassing security mechanisms or breaking the
+        cryptographic methods used to secure the traffic. Testing the wireless
+        infrastructure helps an organization to determine weaknesses in the
+        wireless deployment as well as the exposure. It often includes a
+        detailed heat map of the signal disbursement.
+      </p>
+
+      <p><strong>Application-Based Tests</strong></p>
+      <p>
+        This type of pen testing focuses on testing for security weaknesses in
+        enterprise applications. These weaknesses can include but are not
+        limited to misconfigurations, input validation issues, injection issues,
+        and logic flaws. Because a web application is typically built on a web
+        server with a back-end database, the testing scope normally includes the
+        database as well. However, it focuses on gaining access to that
+        supporting database through the web application compromise. A great
+        resource that we mention a number of times in this book is the Open Web
+        Application Security Project (OWASP).
+      </p>
+
+      <p><strong>Penetration Testing in the Cloud</strong></p>
+      <p>
+        Cloud service providers (CSPs) such as Azure, Amazon Web Services (AWS),
+        and Google Cloud Platform (GCP) have no choice but to take their
+        security and compliance responsibilities very seriously. For instance,
+        Amazon created the Shared Responsibility Model to describe the AWS
+        customers' responsibilities and Amazon's responsibilities in detail (see
+        <a
+          href="https://aws.amazon.com/compliance/shared-responsibility-model"
+          target="_blank"
+          ><em
+            >https://aws.amazon.com/compliance/shared-responsibility-model</em
+          ></a
+        >).
+      </p>
+      <p>
+        The responsibility for cloud security depends on the type of cloud model
+        (software as a service [SaaS], platform as a service [PaaS], or
+        infrastructure as a service [IaaS]). For example, with IaaS, the
+        customer (cloud consumer) is responsible for data, applications,
+        runtime, middleware, virtual machines (VMs), containers, and operating
+        systems in VMs. Regardless of the model used, cloud security is the
+        responsibility of both the client and the cloud provider. These details
+        need to be worked out before a cloud computing contract is signed. These
+        contracts vary depending on the security requirements of the client.
+        Considerations include disaster recovery, service-level agreements
+        (SLAs), data integrity, and encryption. For example, is encryption
+        provided end to end or just at the cloud provider? Also, who manages the
+        encryption keys–the CSP or the client?
+      </p>
+      <p>
+        Overall, you want to ensure that the CSP has the same layers of security
+        (logical, physical, and administrative) in place that you would have for
+        services you control. When performing penetration testing in the cloud,
+        you must understand what you can do and what you cannot do. Most CSPs
+        have detailed guidelines on how to perform security assessments and
+        penetration testing in the cloud. Regardless, there are many potential
+        threats when organizations move to a cloud model. For example, although
+        your data is in the cloud, it must reside in a physical location
+        somewhere. Your cloud provider should agree in writing to provide the
+        level of security required for your customers. As an example, the
+        following link includes the AWS Customer Support Policy for Penetration
+        Testing:
+        <a
+          href="https://aws.amazon.com/security/penetration-testing"
+          target="_blank"
+          ><em>https://aws.amazon.com/security/penetration-testing</em></a
+        >.
+      </p>
+
+      <div class="callout callout-note">
+        <div class="callout-label">Note</div>
+        <p>
+          Many penetration testers find the physical aspect of testing to be the
+          most fun because they are essentially being paid to break into the
+          facility of a target. This type of test can help expose any weaknesses
+          in the physical perimeter as well as any security mechanisms that are
+          in place, such as guards, gates, and fencing. The result should be an
+          assessment of the external physical security controls. The majority of
+          compromises today start with some kind of social engineering attack.
+          This could be a phone call, an email, a website, an SMS message, and
+          so on. It is important to test how your employees handle these types
+          of situations. This type of test is often omitted from the scope of a
+          penetration testing engagement mainly because it primarily involves
+          testing people instead of the technology. In most cases, management
+          does not agree with this type of approach. However, it is important to
+          get a real-world view of the latest attack methods. The result of a
+          social engineering test should be to assess the security awareness
+          program so that you can enhance it. It should not be to identify
+          individuals who fail the test. One of the tools that we talk about
+          more in a later module is the Social-Engineer Toolkit (SET), created
+          by Dave Kennedy. This is a great tool for performing social
+          engineering testing campaigns.
+        </p>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-label">Tip</div>
+        <p>
+          Bug bounty programs enable security researchers and penetration
+          testers to get recognition (and often monetary compensation) for
+          finding vulnerabilities in websites, applications, or any other types
+          of systems. Companies like Microsoft, Apple, and Cisco and even
+          government institutions such as the U.S. Department of Defense (DoD)
+          use bug bounty programs to reward security professionals when they
+          find vulnerabilities in their systems. Many security companies, such
+          as HackerOne, Bugcrowd, Intigriti, and SynAck, provide platforms for
+          businesses and security professionals to participate in bug bounty
+          programs. These programs are different from traditional penetration
+          testing engagements but have a similar goal: finding security
+          vulnerabilities to allow the organization to fix them before malicious
+          attackers are able to exploit such vulnerabilities. I have included
+          different bug bounty tips and resources in my GitHub repository at:
+          <a
+            href="https://github.com/The-Art-of-Hacking/h4cker/tree/master/bug-bounties"
+            target="_blank"
+            ><em
+              >https://github.com/The-Art-of-Hacking/h4cker/tree/master/bug-bounties</em
+            ></a
+          >.
+        </p>
+      </div>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png"
+          alt="Mentor avatar – purple"
+        />
+      </div>
+
+      <p>
+        When talking about penetration testing methods, you are likely to hear
+        the terms unknown-environment (previously known as <em>black-box</em>),
+        known-environment (previously known as <em>white-box</em>), and
+        partially known environment (previously known as <em>gray-box</em>)
+        testing. These terms are used to describe the perspective from which the
+        testing is performed, as well as the amount of information that is
+        provided to the tester:
+      </p>
+
+      <p><strong>Unknown-Environment Test</strong></p>
+      <p>
+        In an unknown-environment penetration test, the tester is typically
+        provided only a very limited amount of information. For instance, the
+        tester may be provided only the domain names and IP addresses that are
+        in scope for a particular target. The idea of this type of limitation is
+        to have the tester start out with the perspective that an external
+        attacker might have. Typically, an attacker would first determine a
+        target and then begin to gather information about the target, using
+        public information, and gain more and more information to use in
+        attacks. The tester would not have prior knowledge of the target's
+        organization and infrastructure. Another aspect of unknown-environment
+        testing is that sometimes the network support personnel of the target
+        may not be given information about exactly when the test is taking
+        place. This allows for a defense exercise to take place as well, and it
+        eliminates the issue of a target preparing for the test and not giving a
+        real-world view of how the security posture really looks.
+      </p>
+
+      <p><strong>Known-Environment Test</strong></p>
+      <p>
+        In a known-environment penetration test, the tester starts out with a
+        significant amount of information about the organization and its
+        infrastructure. The tester would normally be provided things like
+        network diagrams, IP addresses, configurations, and a set of user
+        credentials. If the scope includes an application assessment, the tester
+        might also be provided the source code of the target application. The
+        idea of this type of test is to identify as many security holes as
+        possible. In an unknown-environment test, the scope may be only to
+        identify a path into the organization and stop there. With
+        known-environment testing, the scope is typically much broader and
+        includes internal network configuration auditing and scanning of desktop
+        computers for defects. Time and money are typically deciding factors in
+        the determination of which type of penetration test to complete. If a
+        company has specific concerns about an application, a server, or a
+        segment of the infrastructure, it can provide information about that
+        specific target to decrease the scope and the amount of time spent on
+        the test but still uncover the desired results. With the sophistication
+        and capabilities of adversaries today, it is likely that most networks
+        will be compromised at some point, and a white-box approach is not a bad
+        option.
+      </p>
+
+      <p><strong>Partially Known Environment Test</strong></p>
+      <p>
+        A partially known environment penetration test is somewhat of a hybrid
+        approach between unknown- and known-environment tests. With partially
+        known environment testing, the testers may be provided credentials but
+        not full documentation of the network infrastructure. This would allow
+        the testers to still provide results of their testing from the
+        perspective of an external attacker's point of view. Considering the
+        fact that most compromises start at the client and work their way
+        throughout the network, a good approach would be a scope where the
+        testers start on the inside of the network and have access to a client
+        machine. Then they could pivot throughout the network to determine what
+        the impact of a compromise would be.
+      </p>
+
+      <h3>1.2.4 Practice – Types of Penetration Tests</h3>
+
+      <div class="practice-block">
+        <div class="practice-label">Practice</div>
+        <p class="question">
+          Protego has been contracted to do a network infrastructure test as
+          part of a broader penetration testing engagement. What will you be
+          targeting in this test? (Choose three.)
+        </p>
+        <ul>
+          <li>the digital storefront</li>
+          <li>virtual machines (VM) that are running in the cloud</li>
+          <li>IPS devices</li>
+          <li>switches</li>
+          <li>AAA servers</li>
+        </ul>
+      </div>
+
+      <h3>1.2.5 Surveying Different Standards and Methodologies</h3>
+
+      <p>
+        There are a number of penetration testing methodologies that have been
+        around for a while and continue to be updated as new threats emerge.
+      </p>
+      <p>
+        The following is a list of some of the most common penetration testing
+        methodologies and other standards:
+      </p>
+
+      <p><strong>MITRE ATT&amp;CK</strong></p>
+      <p>
+        The MITRE ATT&amp;CK framework (<a
+          href="https://attack.mitre.org/"
+          target="_blank"
+          ><em>https://attack.mitre.org</em></a
+        >) is an amazing resource for learning about an adversary's tactics,
+        techniques, and procedures (TTPs). Both offensive security professionals
+        (penetration testers, red teamers, bug hunters, and so on) and incident
+        responders and threat hunting teams use the MITRE ATT&amp;CK framework
+        today. The MITRE ATT&amp;CK framework is a collection of different
+        matrices of tactics, techniques, and subtechniques. These
+        matrices–including the Enterprise ATT&amp;CK Matrix, Network, Cloud,
+        ICS, and Mobile–list the tactics and techniques that adversaries use
+        while preparing for an attack, including gathering of information
+        (open-source intelligence [OSINT], technical and people weakness
+        identification, and more) as well as different exploitation and
+        post-exploitation techniques. You will learn more about MITRE ATT&amp;CK
+        throughout this course.
+      </p>
+
+      <p><strong>OWASP WSTG</strong></p>
+      <p>
+        The OWASP Web Security Testing Guide (WSTG) is a comprehensive guide
+        focused on web application testing. It is a compilation of many years of
+        work by OWASP members. OWASP WSTG covers the high-level phases of web
+        application security testing and digs deeper into the testing methods
+        used. For instance, it goes as far as providing attack vectors for
+        testing cross-site scripting (XSS), XML external entity (XXE) attacks,
+        cross-site request forgery (CSRF), and SQL injection attacks; as well as
+        how to prevent and mitigate these attacks. You will learn more about
+        these attacks in Module 6, "Exploiting Application-Based
+        Vulnerabilities." From a web application security testing perspective,
+        OWASP WSTG is the most detailed and comprehensive guide available. You
+        can find the OWASP WSTG and related project information at
+        <a
+          href="https://owasp.org/www-project-web-security-testing-guide/"
+          target="_blank"
+          ><em>https://owasp.org/www-project-web-security-testing-guide/</em></a
+        >.
+      </p>
+
+      <p><strong>NIST SP 800-115</strong></p>
+      <p>
+        Special Publication (SP) 800-115 is a document created by the National
+        Institute of Standards and Technology (NIST), which is part of the U.S.
+        Department of Commerce. NIST SP 800-115 provides organizations with
+        guidelines on planning and conducting information security testing. It
+        superseded the previous standard document, SP 800-42. SP 800-115 is
+        considered an industry standard for penetration testing guidance and is
+        called out in many other industry standards and documents. You can
+        access NIST SP 800-115 at
+        <a
+          href="https://csrc.nist.gov/publications/detail/sp/800-115/final"
+          target="_blank"
+          ><em
+            >https://csrc.nist.gov/publications/detail/sp/800-115/final</em
+          ></a
+        >.
+      </p>
+
+      <p><strong>OSSTMM</strong></p>
+      <p>
+        The Open Source Security Testing Methodology Manual (OSSTMM), developed
+        by Pete Herzog, has been around a long time. Distributed by the
+        Institute for Security and Open Methodologies (ISECOM), the OSSTMM is a
+        document that lays out repeatable and consistent security testing (<a
+          href="https://www.isecom.org/"
+          target="_blank"
+          ><em>https://www.isecom.org</em></a
+        >). It is currently in version 3, and version 4 is in draft status. The
+        OSSTMM has the following key sections:
+      </p>
+      <ul>
+        <li>Operational Security Metrics</li>
+        <li>Trust Analysis</li>
+        <li>Work Flow</li>
+        <li>Human Security Testing</li>
+        <li>Physical Security Testing</li>
+        <li>Wireless Security Testing</li>
+        <li>Telecommunications Security Testing</li>
+        <li>Data Networks Security Testing</li>
+        <li>Compliance Regulations</li>
+        <li>Reporting with the Security Test Audit Report (STAR)</li>
+      </ul>
+
+      <p><strong>PTES</strong></p>
+      <p>
+        The Penetration Testing Execution Standard (PTES) (<a
+          href="http://www.pentest-standard.org/"
+          target="_blank"
+          ><em>http://www.pentest-standard.org</em></a
+        >) provides information about types of attacks and methods, and it
+        provides information on the latest tools available to accomplish the
+        testing methods outlined. PTES involves seven distinct phases:
+      </p>
+      <ol>
+        <li>Pre-engagement interactions</li>
+        <li>Intelligence gathering</li>
+        <li>Threat modeling</li>
+        <li>Vulnerability analysis</li>
+        <li>Exploitation</li>
+        <li>Post-exploitation</li>
+        <li>Reporting</li>
+      </ol>
+
+      <p><strong>ISSAF</strong></p>
+      <p>
+        The Information Systems Security Assessment Framework (ISSAF) is another
+        penetration testing methodology similar to the others on this list with
+        some additional phases. ISSAF covers the following phases:
+      </p>
+      <ul>
+        <li>Information gathering</li>
+        <li>Network mapping</li>
+        <li>Vulnerability identification</li>
+        <li>Penetration</li>
+        <li>Gaining access and privilege escalation</li>
+        <li>Enumerating further</li>
+        <li>Compromising remote users/sites</li>
+        <li>Maintaining access</li>
+        <li>Covering the tracks</li>
+      </ul>
+
+      <!-- ── Lab 1.2.6 ── -->
+      <h3>1.2.6 Lab – Compare Pentesting Methodologies</h3>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-green.png"
+          alt="Mentor avatar – green"
+        />
+      </div>
+
+      <p>
+        There are so many moving parts to a penetration testing engagement that
+        it is easy to lose track of what has been covered and what has not. Gaps
+        in test coverage are harmful to our reputation at Protego and to our
+        customers. We must be systematic in the way that we approach our
+        penetration testing engagements.
+      </p>
+      <p>
+        No single methodology is suitable for the requirements of every
+        engagement; however it is important to ground your practice in standards
+        and methodologies that have been developed by security organizations and
+        recognized experts.
+      </p>
+      <p>
+        Use this lab as an opportunity to get familiar with various security
+        assessment methodologies. Focus on practices that make sense to you and
+        that you can incorporate into your own practice as an ethical hacker.
+      </p>
+
+      <div class="lab-card">
+        <div class="lab-card-header">
+          <span class="lab-icon">🧪</span>
+          <span class="lab-title">Lab – Compare Pentesting Methodologies</span>
+        </div>
+        <div class="lab-card-body">
+          <p>In this lab, you will complete the following objectives:</p>
+          <ul>
+            <li>Compare Various Pentesting Methodologies</li>
+            <li>Conduct Research on Popular Pentesting Methodologies</li>
+          </ul>
+          <a
+            class="lab-btn"
+            href="Cisco_Ethical_Hacking_Course_Labs/1.2.6-Lab_Compare_Pentesting_Methodologies.html"
+            target="_blank"
+            >Open Lab ↗</a
+          >
+        </div>
+      </div>
+
+      <div class="quiz-block" id="quiz-mitre">
+        <div class="quiz-label">Skills Check</div>
+        <p class="quiz-question">
+          Under what tactic in the MITRE ATT&amp;CK matrix would you find the
+          information gathering stage of the Operation Dream Job procedure?
+        </p>
+        <ul class="quiz-options">
+          <li data-index="0">
+            <label>
+              <input type="radio" name="q-mitre" value="0" />
+              Collection
+            </label>
+          </li>
+          <li data-index="1">
+            <label>
+              <input type="radio" name="q-mitre" value="1" />
+              Credential Access
+            </label>
+          </li>
+          <li data-index="2">
+            <label>
+              <input type="radio" name="q-mitre" value="2" />
+              Initial Access
+            </label>
+          </li>
+          <li data-index="3">
+            <label>
+              <input type="radio" name="q-mitre" value="3" />
+              Privilege Escalation
+            </label>
+          </li>
+          <li data-index="4">
+            <label>
+              <input type="radio" name="q-mitre" value="4" />
+              Reconnaissance
+            </label>
+          </li>
+          <li data-index="5">
+            <label>
+              <input type="radio" name="q-mitre" value="5" />
+              I don't know
+            </label>
+          </li>
+        </ul>
+        <div class="quiz-actions">
+          <button
+            class="quiz-submit"
+            onclick="
+              submitQuiz(
+                'quiz-mitre',
+                4,
+                'Reconnaissance is the MITRE ATT&amp;CK tactic covering information gathering. In Operation Dream Job, attackers researched and profiled targets before making contact — a classic pre-attack reconnaissance step.',
+              )
+            "
+          >
+            Check Answer
+          </button>
+          <button class="quiz-reset" onclick="resetQuiz('quiz-mitre')">
+            Try Again
+          </button>
+          <div class="quiz-feedback"></div>
+        </div>
+      </div>
+
+      <hr />
+
+      <!-- ══════════════════════════════════════════
+       1.3  Building Your Own Lab
+  ══════════════════════════════════════════ -->
+      <h2>1.3 Building Your Own Lab</h2>
+
+      <h3>1.3.1 Overview</h3>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-blue.png"
+          alt="Mentor avatar – blue"
+        />
+      </div>
+
+      <p>
+        Now comes the fun part! It is really important that you develop your
+        skills so that you can maximize your contributions to our teams here at
+        Protego. Skills come with practice, but how can you practice if you
+        don't have something to practice on?
+      </p>
+      <p>
+        It is not possible for you to practice on our clients' networks and
+        applications. However, you can practice on simulated targets, networks
+        that you have permission to access, and certain sites on the open
+        internet. Remember! Some tools and techniques that are used in ethical
+        hacking can be seen as illegal. What's more, the definition of what is
+        legal or illegal can differ from place to place. Before you use ethical
+        hacking tools on any network or application, carefully consider the
+        legality of what you are planning to do. When in doubt, research the law
+        and ask others for advice.
+      </p>
+      <p>
+        In this topic, you will install and explore a Kali Linux virtual machine
+        (VM) that is full of popular ethical hacking tools. The VM also includes
+        simulated internal IP networks that include a variety of intentionally
+        vulnerable systems.
+      </p>
+      <p>
+        When it comes to penetration testing, a proper lab environment is very
+        important. The way this environment looks depends on the type of testing
+        you are doing. The types of tools used in a lab also vary based on
+        different factors. We discuss tools in more detail in Module 10, "Tools
+        and Code Analysis." Here we only touch on some of the types of tools
+        used in penetration testing. Whether you are performing penetration
+        testing on a customer network, your own network, or a specific device,
+        you always need some kind of lab environment to use for testing. For
+        example, when testing a customer network, you will most likely be doing
+        the majority of your testing against the customer's production or
+        staging environments because these are the environments a customer is
+        typically concerned about securing properly. Because this might be a
+        critical network environment, you must be sure that your tools are tried
+        and true – and this is where your lab testing environment comes in. You
+        should always test your tools and techniques in your lab environment
+        before running them against a customer network. There is no guarantee
+        that the tools you use will not break something. In fact, many tools are
+        actually designed for breaking things. You therefore need to know what
+        to expect before unleashing tools on a customer network. When testing a
+        specific device or solution that is only in a lab environment, there is
+        less concern about breaking things. With this type of testing, you would
+        typically use a closed network that can easily be reverted if needed.
+      </p>
+      <p>
+        There are many different Linux distributions that include penetration
+        testing tools and resources, such as Kali Linux (kali.org), Parrot OS
+        (parrotsec.org), and BlackArch (blackarch.org). These Linux
+        distributions provide you with a very convenient environment to start
+        learning about the different security tools and methodologies used in
+        pen testing. You can deploy a basic penetration testing lab using just a
+        couple of VMs in virtualization environments such as Virtual Box
+        (virtualbox.org) or VMware Workstation/Fusion (vmware.com).
+      </p>
+      <p>
+        Figure 1-1 shows two VMs (one running Parrot OS and another running a
+        vulnerable Microsoft Windows system). The two VMs are connected via a
+        virtual switch configuration and a "host-only network." This type of
+        setup allows you to perform different attacks and send IP packets
+        between VMs without those packets leaving the physical (bare-metal)
+        system.
+      </p>
+
+      <figure>
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-1-1-Basic-Penetration-Testing-Lab-Environment-with-Two-VMs.png"
+          alt="Figure 1-1 – Basic Penetration Testing Lab Environment with Two VMs"
+        />
+        <figcaption>
+          Figure 1-1 – Basic Penetration Testing Lab Environment with Two VMs
+        </figcaption>
+      </figure>
+
+      <div class="callout callout-tip">
+        <div class="callout-label">Tip</div>
+        <p>
+          You can start a basic learning lab with just one VM. For example, Omar
+          Santos created a free learning environment called WebSploit Labs that
+          you can deploy on a single VM. It includes numerous cybersecurity
+          resources, tools, and several intentionally vulnerable applications
+          running in Docker containers. WebSploit Labs include more than 450
+          different exercises that you can complete to practice your skills in a
+          safe environment. You can obtain more information about WebSploit Labs
+          at websploit.org. The VM you download in the lab later in this topic
+          is a customized version of Omar Santos' lab environment.
+        </p>
+      </div>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png"
+          alt="Mentor avatar – purple"
+        />
+      </div>
+
+      <p>
+        Figure 1-2 shows a more elaborate topology for a penetration testing lab
+        environment.
+      </p>
+
+      <figure>
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/Figure-1-2-More-Elaborate-Penetration-Testing-Lab-Environment.png"
+          alt="Figure 1-2 – More Elaborate Penetration Testing Lab Environment"
+        />
+        <figcaption>
+          Figure 1-2 – More Elaborate Penetration Testing Lab Environment
+        </figcaption>
+      </figure>
+
+      <h3>1.3.2 Requirements and Guidelines for Penetration Testing Labs</h3>
+
+      <p>
+        Now let's dig a bit deeper into what a penetration testing lab
+        environment might look like and some best practices for setting up such
+        a lab. The following table contains a list of requirements and
+        guidelines for a typical penetration testing environment.
+      </p>
+
+      <figure>
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/1.3.2-Requirements-and-Guidelines-for-Penetration-Testing-Labs-Table.png"
+          alt="Requirements and Guidelines for Penetration Testing Labs – Table"
+        />
+        <figcaption>
+          Requirements and Guidelines for Penetration Testing Labs
+        </figcaption>
+      </figure>
+
+      <h3>1.3.3 What Tools Should You Use in Your Lab?</h3>
+
+      <p>
+        Module 10 is dedicated to penetration testing tools. Therefore, this
+        section only scratches the surface. Basically, the tools you use in
+        penetration testing depend on the type of testing you are doing. If you
+        are doing testing on a customer environment, you will likely be
+        evaluating various attack surfaces – such as network infrastructure,
+        wireless infrastructure, web servers, database servers, Windows systems,
+        or Linux systems, for example.
+      </p>
+      <p>
+        Network infrastructure-based tools might include tools for sniffing or
+        manipulating traffic, flooding network devices, and bypassing firewalls
+        and IPSs. For wireless testing purposes, you might use tools for
+        cracking wireless encryption, de-authorizing network devices, and
+        performing on-path attacks (also called man-in-the-middle attacks).
+      </p>
+      <p>
+        When testing web applications and services, you can find a number of
+        automated tools built specifically for scanning and detecting web
+        vulnerabilities, as well as manual testing tools such as interception
+        proxies. Some of these same tools can be used to test for database
+        vulnerabilities (such as SQL injection vulnerabilities).
+      </p>
+      <p>
+        For testing the server and client platforms in an environment, you can
+        use a number of automated
+        <strong><em>vulnerability scanning</em></strong> tools to identify
+        things such as outdated software and misconfigurations. With a lot of
+        development targeting mobile platforms, there is an increasing need for
+        testing these applications and the servers that support them. For such
+        testing, you need another set of tools specific to testing mobile
+        applications and the back-end APIs that they typically communicate with.
+        And you should not forget about fuzzing tools, which are normally used
+        for testing the robustness of protocols.
+      </p>
+
+      <div class="callout callout-tip">
+        <div class="callout-label">Tip</div>
+        <p>
+          Omar Santos created a GitHub repository that includes numerous
+          cybersecurity resources. There is a section dedicated to providing
+          guidance on how to build different penetration testing labs and where
+          to get vulnerable applications, servers, and tools to practice your
+          skills in a safe environment. You can access the repository at
+          <a href="https://h4cker.org/github" target="_blank"
+            ><em>https://h4cker.org/github</em></a
+          >. You can directly access the section "Building Your Own
+          Cybersecurity Lab and Cyber Range" at
+          <a
+            href="https://github.com/The-Art-of-Hacking/h4cker/tree/master/build_your_own_lab"
+            target="_blank"
+            ><em
+              >https://github.com/The-Art-of-Hacking/h4cker/tree/master/build_your_own_lab</em
+            ></a
+          >.
+        </p>
+      </div>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-purple.png"
+          alt="Mentor avatar – purple"
+        />
+      </div>
+
+      <h3>
+        1.3.4 Practice – Requirements and Guidelines for Penetration Testing
+        Labs
+      </h3>
+
+      <div class="practice-block">
+        <div class="practice-label">Practice</div>
+        <p class="question">
+          You need to setup a penetration testing practice lab because some of
+          the tools that are preferred at Protego are new to you. What best
+          practices will you follow as you setup your lab? (Choose three.)
+        </p>
+        <ul>
+          <li>Ensure closed access to the network and internet.</li>
+          <li>Create a virtualized computing environment.</li>
+          <li>
+            Provide sufficient hardware resources to ensure valid results.
+          </li>
+          <li>Utilize the same tool for consistent results.</li>
+          <li>Test using one common operating system.</li>
+          <li>Use hardened targets for more challenging tests.</li>
+        </ul>
+      </div>
+
+      <h3>1.3.5 What If You Break Something?</h3>
+
+      <p>
+        Being able to recover your lab environment is important for many
+        reasons. As discussed earlier, when doing penetration testing, you will
+        break things; sometimes when you break things, they do not recover on
+        their own. For instance, when you are testing web applications, some of
+        the attacks you send will input bogus data into form fields, and that
+        data will likely end up in the database, so your database will be filled
+        with that bogus data. Obviously, in a production environment, this is
+        not a good thing. The data being input can also be of malicious nature,
+        such as scripting and injection attacks. This can cause corruption of
+        the database as well. Of course, you know that this would be an issue in
+        a production environment. It is also an issue in a lab environment if
+        you do not have an easy way to recover. Without a quick recovery method,
+        you would likely be stuck rebuilding your system under test. This can be
+        time-consuming, and if you are doing this for a customer, it can affect
+        your overall timeline.
+      </p>
+      <p>
+        Using some kind of virtual environment is ideal as it offers snapshot
+        and restore features for the system state. Sometimes this is not
+        possible, though. For example, you may be testing a system that cannot
+        be virtualized. In such a case, having a full backup of the system or
+        environment is required. This way, you can quickly be back up and
+        testing if something gets broken – because it most likely will. After
+        all, you are doing penetration testing.
+      </p>
+
+      <!-- ── Lab 1.3.6 ── -->
+      <h3>1.3.6 Lab – Deploy a Pre-Built Kali Linux Virtual Machine (VM)</h3>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-green.png"
+          alt="Mentor avatar – green"
+        />
+      </div>
+
+      <p>
+        Kali is a great tool! We are providing you with a working version of it
+        that you can use to learn new tools and practice penetration testing
+        techniques. The Kali Linux version that I am giving you contains all of
+        the Kali tools and several networked simulated targets that you can
+        practice on without risking legal problems. I encourage you to use the
+        simulated targets and other networks that you have permission to scan,
+        such as your home network. Be careful though, Kali provides some very
+        powerful tools!
+      </p>
+      <p>
+        First you need to install and run the virtual machine, and then the fun
+        begins!
+      </p>
+
+      <div class="lab-card">
+        <div class="lab-card-header">
+          <span class="lab-icon">🧪</span>
+          <span class="lab-title"
+            >Lab – Deploy a Pre-Built Kali Linux Virtual Machine (VM)</span
+          >
+        </div>
+        <div class="lab-card-body">
+          <p>In this lab, you will complete the following objectives:</p>
+          <ul>
+            <li>
+              Part 1: Deploying a Customized Kali Linux VM on AMD or Intel
+              Chip-based Computer
+            </li>
+            <li>
+              Part 2: Deploying a Customized Kali Linux VM on ARM M1/M2 based
+              MacOS Computer
+            </li>
+            <li>Part 3: Exploring Linux</li>
+          </ul>
+          <a
+            class="lab-btn"
+            href="Cisco_Ethical_Hacking_Course_Labs/1.3.6-Lab_Deploy_a_Pre-Built_Kali_Linux_Virtual_Machine_(VM).html"
+            target="_blank"
+            >Open Lab ↗</a
+          >
+        </div>
+      </div>
+
+      <!-- Video block for Lab 1.3.6 -->
+      <div class="video-block">
+        <p>▶ Lab Demonstration Video</p>
+        <div class="video-placeholder">
+          <span class="play-icon">▶</span>
+          <span><!-- Link your .ts video file here --></span>
+          <span style="font-size: 0.7rem; color: #666"
+            >Video: Cisco_Ethical_Hacking_Course_Videos /
+            [lab-1.3.6-video].ts</span
+          >
+        </div>
+        <a class="transcript-link" href="#"
+          >📄 View Transcript (.vtt) — link transcript file here</a
+        >
+      </div>
+
+      <!-- ── Quiz 3 ── -->
+      <div class="quiz-block" id="quiz-1">
+        <div class="quiz-label">Skills Check</div>
+        <p class="quiz-question">
+          You have just downloaded and installed VirtualBox or UTM. You start
+          the application, but you do not see the Kali VM running. What step did
+          you forget?
+        </p>
+        <ul class="quiz-options">
+          <li data-index="0">
+            <label>
+              <input type="radio" name="q1" value="0" />
+              You need to update the install files to the latest version.
+            </label>
+          </li>
+          <li data-index="1">
+            <label>
+              <input type="radio" name="q1" value="1" />
+              You must download and import or run the Kali VM file in VirtualBox
+              or UTM.
+            </label>
+          </li>
+          <li data-index="2">
+            <label>
+              <input type="radio" name="q1" value="2" />
+              There may be an issue with the installation. Remove and reinstall
+              VirtualBox or UTM.
+            </label>
+          </li>
+          <li data-index="3">
+            <label>
+              <input type="radio" name="q1" value="3" />
+              You must use VirtualBox or UTM to browse to the virtual machine on
+              the kali.org website.
+            </label>
+          </li>
+        </ul>
+        <div class="quiz-actions">
+          <button
+            class="quiz-submit"
+            onclick="
+              submitQuiz(
+                'quiz-1',
+                1,
+                'VirtualBox and UTM are hypervisors — they run VM files locally. You must first download the Kali VM image from kali.org, then import or open it inside VirtualBox or UTM.',
+              )
+            "
+          >
+            Check Answer
+          </button>
+          <button class="quiz-reset" onclick="resetQuiz('quiz-1')">
+            Try Again
+          </button>
+          <div class="quiz-feedback"></div>
+        </div>
+      </div>
+
+      <!-- ── Lab 1.3.7 ── -->
+      <h3>1.3.7 Lab – Investigate Kali Linux</h3>
+
+      <div class="avatar-wrap">
+        <img
+          src="Cisco_Ethical_Hacking_Course_Images_Diagrams/character-green.png"
+          alt="Mentor avatar – green"
+        />
+      </div>
+
+      <p>
+        Kali can be a little overwhelming at first because it has so many tools.
+        It is a Linux distro, so if you don't have good Linux skills it can be
+        hard to use. Many tools only operate in a terminal. To help you get the
+        most from Kali, use this lab as an opportunity to get familiar with it
+        and brush up on your basic Linux skills.
+      </p>
+
+      <div class="lab-card">
+        <div class="lab-card-header">
+          <span class="lab-icon">🧪</span>
+          <span class="lab-title">Lab – Investigate Kali Linux</span>
+        </div>
+        <div class="lab-card-body">
+          <p>In this lab, you will complete the following objectives:</p>
+          <ul>
+            <li>Familiarize yourself with the Kali Linux GUI.</li>
+            <li>Familiarize yourself with the Kali Linux shell.</li>
+          </ul>
+          <a
+            class="lab-btn"
+            href="Cisco_Ethical_Hacking_Course_Labs/1.3.7-Lab_Investigate_Kali_Linux.html"
+            target="_blank"
+            >Open Lab ↗</a
+          >
+        </div>
+      </div>
+
+      <!-- Terminal example block (template for future terminal content) -->
+      <div class="terminal">
+        <span class="prompt">kali@kali:~$ </span>pwd<br />
+        /home/kali
+      </div>
+
+      <!-- ── Quiz 4 ── -->
+      <div class="quiz-block" id="quiz-2">
+        <div class="quiz-label">Skills Check</div>
+        <p class="quiz-question">
+          You have just started Kali and open a terminal from the panel. What
+          will the response be when you enter the <code>pwd</code> command at
+          the prompt?
+        </p>
+        <ul class="quiz-options">
+          <li data-index="0">
+            <label>
+              <input type="radio" name="q2" value="0" />
+              /home
+            </label>
+          </li>
+          <li data-index="1">
+            <label>
+              <input type="radio" name="q2" value="1" />
+              /kali/~
+            </label>
+          </li>
+          <li data-index="2">
+            <label>
+              <input type="radio" name="q2" value="2" />
+              /home/kali
+            </label>
+          </li>
+          <li data-index="3">
+            <label>
+              <input type="radio" name="q2" value="3" />
+              /root/kali
+            </label>
+          </li>
+        </ul>
+        <div class="quiz-actions">
+          <button
+            class="quiz-submit"
+            onclick="
+              submitQuiz(
+                'quiz-2',
+                2,
+                'In Kali Linux the default non-root user is &quot;kali&quot;. Opening a terminal places you in that user\'s home directory, which is /home/kali. The pwd (print working directory) command will return exactly that path.',
+              )
+            "
+          >
+            Check Answer
+          </button>
+          <button class="quiz-reset" onclick="resetQuiz('quiz-2')">
+            Try Again
+          </button>
+          <div class="quiz-feedback"></div>
+        </div>
+      </div>
+    </div>
+    <!-- .page-wrap -->
+    <script>
+      function submitQuiz(quizId, correctIndex, explanation) {
+        const block = document.getElementById(quizId);
+        const selected = block.querySelector('input[type="radio"]:checked');
+
+        if (!selected) return; // nothing chosen yet
+
+        const chosenIndex = parseInt(selected.value);
+        const items = block.querySelectorAll(".quiz-options li");
+        const feedback = block.querySelector(".quiz-feedback");
+        const submitBtn = block.querySelector(".quiz-submit");
+        const resetBtn = block.querySelector(".quiz-reset");
+
+        // mark every option
+        items.forEach((li, i) => {
+          const lbl = li.querySelector("label");
+          if (i === correctIndex) {
+            li.classList.add("correct");
+            lbl.setAttribute("data-mark", "✓");
+          } else if (i === chosenIndex && chosenIndex !== correctIndex) {
+            li.classList.add("incorrect");
+            lbl.setAttribute("data-mark", "✗");
+          }
+        });
+
+        // show feedback
+        const isCorrect = chosenIndex === correctIndex;
+        feedback.className =
+          "quiz-feedback show " + (isCorrect ? "correct" : "incorrect");
+        feedback.innerHTML = isCorrect
+          ? "✓ Correct — " + explanation
+          : "✗ Incorrect — " + explanation;
+
+        // toggle buttons
+        submitBtn.disabled = true;
+        resetBtn.style.display = "inline-block";
+        block.classList.add("submitted");
+      }
+
+      function resetQuiz(quizId) {
+        const block = document.getElementById(quizId);
+        const items = block.querySelectorAll(".quiz-options li");
+        const feedback = block.querySelector(".quiz-feedback");
+        const submitBtn = block.querySelector(".quiz-submit");
+        const resetBtn = block.querySelector(".quiz-reset");
+
+        // clear all states
+        items.forEach((li) => {
+          li.classList.remove("correct", "incorrect");
+          const lbl = li.querySelector("label");
+          lbl.removeAttribute("data-mark");
+          const radio = li.querySelector('input[type="radio"]');
+          radio.checked = false;
+        });
+
+        feedback.className = "quiz-feedback";
+        feedback.innerHTML = "";
+        submitBtn.disabled = false;
+        resetBtn.style.display = "none";
+        block.classList.remove("submitted");
+      }
+    </script>
+  </body>
+</html>

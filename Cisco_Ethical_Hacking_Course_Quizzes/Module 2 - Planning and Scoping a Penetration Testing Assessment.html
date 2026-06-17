@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .quiz-section {
+            display: none;
+            padding: 40px;
+        }
+
+        .quiz-section.active {
+            display: block;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .rules-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .rules-card ol {
+            margin-left: 20px;
+        }
+
+        .rules-card li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .primary-btn {
+            background: #28a745;
+        }
+
+        .primary-btn:hover {
+            background: #218838;
+        }
+
+        .secondary-btn {
+            background: #6c757d;
+        }
+
+        .secondary-btn:hover {
+            background: #5a6268;
+        }
+
+        .warning-btn {
+            background: #dc3545;
+        }
+
+        .warning-btn:hover {
+            background: #c82333;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .question-type {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .selection-hint {
+            background: #fff3cd;
+            color: #856404;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            border: 1px solid #ffeaa7;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .options-container {
+            margin: 15px 0;
+        }
+
+        .option {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.correct-answer {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .option.wrong-answer {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .explanation {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #2196f3;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation strong {
+            color: #1976d2;
+        }
+
+        .pbq-answer {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .pbq-answer:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .result-card {
+            text-align: center;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-top: 4px solid #667eea;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .result-message {
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .result-message.pass {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .result-message.fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .results-table thead {
+            background: #667eea;
+            color: white;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .results-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+
+        .results-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-correct {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-incorrect {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .status-icon {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-section {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.4em;
+            }
+
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .results-table {
+                font-size: 0.9em;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="quiz-container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="quiz-section active">
+            <h1>Welcome to the Quiz!</h1>
+            <p style="text-align: center; font-size: 1.2em; margin-bottom: 20px;">Test your knowledge with MCQs and
+                Practice-Based Questions.</p>
+
+            <div class="rules-card">
+                <h2>Quiz Rules:</h2>
+                <ol>
+                    <li>Complete all MCQ questions first, then move to Practice-Based Questions.</li>
+                    <li>For multiple choice questions, select the exact number of options specified.</li>
+                    <li>Do not refresh or close the page during the quiz.</li>
+                    <li>Achieve <strong>75% or higher</strong> on MCQs to pass this module.</li>
+                    <li>PBQs are for practice only and won't affect your score.</li>
+                </ol>
+            </div>
+
+            <div style="text-align: center;">
+                <button id="startButton" class="btn">Start Quiz</button>
+            </div>
+        </div>
+
+        <!-- MCQ Screen -->
+        <div id="mcqScreen" class="quiz-section">
+            <h1>Multiple Choice Questions</h1>
+            <div class="progress-bar-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+
+            <div id="mcqContainer"></div>
+
+            <div class="button-group">
+                <button id="resetMcqButton" class="btn warning-btn">Reset All Selections</button>
+                <button id="submitMcqButton" class="btn primary-btn">Submit MCQs</button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="quiz-section">
+            <div class="result-card">
+                <h1>MCQ Results</h1>
+
+                <div class="result-stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="totalMcqResult">0</div>
+                        <div class="stat-label">Total MCQs</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="correctAnswersResult">0</div>
+                        <div class="stat-label">Correct Answers</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="incorrectAnswersResult">0</div>
+                        <div class="stat-label">Incorrect Answers</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="finalPercentage">0%</div>
+                        <div class="stat-label">Score</div>
+                    </div>
+                </div>
+
+                <div class="result-message" id="resultMessage"></div>
+
+                <h2 style="margin-top: 40px; margin-bottom: 20px;">Detailed Results</h2>
+                <div style="overflow-x: auto;">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Question ID</th>
+                                <th>Question</th>
+                                <th>Status</th>
+                                <th>Your Answer</th>
+                                <th>Correct Answer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="button-group">
+                    <button id="assessmentButton" class="btn primary-btn">View Assessment</button>
+                    <button id="continueToPbqButton" class="btn secondary-btn">Continue to Practice Questions</button>
+                    <button id="retakeQuizButton" class="btn warning-btn">Retake Quiz</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PBQ Screen -->
+        <div id="pbqScreen" class="quiz-section">
+            <h1>Practice-Based Questions</h1>
+            <p style="text-align: center; margin-bottom: 30px; color: #6c757d;">These questions are for practice only
+                and do not affect your score.</p>
+
+            <div id="pbqContainer"></div>
+
+            <div class="button-group">
+                <button id="finishQuizButton" class="btn primary-btn">Finish Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Questions - Replace with your actual questions
+        const questions = [
+            {
+                "id": "MCQ001",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the primary objective of the General Data Protection Regulation (GDPR)?",
+                "options": [
+                    { "text": "To standardize healthcare billing", "isCorrect": false },
+                    { "text": "To give citizens control of their personal data", "isCorrect": true },
+                    { "text": "To secure credit card transactions", "isCorrect": false },
+                    { "text": "To authorize cloud services for the US government", "isCorrect": false }
+                ],
+                "explanation": "The primary objective of the GDPR is to give citizens control of their personal data and unify data protection within the EU."
+            },
+            {
+                "id": "MCQ002",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which document specifies the activities, timelines, and payment schedules for a penetration test?",
+                "options": [
+                    { "text": "Non-Disclosure Agreement (NDA)", "isCorrect": false },
+                    { "text": "Statement of Work (SOW)", "isCorrect": true },
+                    { "text": "Service Level Agreement (SLA)", "isCorrect": false },
+                    { "text": "Master Service Agreement (MSA)", "isCorrect": false }
+                ],
+                "explanation": "An SOW specifies the activities to be performed, timelines, and payment schedules for an engagement."
+            },
+            {
+                "id": "MCQ003",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which of the following are considered 'Account Data' in a PCI DSS environment?",
+                "options": [
+                    { "text": "Cardholder Data", "isCorrect": true },
+                    { "text": "Sensitive Authentication Data", "isCorrect": true },
+                    { "text": "Marketing preferences", "isCorrect": false },
+                    { "text": "Employee payroll info", "isCorrect": false }
+                ],
+                "explanation": "According to PCI DSS, account data consists of cardholder data as well as sensitive authentication data."
+            },
+            {
+                "id": "MCQ004",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is 'Scope Creep' also known as in project management?",
+                "options": [
+                    { "text": "Silent protocol", "isCorrect": false },
+                    { "text": "Kitchen sink syndrome", "isCorrect": true },
+                    { "text": "Black-box testing", "isCorrect": false },
+                    { "text": "Risk tolerance", "isCorrect": false }
+                ],
+                "explanation": "Scope creep refers to the uncontrolled growth of a project's scope and is often called kitchen sink syndrome."
+            },
+            {
+                "id": "MCQ005",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which algorithm is used to validate credit card and IMEI numbers?",
+                "options": [
+                    { "text": "SHA-256", "isCorrect": false },
+                    { "text": "Luhn algorithm", "isCorrect": true },
+                    { "text": "Diffie-Hellman", "isCorrect": false },
+                    { "text": "AES", "isCorrect": false }
+                ],
+                "explanation": "The Luhn algorithm is an industry algorithm used to validate different identification numbers, including credit card and IMEI numbers."
+            },
+            {
+                "id": "MCQ006",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which of the following are types of NDAs mentioned in the source?",
+                "options": [
+                    { "text": "Unilateral", "isCorrect": true },
+                    { "text": "Bilateral", "isCorrect": true },
+                    { "text": "Multilateral", "isCorrect": true },
+                    { "text": "Global", "isCorrect": false },
+                    { "text": "Anonymous", "isCorrect": false }
+                ],
+                "explanation": "NDAs can be classified as unilateral, bilateral (mutual), or multilateral."
+            },
+            {
+                "id": "MCQ007",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which regulation requires a covered entity to conduct an annual penetration test and a biannual vulnerability assessment?",
+                "options": [
+                    { "text": "HIPAA", "isCorrect": false },
+                    { "text": "NY DFS Cybersecurity Regulation", "isCorrect": true },
+                    { "text": "FedRAMP", "isCorrect": false },
+                    { "text": "GLBA", "isCorrect": false }
+                ],
+                "explanation": "The NY DFS Cybersecurity Regulation dictates that organizations must conduct annual penetration testing and a biannual vulnerability assessment."
+            },
+            {
+                "id": "MCQ008",
+                "type": "single",
+                "selectCount": 1,
+                "text": "In the context of PCI DSS, what is the 'defining factor' for the applicability of its requirements?",
+                "options": [
+                    { "text": "The Cardholder Name", "isCorrect": false },
+                    { "text": "The Primary Account Number (PAN)", "isCorrect": true },
+                    { "text": "The Expiration Date", "isCorrect": false },
+                    { "text": "The CVV2 code", "isCorrect": false }
+                ],
+                "explanation": "The PAN is the defining factor; PCI DSS requirements apply if the PAN is stored, processed, or transmitted."
+            },
+            {
+                "id": "MCQ009",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which of the following are considered 'Financial Institutions' under GLBA?",
+                "options": [
+                    { "text": "Real estate appraisers", "isCorrect": true },
+                    { "text": "Courier services", "isCorrect": true },
+                    { "text": "Hardware stores", "isCorrect": false },
+                    { "text": "Social media companies", "isCorrect": false }
+                ],
+                "explanation": "GLBA defines financial institutions broadly, including non-traditional entities like real estate appraisers and courier services."
+            },
+            {
+                "id": "MCQ010",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What does a 'Known-Environment' test typically provide to the tester?",
+                "options": [
+                    { "text": "Only a domain name", "isCorrect": false },
+                    { "text": "Network diagrams, IP addresses, and credentials", "isCorrect": true },
+                    { "text": "No information at all", "isCorrect": false },
+                    { "text": "Public records only", "isCorrect": false }
+                ],
+                "explanation": "In a known-environment (white-box) test, the tester is provided with significant info like network diagrams and credentials."
+            },
+            {
+                "id": "MCQ011",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which arrangement was established for export control of conventional arms and dual-use technologies?",
+                "options": [
+                    { "text": "The Paris Accord", "isCorrect": false },
+                    { "text": "The Wassenaar Arrangement", "isCorrect": true },
+                    { "text": "The NIST Framework", "isCorrect": false },
+                    { "text": "The HIPAA Omnibus Rule", "isCorrect": false }
+                ],
+                "explanation": "The Wassenaar Arrangement addresses export control for dual-use goods and technologies, including security tools."
+            },
+            {
+                "id": "MCQ012",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which elements are typically found on the front of a credit card?",
+                "options": [
+                    { "text": "Primary Account Number (PAN)", "isCorrect": true },
+                    { "text": "Expiration date", "isCorrect": true },
+                    { "text": "Embedded microchip", "isCorrect": true },
+                    { "text": "Magnetic stripe", "isCorrect": false },
+                    { "text": "CVV2 code", "isCorrect": false }
+                ],
+                "explanation": "Typical front-side elements include the microchip, PAN, expiration date, and cardholder name."
+            },
+            {
+                "id": "MCQ013",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the term for 'how much of an undesirable outcome a risk-taker is willing to accept'?",
+                "options": [
+                    { "text": "Risk Mitigation", "isCorrect": false },
+                    { "text": "Risk Tolerance", "isCorrect": true },
+                    { "text": "Risk Assessment", "isCorrect": false },
+                    { "text": "Risk Appetite", "isCorrect": false }
+                ],
+                "explanation": "Risk tolerance is how much of an undesirable outcome a risk-taker is willing to accept in exchange for potential benefit."
+            },
+            {
+                "id": "MCQ014",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which API documentation standard relies specifically on XML and XML Schema Definition (XSD)?",
+                "options": [
+                    { "text": "REST", "isCorrect": false },
+                    { "text": "SOAP", "isCorrect": true },
+                    { "text": "Swagger", "isCorrect": false },
+                    { "text": "GraphQL", "isCorrect": false }
+                ],
+                "explanation": "SOAP is an API standard that relies on XML and specifications governed by XSD documents."
+            },
+            {
+                "id": "MCQ015",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What is the purpose of a Master Service Agreement (MSA)?",
+                "options": [
+                    { "text": "To define the technical scope of a single test", "isCorrect": false },
+                    { "text": "To avoid renegotiating terms for every recurring engagement", "isCorrect": true },
+                    { "text": "To provide a disclaimer for the final report", "isCorrect": false },
+                    { "text": "To authorize the use of cloud services", "isCorrect": false }
+                ],
+                "explanation": "An MSA allows organizations to quickly negotiate work without renegotiating the same terms for every subsequent project."
+            },
+            {
+                "id": "MCQ016",
+                "type": "multiple",
+                "selectCount": 2,
+                "text": "Which of the following are examples of 'Technical Constraints' a tester might face?",
+                "options": [
+                    { "text": "Operational limitations (e.g., cannot launch certain SQLi)", "isCorrect": true },
+                    { "text": "Limitation of skill sets", "isCorrect": true },
+                    { "text": "The color of the office walls", "isCorrect": false },
+                    { "text": "The client's stock price", "isCorrect": false }
+                ],
+                "explanation": "Constraints include operational limitations to prevent database corruption and limitations in team skill sets."
+            },
+            {
+                "id": "MCQ017",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Under the HIPAA Security Rule, what does 'ePHI' stand for?",
+                "options": [
+                    { "text": "Encrypted Public Health Info", "isCorrect": false },
+                    { "text": "Electronic Protected Health Information", "isCorrect": true },
+                    { "text": "Essential Patient Health Index", "isCorrect": false },
+                    { "text": "Electronic Private Health Identification", "isCorrect": false }
+                ],
+                "explanation": "The HIPAA Security Rule focuses on safeguarding electronic protected health information (ePHI)."
+            },
+            {
+                "id": "MCQ018",
+                "type": "single",
+                "selectCount": 1,
+                "text": "Which document specifies the conditions under which the security penetration testing will be conducted?",
+                "options": [
+                    { "text": "The Rules of Engagement (ROE)", "isCorrect": true },
+                    { "text": "The Non-Disclosure Agreement", "isCorrect": false },
+                    { "text": "The Privacy Policy", "isCorrect": false },
+                    { "text": "The Gantt Chart", "isCorrect": false }
+                ],
+                "explanation": "The rules of engagement document specifies the conditions under which the penetration testing will be conducted."
+            },
+            {
+                "id": "MCQ019",
+                "type": "single",
+                "selectCount": 1,
+                "text": "What should an ethical hacker do if they discover a real attacker has already compromised the client's system?",
+                "options": [
+                    { "text": "Wait until the final report to disclose it", "isCorrect": false },
+                    { "text": "Report it immediately", "isCorrect": true },
+                    { "text": "Attempt to hack the attacker back", "isCorrect": false },
+                    { "text": "Ignore it to stay within scope", "isCorrect": false }
+                ],
+                "explanation": "In cases where a real attacker has compromised systems, you must report the criminal activities immediately."
+            },
+            {
+                "id": "MCQ020",
+                "type": "multiple",
+                "selectCount": 3,
+                "text": "Which protocols should be used for secure bulk data transfer with a client?",
+                "options": [
+                    { "text": "SCP", "isCorrect": true },
+                    { "text": "SFTP", "isCorrect": true },
+                    { "text": "HTTP", "isCorrect": false },
+                    { "text": "S/MIME (for email encryption)", "isCorrect": true }
+                ],
+                "explanation": "The source recommends SCP, SFTP, and PGP or S/MIME for secure communications and data transfer."
+            },
+            {
+                "id": "PBQ001",
+                "type": "pbq",
+                "text": "<h3>Comparing Regulatory Frameworks</h3><p>Analyze the primary differences between <b>GDPR</b> and <b>PCI DSS</b>. Your explanation should focus on the target of protection and the consequences of non-compliance.</p>",
+                "explanation": "<p><b>Explanation:</b> According to the sources:<ul><li><b>GDPR</b> aims to strengthen and unify data protection for <i>individuals</i>, primarily giving citizens control over personal data.</li><li><b>PCI DSS</b> focuses on securing <i>payment card processing</i>.</li><li>Failure to meet these can result in heavy penalties or being banned from business in certain regions.</li></ul></p>"
+            },
+            {
+                "id": "PBQ002",
+                "type": "pbq",
+                "text": "<h3>Mastering the Legal Stack</h3><p>Explain how a <b>Master Service Agreement (MSA)</b> differs from a <b>Statement of Work (SOW)</b> and describe a scenario where using both is advantageous.</p>",
+                "explanation": "<p><b>Explanation:</b> An <b>MSA</b> is a contract used to quickly negotiate work without renegotiating terms every time, whereas an <b>SOW</b> specifies the activities, timelines, and scope for a <i>specific</i> engagement. It is advantageous for recurring tests, where the MSA handles the broad legalities and the SOW handles the specific project details.</p>"
+            },
+            {
+                "id": "PBQ003",
+                "type": "pbq",
+                "text": "<h3>Testing Strategy Perspectives</h3><p>Compare and contrast <b>Known-Environment</b> testing with <b>Unknown-Environment</b> testing. Describe the perspective the tester takes in each and why an organization might choose one over the other.</p>",
+                "explanation": "<p><b>Explanation:</b> <b>Unknown-environment</b> (black-box) testing mimics an external attacker with limited info (e.g., just domain names) to test defense readiness. <b>Known-environment</b> (white-box) testing provides full info (diagrams, source code) to identify as many holes as possible. Choice is often dictated by time, money, and specific concerns (e.g., testing a single application's internal logic).</p>"
+            },
+            {
+                "id": "PBQ004",
+                "type": "pbq",
+                "text": "<h3>Ethical Handling of Data</h3><p>Describe the importance of <b>Confidentiality</b> and the proper procedure for handling sensitive data (like uncovered passwords) during and after a penetration test.</p>",
+                "explanation": "<p><b>Explanation:</b> Testers must agree on how to communicate sensitive findings and who has access. Results must be protected, as disclosure could help adversaries. Once the engagement is finished, all records should be deleted from the tester's systems to prevent cross-client data exposure.</p>"
+            },
+            {
+                "id": "PBQ005",
+                "type": "pbq",
+                "text": "<h3>Risk Management vs. Tolerance</h3><p>Explain the difference between <b>Risk Management</b> and <b>Risk Tolerance</b>. Provide a scenario based on the sources where an organization might accept a risk that is outside its tolerance.</p>",
+                "explanation": "<p><b>Explanation:</b> <b>Risk Tolerance</b> is the level of undesirable outcome a taker is willing to accept for potential benefit. <b>Risk Management</b> is the process of determining, assessing, and mitigating that risk. An organization may choose <b>Risk Acceptance</b> even if the risk is outside tolerance if all other alternatives are unacceptable.</p>"
+            }
+        ];
+
+        // Fisher-Yates shuffle algorithm for randomizing arrays
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Randomize questions and their options
+        function randomizeQuestions(questionsArray) {
+            return questionsArray.map(question => {
+                if (question.type !== 'pbq') {
+                    // Randomize options for MCQs
+                    return {
+                        ...question,
+                        options: shuffleArray(question.options)
+                    };
+                }
+                return question;
+            });
+        }
+
+        // Initialize randomized questions
+        let randomizedQuestions = randomizeQuestions(questions);
+        let mcqQuestions = shuffleArray(randomizedQuestions.filter(q => q.type !== 'pbq'));
+        let pbqQuestions = randomizedQuestions.filter(q => q.type === 'pbq');
+
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const mcqScreen = document.getElementById('mcqScreen');
+        const resultScreen = document.getElementById('resultScreen');
+        const pbqScreen = document.getElementById('pbqScreen');
+        const startButton = document.getElementById('startButton');
+        const mcqContainer = document.getElementById('mcqContainer');
+        const pbqContainer = document.getElementById('pbqContainer');
+        const submitMcqButton = document.getElementById('submitMcqButton');
+        const resetMcqButton = document.getElementById('resetMcqButton');
+        const progressBar = document.getElementById('progressBar');
+        const totalMcqResult = document.getElementById('totalMcqResult');
+        const correctAnswersResult = document.getElementById('correctAnswersResult');
+        const incorrectAnswersResult = document.getElementById('incorrectAnswersResult');
+        const finalPercentage = document.getElementById('finalPercentage');
+        const resultMessage = document.getElementById('resultMessage');
+        const resultsTableBody = document.getElementById('resultsTableBody');
+        const assessmentButton = document.getElementById('assessmentButton');
+        const continueToPbqButton = document.getElementById('continueToPbqButton');
+        const retakeQuizButton = document.getElementById('retakeQuizButton');
+        const finishQuizButton = document.getElementById('finishQuizButton');
+
+        // State
+        let userAnswers = {};
+        let quizStarted = false;
+        let quizFinished = false;
+        const STORAGE_KEY = 'quiz_app_results';
+
+        // Check if localStorage is available
+        function isLocalStorageAvailable() {
+            try {
+                const test = '__storage_test__';
+                localStorage.setItem(test, test);
+                localStorage.removeItem(test);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        const storageAvailable = isLocalStorageAvailable();
+
+        // Load saved results from localStorage
+        function loadSavedResults() {
+            if (!storageAvailable) return null;
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error('Error loading saved results:', e);
+            }
+            return null;
+        }
+
+        // Save results to localStorage
+        function saveResults(results) {
+            if (!storageAvailable) return;
+            try {
+                const dataToSave = {
+                    timestamp: new Date().toISOString(),
+                    ...results
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+            } catch (e) {
+                console.error('Error saving results:', e);
+            }
+        }
+
+        // Clear saved results
+        function clearSavedResults() {
+            if (!storageAvailable) return;
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (e) {
+                console.error('Error clearing results:', e);
+            }
+        }
+
+        // Check for saved results on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!storageAvailable) return;
+            const savedResults = loadSavedResults();
+            if (savedResults && savedResults.total) {
+                if (confirm('You have a previous quiz result. Would you like to view it?')) {
+                    displaySavedResults(savedResults);
+                }
+            }
+        });
+
+        function displaySavedResults(savedResults) {
+            totalMcqResult.textContent = savedResults.total;
+            correctAnswersResult.textContent = savedResults.correct;
+            incorrectAnswersResult.textContent = savedResults.incorrect;
+            finalPercentage.textContent = `${savedResults.percentage.toFixed(2)}%`;
+
+            if (savedResults.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+
+            // Show saved results in table
+            resultsTableBody.innerHTML = '';
+            if (savedResults.detailedResults) {
+                savedResults.detailedResults.forEach(result => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${result.id}</strong></td>
+                        <td>${result.question}</td>
+                        <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                            <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                            ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                        </td>
+                        <td>${result.userAnswer}</td>
+                        <td>${result.correctAnswer}</td>
+                    `;
+                    resultsTableBody.appendChild(row);
+                });
+            }
+
+            const timestamp = new Date(savedResults.timestamp);
+            const timeString = timestamp.toLocaleString();
+
+            const timestampNote = document.createElement('p');
+            timestampNote.style.textAlign = 'center';
+            timestampNote.style.color = '#6c757d';
+            timestampNote.style.marginTop = '20px';
+            timestampNote.textContent = `Results from: ${timeString}`;
+
+            const existingNote = resultScreen.querySelector('.timestamp-note');
+            if (existingNote) {
+                existingNote.remove();
+            }
+            timestampNote.className = 'timestamp-note';
+            resultScreen.querySelector('.result-card').insertBefore(timestampNote, resultScreen.querySelector('.button-group'));
+
+            showScreen('resultScreen');
+        }
+
+        // Disable F5 and Ctrl+W
+        document.addEventListener('keydown', function (e) {
+            // Disable F5 (refresh)
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                if (quizStarted && !quizFinished) {
+                    e.preventDefault();
+                    alert('Please complete the quiz before refreshing the page.');
+                    return false;
+                }
+            }
+
+            // Disable Ctrl+W (close window/tab)
+            if (e.ctrlKey && e.key === 'w') {
+                if (quizStarted && !quizFinished) {
+                    e.preventDefault();
+                    alert('Please complete the MCQ section before closing the page.');
+                    return false;
+                }
+            }
+        });
+
+        // Warn on page exit
+        window.addEventListener('beforeunload', function (e) {
+            if (quizStarted && !quizFinished) {
+                e.preventDefault();
+                e.returnValue = '';
+                return 'Are you sure you want to leave? Your quiz progress may be lost!';
+            }
+        });
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.quiz-section').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function renderMCQs() {
+            mcqContainer.innerHTML = '';
+
+            mcqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${question.id}`;
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = question.type === 'single' ? 'Single Choice' : 'Multiple Choice';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const selectionHint = document.createElement('div');
+                selectionHint.className = 'selection-hint';
+                selectionHint.textContent = `Select exactly ${question.selectCount} option${question.selectCount > 1 ? 's' : ''}`;
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(selectionHint);
+                questionCard.appendChild(questionText);
+
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+
+                question.options.forEach((option, optIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.onclick = () => handleAnswerSelection(question.id, optIndex, question.selectCount);
+
+                    const input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.id = `q${question.id}-opt${optIndex}`;
+                    input.style.pointerEvents = 'none';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `q${question.id}-opt${optIndex}`;
+                    label.textContent = option.text;
+                    label.style.pointerEvents = 'none';
+
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    optionsContainer.appendChild(optionDiv);
+                });
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(optionsContainer);
+                questionCard.appendChild(explanation);
+
+                mcqContainer.appendChild(questionCard);
+            });
+        }
+
+        function handleAnswerSelection(questionId, optionIndex, selectCount) {
+            if (!userAnswers[questionId]) {
+                userAnswers[questionId] = [];
+            }
+
+            const currentSelections = userAnswers[questionId];
+            const optionIndexInArray = currentSelections.indexOf(optionIndex);
+
+            if (optionIndexInArray > -1) {
+                // Deselect if already selected
+                currentSelections.splice(optionIndexInArray, 1);
+            } else {
+                // Select new option
+                if (selectCount === 1) {
+                    // For single selection, replace the selection
+                    userAnswers[questionId] = [optionIndex];
+                } else {
+                    // For multiple selection, add only if limit not reached
+                    if (currentSelections.length < selectCount) {
+                        currentSelections.push(optionIndex);
+                    } else {
+                        // Already at max, don't add
+                        return;
+                    }
+                }
+            }
+
+            // Update visual state
+            updateQuestionVisuals(questionId);
+            updateProgressBar();
+        }
+
+        function updateQuestionVisuals(questionId) {
+            const questionCard = document.getElementById(`question-${questionId}`);
+            const options = questionCard.querySelectorAll('.option');
+            const selectedIndices = userAnswers[questionId] || [];
+
+            options.forEach((optionDiv, idx) => {
+                const checkbox = optionDiv.querySelector('input[type="checkbox"]');
+                if (selectedIndices.includes(idx)) {
+                    optionDiv.classList.add('selected');
+                    checkbox.checked = true;
+                } else {
+                    optionDiv.classList.remove('selected');
+                    checkbox.checked = false;
+                }
+            });
+        }
+
+        function resetAllSelections() {
+            if (confirm('Are you sure you want to reset all your selections?')) {
+                userAnswers = {};
+                mcqQuestions.forEach(q => {
+                    updateQuestionVisuals(q.id);
+                });
+                updateProgressBar();
+            }
+        }
+
+        function updateProgressBar() {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+            const progress = (answeredCount / mcqQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function calculateResults() {
+            let correct = 0;
+            const detailedResults = [];
+
+            mcqQuestions.forEach(question => {
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                const isCorrect = userAnswer.length === correctIndices.length &&
+                    userAnswer.every(idx => correctIndices.includes(idx)) &&
+                    correctIndices.every(idx => userAnswer.includes(idx));
+
+                if (isCorrect) {
+                    correct++;
+                }
+
+                const userAnswerText = userAnswer.map(idx => question.options[idx].text).join(', ') || 'No answer';
+                const correctAnswerText = correctIndices.map(idx => question.options[idx].text).join(', ');
+
+                detailedResults.push({
+                    id: question.id,
+                    question: question.text,
+                    isCorrect,
+                    userAnswer: userAnswerText,
+                    correctAnswer: correctAnswerText
+                });
+            });
+
+            const total = mcqQuestions.length;
+            const incorrect = total - correct;
+            const percentage = total > 0 ? (correct / total) * 100 : 0;
+
+            return { total, correct, incorrect, percentage, detailedResults };
+        }
+
+        function showResults() {
+            const results = calculateResults();
+
+            // Save results to localStorage
+            saveResults(results);
+
+            totalMcqResult.textContent = results.total;
+            correctAnswersResult.textContent = results.correct;
+            incorrectAnswersResult.textContent = results.incorrect;
+            finalPercentage.textContent = `${results.percentage.toFixed(2)}%`;
+
+            if (results.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+
+            // Populate results table
+            resultsTableBody.innerHTML = '';
+            results.detailedResults.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${result.id}</strong></td>
+                    <td>${result.question}</td>
+                    <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                        <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                        ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                    </td>
+                    <td>${result.userAnswer}</td>
+                    <td>${result.correctAnswer}</td>
+                `;
+                resultsTableBody.appendChild(row);
+            });
+
+            showScreen('resultScreen');
+        }
+
+        function showAssessment() {
+            showScreen('mcqScreen');
+
+            mcqQuestions.forEach(question => {
+                const questionCard = document.getElementById(`question-${question.id}`);
+                const options = questionCard.querySelectorAll('.option');
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                options.forEach((optionDiv, idx) => {
+                    optionDiv.style.pointerEvents = 'none';
+
+                    if (correctIndices.includes(idx)) {
+                        optionDiv.classList.add('correct-answer');
+                    }
+
+                    if (userAnswer.includes(idx) && !correctIndices.includes(idx)) {
+                        optionDiv.classList.add('wrong-answer');
+                    }
+                });
+
+                const explanation = document.getElementById(`explanation-${question.id}`);
+                explanation.classList.add('show');
+            });
+
+            // Hide submit button but keep reset and continue buttons visible
+            submitMcqButton.style.display = 'none';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Retake Quiz';
+            resetMcqButton.classList.remove('warning-btn');
+            resetMcqButton.classList.add('secondary-btn');
+
+            // Add continue to PBQ button if not already present
+            let continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (!continueBtnInAssessment) {
+                continueBtnInAssessment = document.createElement('button');
+                continueBtnInAssessment.id = 'continueToPbqInAssessment';
+                continueBtnInAssessment.className = 'btn primary-btn';
+                continueBtnInAssessment.textContent = 'Continue to Practice Questions';
+                continueBtnInAssessment.onclick = () => {
+                    if (pbqQuestions.length > 0) {
+                        renderPBQs();
+                        showScreen('pbqScreen');
+                    } else {
+                        quizFinished = true;
+                        alert('No practice questions available. Quiz completed!');
+                    }
+                };
+
+                // Insert button in the button group
+                const buttonGroup = mcqScreen.querySelector('.button-group');
+                buttonGroup.appendChild(continueBtnInAssessment);
+            }
+            continueBtnInAssessment.style.display = 'inline-block';
+        }
+
+        function renderPBQs() {
+            pbqContainer.innerHTML = '';
+
+            if (pbqQuestions.length === 0) {
+                pbqContainer.innerHTML = '<p style="text-align: center; color: #6c757d;">No practice-based questions available.</p>';
+                return;
+            }
+
+            pbqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Practice Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = 'Practice Question';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                const textarea = document.createElement('textarea');
+                textarea.className = 'pbq-answer';
+                textarea.placeholder = 'Write your answer here...';
+                textarea.id = `pbq-${question.id}`;
+
+                const showAnswerBtn = document.createElement('button');
+                showAnswerBtn.className = 'btn secondary-btn';
+                showAnswerBtn.textContent = 'Show Answer';
+                showAnswerBtn.style.marginTop = '10px';
+                showAnswerBtn.onclick = () => togglePbqAnswer(question.id);
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `pbq-explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Answer:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(questionText);
+                questionCard.appendChild(textarea);
+                questionCard.appendChild(showAnswerBtn);
+                questionCard.appendChild(explanation);
+
+                pbqContainer.appendChild(questionCard);
+            });
+        }
+
+        function togglePbqAnswer(questionId) {
+            const explanation = document.getElementById(`pbq-explanation-${questionId}`);
+            explanation.classList.toggle('show');
+        }
+
+        function resetQuiz() {
+            // Randomize questions and options again
+            randomizedQuestions = randomizeQuestions(questions);
+            mcqQuestions = shuffleArray(randomizedQuestions.filter(q => q.type !== 'pbq'));
+            pbqQuestions = randomizedQuestions.filter(q => q.type === 'pbq');
+
+            userAnswers = {};
+            quizStarted = false;
+            quizFinished = false;
+            progressBar.style.width = '0%';
+            submitMcqButton.style.display = 'inline-block';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Reset All Selections';
+            resetMcqButton.classList.add('warning-btn');
+            resetMcqButton.classList.remove('secondary-btn');
+
+            // Hide continue button in assessment if exists
+            const continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (continueBtnInAssessment) {
+                continueBtnInAssessment.style.display = 'none';
+            }
+
+            // Clear saved results when retaking
+            clearSavedResults();
+
+            showScreen('startScreen');
+        }
+
+        // Event Listeners
+        startButton.addEventListener('click', () => {
+            quizStarted = true;
+            renderMCQs();
+            showScreen('mcqScreen');
+        });
+
+        submitMcqButton.addEventListener('click', () => {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+
+            if (answeredCount < mcqQuestions.length) {
+                if (!confirm('You have not answered all MCQs correctly (some may have incorrect number of selections). Do you want to submit anyway?')) {
+                    return;
+                }
+            }
+
+            showResults();
+        });
+
+        resetMcqButton.addEventListener('click', resetAllSelections);
+
+        assessmentButton.addEventListener('click', showAssessment);
+
+        continueToPbqButton.addEventListener('click', () => {
+            if (pbqQuestions.length > 0) {
+                renderPBQs();
+                showScreen('pbqScreen');
+            } else {
+                quizFinished = true;
+                alert('No practice questions available. Quiz completed!');
+            }
+        });
+
+        finishQuizButton.addEventListener('click', () => {
+            quizFinished = true;
+            alert('Quiz completed! You can now retake the quiz or close this window.');
+            showScreen('startScreen');
+        });
+
+        retakeQuizButton.addEventListener('click', resetQuiz);
+
+
+        // Warn on page exit
+        window.addEventListener('beforeunload', function (e) {
+            if (quizStarted && !quizFinished) {
+                e.preventDefault();
+                e.returnValue = '';
+                return 'Are you sure you want to leave? Your quiz progress may be lost!';
+            }
+        });
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.quiz-section').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function renderMCQs() {
+            mcqContainer.innerHTML = '';
+
+            mcqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `question-${question.id}`;
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = question.type === 'single' ? 'Single Choice' : 'Multiple Choice';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const selectionHint = document.createElement('div');
+                selectionHint.className = 'selection-hint';
+                selectionHint.textContent = `Select exactly ${question.selectCount} option${question.selectCount > 1 ? 's' : ''}`;
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(selectionHint);
+                questionCard.appendChild(questionText);
+
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+
+                question.options.forEach((option, optIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.onclick = () => handleAnswerSelection(question.id, optIndex, question.selectCount);
+
+                    const input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.id = `q${question.id}-opt${optIndex}`;
+                    input.style.pointerEvents = 'none';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `q${question.id}-opt${optIndex}`;
+                    label.textContent = option.text;
+                    label.style.pointerEvents = 'none';
+
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    optionsContainer.appendChild(optionDiv);
+                });
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(optionsContainer);
+                questionCard.appendChild(explanation);
+
+                mcqContainer.appendChild(questionCard);
+            });
+        }
+
+        function handleAnswerSelection(questionId, optionIndex, selectCount) {
+            if (!userAnswers[questionId]) {
+                userAnswers[questionId] = [];
+            }
+
+            const currentSelections = userAnswers[questionId];
+            const optionIndexInArray = currentSelections.indexOf(optionIndex);
+
+            if (optionIndexInArray > -1) {
+                // Deselect if already selected
+                currentSelections.splice(optionIndexInArray, 1);
+            } else {
+                // Select new option
+                if (selectCount === 1) {
+                    // For single selection, replace the selection
+                    userAnswers[questionId] = [optionIndex];
+                } else {
+                    // For multiple selection, add only if limit not reached
+                    if (currentSelections.length < selectCount) {
+                        currentSelections.push(optionIndex);
+                    } else {
+                        // Already at max, don't add
+                        return;
+                    }
+                }
+            }
+
+            // Update visual state
+            updateQuestionVisuals(questionId);
+            updateProgressBar();
+        }
+
+        function updateQuestionVisuals(questionId) {
+            const questionCard = document.getElementById(`question-${questionId}`);
+            const options = questionCard.querySelectorAll('.option');
+            const selectedIndices = userAnswers[questionId] || [];
+
+            options.forEach((optionDiv, idx) => {
+                const checkbox = optionDiv.querySelector('input[type="checkbox"]');
+                if (selectedIndices.includes(idx)) {
+                    optionDiv.classList.add('selected');
+                    checkbox.checked = true;
+                } else {
+                    optionDiv.classList.remove('selected');
+                    checkbox.checked = false;
+                }
+            });
+        }
+
+        function resetAllSelections() {
+            if (confirm('Are you sure you want to reset all your selections?')) {
+                userAnswers = {};
+                mcqQuestions.forEach(q => {
+                    updateQuestionVisuals(q.id);
+                });
+                updateProgressBar();
+            }
+        }
+
+        function updateProgressBar() {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+            const progress = (answeredCount / mcqQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function calculateResults() {
+            let correct = 0;
+            const detailedResults = [];
+
+            mcqQuestions.forEach(question => {
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                const isCorrect = userAnswer.length === correctIndices.length &&
+                    userAnswer.every(idx => correctIndices.includes(idx)) &&
+                    correctIndices.every(idx => userAnswer.includes(idx));
+
+                if (isCorrect) {
+                    correct++;
+                }
+
+                const userAnswerText = userAnswer.map(idx => question.options[idx].text).join(', ') || 'No answer';
+                const correctAnswerText = correctIndices.map(idx => question.options[idx].text).join(', ');
+
+                detailedResults.push({
+                    id: question.id,
+                    question: question.text,
+                    isCorrect,
+                    userAnswer: userAnswerText,
+                    correctAnswer: correctAnswerText
+                });
+            });
+
+            const total = mcqQuestions.length;
+            const incorrect = total - correct;
+            const percentage = total > 0 ? (correct / total) * 100 : 0;
+
+            return { total, correct, incorrect, percentage, detailedResults };
+        }
+
+        function showResults() {
+            const results = calculateResults();
+
+            totalMcqResult.textContent = results.total;
+            correctAnswersResult.textContent = results.correct;
+            incorrectAnswersResult.textContent = results.incorrect;
+            finalPercentage.textContent = `${results.percentage.toFixed(2)}%`;
+
+            if (results.percentage >= 75) {
+                resultMessage.textContent = "Congratulations! You passed!";
+                resultMessage.classList.add('pass');
+                resultMessage.classList.remove('fail');
+            } else {
+                resultMessage.textContent = "Keep studying! You need to revise this domain.";
+                resultMessage.classList.add('fail');
+                resultMessage.classList.remove('pass');
+            }
+
+            // Populate results table
+            resultsTableBody.innerHTML = '';
+            results.detailedResults.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${result.id}</strong></td>
+                    <td>${result.question}</td>
+                    <td class="${result.isCorrect ? 'status-correct' : 'status-incorrect'}">
+                        <span class="status-icon">${result.isCorrect ? '✓' : '✗'}</span>
+                        ${result.isCorrect ? 'Correct' : 'Incorrect'}
+                    </td>
+                    <td>${result.userAnswer}</td>
+                    <td>${result.correctAnswer}</td>
+                `;
+                resultsTableBody.appendChild(row);
+            });
+
+            showScreen('resultScreen');
+        }
+
+        function showAssessment() {
+            showScreen('mcqScreen');
+
+            mcqQuestions.forEach(question => {
+                const questionCard = document.getElementById(`question-${question.id}`);
+                const options = questionCard.querySelectorAll('.option');
+                const userAnswer = userAnswers[question.id] || [];
+                const correctIndices = question.options
+                    .map((opt, idx) => opt.isCorrect ? idx : -1)
+                    .filter(idx => idx !== -1);
+
+                options.forEach((optionDiv, idx) => {
+                    optionDiv.style.pointerEvents = 'none';
+
+                    if (correctIndices.includes(idx)) {
+                        optionDiv.classList.add('correct-answer');
+                    }
+
+                    if (userAnswer.includes(idx) && !correctIndices.includes(idx)) {
+                        optionDiv.classList.add('wrong-answer');
+                    }
+                });
+
+                const explanation = document.getElementById(`explanation-${question.id}`);
+                explanation.classList.add('show');
+            });
+
+            // Hide submit button but keep reset and continue buttons visible
+            submitMcqButton.style.display = 'none';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Retake Quiz';
+            resetMcqButton.classList.remove('warning-btn');
+            resetMcqButton.classList.add('secondary-btn');
+
+            // Add continue to PBQ button if not already present
+            let continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (!continueBtnInAssessment) {
+                continueBtnInAssessment = document.createElement('button');
+                continueBtnInAssessment.id = 'continueToPbqInAssessment';
+                continueBtnInAssessment.className = 'btn primary-btn';
+                continueBtnInAssessment.textContent = 'Continue to Practice Questions';
+                continueBtnInAssessment.onclick = () => {
+                    if (pbqQuestions.length > 0) {
+                        renderPBQs();
+                        showScreen('pbqScreen');
+                    } else {
+                        quizFinished = true;
+                        alert('No practice questions available. Quiz completed!');
+                    }
+                };
+
+                // Insert button in the button group
+                const buttonGroup = mcqScreen.querySelector('.button-group');
+                buttonGroup.appendChild(continueBtnInAssessment);
+            }
+            continueBtnInAssessment.style.display = 'inline-block';
+        }
+
+        function renderPBQs() {
+            pbqContainer.innerHTML = '';
+
+            if (pbqQuestions.length === 0) {
+                pbqContainer.innerHTML = '<p style="text-align: center; color: #6c757d;">No practice-based questions available.</p>';
+                return;
+            }
+
+            pbqQuestions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'question-header';
+
+                const questionNumber = document.createElement('span');
+                questionNumber.className = 'question-number';
+                questionNumber.textContent = `Practice Question ${index + 1} (ID: ${question.id})`;
+
+                const questionType = document.createElement('span');
+                questionType.className = 'question-type';
+                questionType.textContent = 'Practice Question';
+
+                questionHeader.appendChild(questionNumber);
+                questionHeader.appendChild(questionType);
+
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = question.text;
+
+                const textarea = document.createElement('textarea');
+                textarea.className = 'pbq-answer';
+                textarea.placeholder = 'Write your answer here...';
+                textarea.id = `pbq-${question.id}`;
+
+                const showAnswerBtn = document.createElement('button');
+                showAnswerBtn.className = 'btn secondary-btn';
+                showAnswerBtn.textContent = 'Show Answer';
+                showAnswerBtn.style.marginTop = '10px';
+                showAnswerBtn.onclick = () => togglePbqAnswer(question.id);
+
+                const explanation = document.createElement('div');
+                explanation.className = 'explanation';
+                explanation.id = `pbq-explanation-${question.id}`;
+                explanation.innerHTML = `<strong>Answer:</strong> ${question.explanation}`;
+
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(questionText);
+                questionCard.appendChild(textarea);
+                questionCard.appendChild(showAnswerBtn);
+                questionCard.appendChild(explanation);
+
+                pbqContainer.appendChild(questionCard);
+            });
+        }
+
+        function togglePbqAnswer(questionId) {
+            const explanation = document.getElementById(`pbq-explanation-${questionId}`);
+            explanation.classList.toggle('show');
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            quizStarted = false;
+            quizFinished = false;
+            progressBar.style.width = '0%';
+            submitMcqButton.style.display = 'inline-block';
+            resetMcqButton.style.display = 'inline-block';
+            resetMcqButton.textContent = 'Reset All Selections';
+            resetMcqButton.classList.add('warning-btn');
+            resetMcqButton.classList.remove('secondary-btn');
+
+            // Hide continue button in assessment if exists
+            const continueBtnInAssessment = document.getElementById('continueToPbqInAssessment');
+            if (continueBtnInAssessment) {
+                continueBtnInAssessment.style.display = 'none';
+            }
+
+            showScreen('startScreen');
+        }
+
+        // Event Listeners
+        startButton.addEventListener('click', () => {
+            quizStarted = true;
+            renderMCQs();
+            showScreen('mcqScreen');
+        });
+
+        submitMcqButton.addEventListener('click', () => {
+            const answeredCount = mcqQuestions.filter(q =>
+                userAnswers[q.id] && userAnswers[q.id].length === q.selectCount
+            ).length;
+
+            if (answeredCount < mcqQuestions.length) {
+                if (!confirm('You have not answered all MCQs correctly (some may have incorrect number of selections). Do you want to submit anyway?')) {
+                    return;
+                }
+            }
+
+            showResults();
+        });
+
+        resetMcqButton.addEventListener('click', resetAllSelections);
+
+        assessmentButton.addEventListener('click', showAssessment);
+
+        continueToPbqButton.addEventListener('click', () => {
+            if (pbqQuestions.length > 0) {
+                renderPBQs();
+                showScreen('pbqScreen');
+            } else {
+                quizFinished = true;
+                alert('No practice questions available. Quiz completed!');
+            }
+        });
+
+        finishQuizButton.addEventListener('click', () => {
+            quizFinished = true;
+            alert('Quiz completed! You can now retake the quiz or close this window.');
+            showScreen('startScreen');
+        });
+
+        retakeQuizButton.addEventListener('click', resetQuiz);
+    </script>
+</body>
+
+</html>

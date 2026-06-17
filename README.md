@@ -66,22 +66,21 @@ To make the theoretical concepts highly practical, this repository utilizes an a
 
 To deploy the network templates or practice the security validation scripts locally, use the following steps:
 
-```
-1. **Clone the Hub:**
 
+1. **Clone the Hub:**
+```
 git clone https://github.com/ameer-18-star/Cisco-Ethical-Hacking-CEH-.git
 
-
+```
 2. **Deploy the Topology:**
    Navigate to the `Cisco-Packet-Tracer-Labs/` folder and open the network simulation files using **Cisco Packet Tracer (v8.2+)** or import configs directly into GNS3/EVENG.
 
 3. **Run Automation Scripts:**
    Ensure Python 3.10+ and requirements are installed locally to test network configuration automation scripts:
-   ```bash
+   ```
    pip install -r 06-Network-Automation-Scripts/requirements.txt
    python3 06-Network-Automation-Scripts/deploy_acl_baseline.py
-
-```
+   ```
 
 ---
 
